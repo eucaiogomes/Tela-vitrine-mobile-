@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-brand: var(--brand-color);
+  --color-brand-dark: var(--brand-color-dark);
+  --color-ice: #fcfdfe;
+}
+
+:root {
+  --brand-color: #c00000;
+  --brand-color-dark: #a00000;
+}
+
+@layer base {
+  html {
+    font-size: 87.5%;
+  }
+  body {
+    @apply font-sans antialiased text-gray-900;
+  }
+}
+
+@layer utilities {
+  .text-xs {
+    font-size: 12px;
+  }
+  
+  /* Media query to apply custom scrollbar only for desktop */
+  @media (min-width: 1025px) {
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f8fafc;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #d1d5db; /* Light gray */
+      border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+  }
+
+  /* Keep custom scrollbar for mobile/tablet */
+  @media (max-width: 1024px) {
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 4px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+  }
+
+  /* Horizontal Scrollbar (Turmas, Tab menu) */
+  .custom-scrollbar-h::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .custom-scrollbar-h::-webkit-scrollbar-track {
+    background: transparent;
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+  
+  .custom-scrollbar-h::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* Neutral gray instead of brand color */
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar-h::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+}
+
