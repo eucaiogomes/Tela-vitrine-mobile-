@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Lector institutional palette — navy + orange */
+  --theme-primary: #FF7A1A;       /* orange.500 — CTA principal */
+  --theme-secondary: #041433;     /* navy.900 — fundo dark institucional */
+  --theme-accent: #2563EB;        /* blue.500 — destaques secundários */
+
+  --navy-900: #041433;
+  --navy-800: #08204D;
+  --navy-700: #0F2D6B;
+  --orange-500: #FF7A1A;
+  --orange-600: #F2680D;
+  --blue-500: #2563EB;
+
+  --neutral-50: #F7F9FC;
+  --neutral-100: #EEF2F7;
+  --neutral-300: #CBD5E1;
+  --neutral-600: #475569;
+  --neutral-900: #0F172A;
+
+  /* Gradients & shadows */
+  --gradient-hero: radial-gradient(ellipse 80% 60% at 30% 20%, rgba(37, 99, 235, 0.18), transparent 60%),
+                   radial-gradient(ellipse 70% 60% at 80% 90%, rgba(255, 122, 26, 0.12), transparent 60%),
+                   linear-gradient(135deg, #041433 0%, #08204D 60%, #0F2D6B 100%);
+  --gradient-orange: linear-gradient(135deg, #FF7A1A 0%, #F2680D 100%);
+
+  --shadow-subtle: 0 4px 12px rgba(4, 20, 51, 0.06);
+  --shadow-hover: 0 10px 28px rgba(4, 20, 51, 0.14);
+  --shadow-glow-orange: 0 8px 24px rgba(255, 122, 26, 0.28);
+
+  /* Brand tokens used by training/trilha views */
+  --brand-color: #FF7A1A;
+  --brand-color-dark: #F2680D;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+
+  --color-brand-primary: var(--theme-primary);
+  --color-brand-secondary: var(--theme-secondary);
+  --color-brand-accent: var(--theme-accent);
+
+  --color-brand: var(--brand-color);
+  --color-brand-dark: var(--brand-color-dark);
+  --color-ice: #fcfdfe;
+
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-orange-500: var(--orange-500);
+  --color-orange-600: var(--orange-600);
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-[#F7F9FC] text-slate-900;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+
+  .glass-dark {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(14px);
+  }
+
+  .btn-primary {
+    background: var(--gradient-orange);
+    @apply text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    box-shadow: var(--shadow-glow-orange);
+  }
+  .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+  .btn-ghost-light {
+    @apply text-white/90 border border-white/20 hover:bg-white/10 px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+  }
+
+  /* Orbital decorative pattern (used in hero / banners) */
+  .orbit-pattern {
+    background-image:
+      radial-gradient(circle at 50% 50%, transparent 38%, rgba(37,99,235,0.08) 38.5%, transparent 39%),
+      radial-gradient(circle at 50% 50%, transparent 50%, rgba(255,122,26,0.06) 50.5%, transparent 51%),
+      radial-gradient(circle at 50% 50%, transparent 62%, rgba(37,99,235,0.05) 62.5%, transparent 63%);
+  }
+
+  .text-gradient-orange {
+    background: var(--gradient-orange);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
