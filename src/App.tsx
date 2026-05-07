@@ -2734,15 +2734,159 @@ const MyAreaView = () => {
   );
 };
 
-const Hero = ({ layoutVersion = 1 }: { layoutVersion?: number }) => {
+const HERO_SLIDES_DEFAULT = [
+  {
+    id: 'slide-1',
+    badge: 'Plataforma Lector • Educação Corporativa',
+    title: (
+      <>
+        Diagnóstico do<br />
+        ambiente de trabalho<br />
+        <span className="text-gradient-orange">que transforma resultados.</span>
+      </>
+    ),
+    description:
+      'Desenvolva habilidades práticas e certificações alinhadas às necessidades da empresa. Um único ecossistema para conteúdo, trilhas e evolução contínua.',
+    card: (
+      <div className="relative rounded-3xl overflow-hidden aspect-[4/5] glass-dark">
+        <img
+          src={heroYoungProfessional}
+          alt="Profissional jovem"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent pointer-events-none" />
+      </div>
+    ),
+  },
+  {
+    id: 'slide-2',
+    badge: 'Novidade • Avaliação Copsoq',
+    title: (
+      <>
+        Avaliação <span className="text-gradient-orange">Copsoq</span><br />
+        já disponível
+      </>
+    ),
+    description:
+      'Mensure os fatores psicossociais do ambiente de trabalho com o instrumento Copsoq e gere planos de ação baseados em evidências.',
+    card: (
+      <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
+           style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 60%, #FF7A1A 140%)' }}>
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+            DISPONÍVEL AGORA
+          </span>
+          <Shield className="w-5 h-5 text-white/70" />
+        </div>
+        <div>
+          <p className="text-white/60 text-xs uppercase tracking-widest font-semibold">Avaliação</p>
+          <h3 className="mt-2 text-3xl font-display font-bold text-white leading-tight">Copsoq</h3>
+          <p className="mt-3 text-sm text-white/70 leading-relaxed">
+            Riscos psicossociais, clima e bem-estar em uma única jornada de aplicação.
+          </p>
+          <button className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 transition-colors text-white text-sm font-semibold">
+            Iniciar avaliação <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    ),
+  },
+];
+
+const HERO_SLIDES_QA = [
+  {
+    id: 'qa-slide-1',
+    badge: 'Time QA • Lector Live',
+    title: (
+      <>
+        Garanta que o que foi<br />
+        prometido <span className="text-gradient-orange">realmente funciona.</span>
+      </>
+    ),
+    description:
+      'Biblioteca completa do time de QA: do onboarding ao checklist completo do sistema. Valide fluxos, documente chamados e evite regressões com processos sólidos.',
+    card: (
+      <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
+           style={{ background: 'linear-gradient(135deg, #082040 0%, #0c2d5e 55%, #0EA5E9 160%)' }}>
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+            BIBLIOTECA QA
+          </span>
+          <Shield className="w-5 h-5 text-sky-300/70" />
+        </div>
+        <div className="space-y-2">
+          {['Validar fluxo completo', 'Evitar regressão', 'Organizar processo', 'Documentar chamados'].map(item => (
+            <div key={item} className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-sky-400/20 border border-sky-400/40 flex items-center justify-center flex-shrink-0">
+                <Check className="w-2.5 h-2.5 text-sky-300" />
+              </div>
+              <span className="text-sm text-white/80">{item}</span>
+            </div>
+          ))}
+        </div>
+        <div>
+          <p className="text-white/50 text-xs uppercase tracking-widest font-semibold">QA</p>
+          <h3 className="mt-1 text-2xl font-display font-bold text-white leading-tight">Lector Live</h3>
+          <p className="mt-2 text-sm text-white/60">11 treinamentos · 11 trilhas</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'qa-slide-2',
+    badge: 'Automação • Testes em Escala',
+    title: (
+      <>
+        Automatize fluxos críticos,<br />
+        <span className="text-gradient-orange">previna regressões.</span>
+      </>
+    ),
+    description:
+      'Aprenda a estruturar testes independentes, escolher o que automatizar e manter a suíte atualizada a cada liberação — sem aumentar a complexidade do processo.',
+    card: (
+      <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
+           style={{ background: 'linear-gradient(135deg, #061830 0%, #0a2550 60%, #FF7A1A 160%)' }}>
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+            AUTOMAÇÃO
+          </span>
+          <Code className="w-5 h-5 text-white/50" />
+        </div>
+        <div className="space-y-1.5">
+          {['Login e autenticação', 'Matrícula e pagamento', 'Trilhas e progresso', 'Vitrines e treinamentos'].map(item => (
+            <div key={item} className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-1.5 border border-white/10">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+              <span className="text-xs text-white/75 font-mono">{item}</span>
+            </div>
+          ))}
+        </div>
+        <div>
+          <p className="text-white/50 text-xs uppercase tracking-widest font-semibold">Fluxos Críticos</p>
+          <h3 className="mt-1 text-2xl font-display font-bold text-white leading-tight">Candidatos naturais</h3>
+          <p className="mt-2 text-sm text-white/60">Alto impacto · Recorrentes · Bem definidos</p>
+        </div>
+      </div>
+    ),
+  },
+];
+
+const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: number; activeVitrineId?: string }) => {
   const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
+    setCurrentBanner(0);
+  }, [activeVitrineId]);
+
+  useEffect(() => {
+    const slides = activeVitrineId === 'v7' ? HERO_SLIDES_QA : HERO_SLIDES_DEFAULT;
     const timer = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % BANNERS.length);
+      setCurrentBanner((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeVitrineId]);
 
   if (layoutVersion === 2) {
     return (
@@ -2818,68 +2962,7 @@ const Hero = ({ layoutVersion = 1 }: { layoutVersion?: number }) => {
     );
   }
 
-  const slides = [
-    {
-      id: 'slide-1',
-      badge: 'Plataforma Lector • Educação Corporativa',
-      title: (
-        <>
-          Diagnóstico do<br />
-          ambiente de trabalho<br />
-          <span className="text-gradient-orange">que transforma resultados.</span>
-        </>
-      ),
-      description:
-        'Desenvolva habilidades práticas e certificações alinhadas às necessidades da empresa. Um único ecossistema para conteúdo, trilhas e evolução contínua.',
-      card: (
-        <div className="relative rounded-3xl overflow-hidden aspect-[4/5] glass-dark">
-          <img
-            src={heroYoungProfessional}
-            alt="Profissional jovem"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent pointer-events-none" />
-        </div>
-      ),
-    },
-    {
-      id: 'slide-2',
-      badge: 'Novidade • Avaliação Copsoq',
-      title: (
-        <>
-          Avaliação <span className="text-gradient-orange">Copsoq</span><br />
-          já disponível
-        </>
-      ),
-      description:
-        'Mensure os fatores psicossociais do ambiente de trabalho com o instrumento Copsoq e gere planos de ação baseados em evidências.',
-      card: (
-        <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
-             style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 60%, #FF7A1A 140%)' }}>
-          <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-              DISPONÍVEL AGORA
-            </span>
-            <Shield className="w-5 h-5 text-white/70" />
-          </div>
-          <div>
-            <p className="text-white/60 text-xs uppercase tracking-widest font-semibold">Avaliação</p>
-            <h3 className="mt-2 text-3xl font-display font-bold text-white leading-tight">
-              Copsoq
-            </h3>
-            <p className="mt-3 text-sm text-white/70 leading-relaxed">
-              Riscos psicossociais, clima e bem-estar em uma única jornada de aplicação.
-            </p>
-            <button className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 transition-colors text-white text-sm font-semibold">
-              Iniciar avaliação <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-      ),
-    },
-  ];
-
+  const slides = activeVitrineId === 'v7' ? HERO_SLIDES_QA : HERO_SLIDES_DEFAULT;
   const slide = slides[currentBanner % slides.length];
 
   return (
@@ -4149,7 +4232,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <Hero />
+                <Hero activeVitrineId={activeVitrineId} />
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
                     <div className="flex-1 overflow-hidden">
