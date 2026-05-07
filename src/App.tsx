@@ -610,312 +610,285 @@ const SocialView = () => {
   ];
 
   return (
-    <div className="bg-gray-100 min-h-[calc(100vh-64px)] py-8 relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="flex flex-col lg:flex-row gap-8">
-          
-          {/* LEFT COLUMN: WIDGETS */}
-          <div className="w-full lg:w-80 flex-shrink-0 space-y-6">
-            
-            {/* Widget: Destaques */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="flex border-b border-gray-100">
-                <button className="flex-1 py-3 text-sm font-bold text-brand-primary border-b-2 border-brand-primary">Destaques</button>
-                <button className="flex-1 py-3 text-sm font-medium text-gray-400 hover:text-gray-600">Grupos</button>
-              </div>
-              <div className="p-4 space-y-4">
-                {users.map(user => (
-                  <div 
-                    key={user.id} 
-                    className="flex items-center gap-3 cursor-pointer p-2 -mx-2 hover:bg-gray-50 rounded-lg transition-colors"
-                    onClick={() => setActiveProfile(user)}
-                  >
-                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full shadow-sm" />
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-800">{user.name}</h4>
-                      <p className="text-xs text-gray-500">{user.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+    <div className="bg-[#F7F9FC] min-h-[calc(100vh-64px)] relative">
 
-            {/* Widget: Aniversariantes */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-brand-primary/5 p-4 border-b border-brand-primary/10 flex items-center gap-2">
-                <Gift className="text-brand-primary w-5 h-5" />
-                <h3 className="font-bold text-brand-primary">Aniversariantes do mês</h3>
-              </div>
-              <div className="p-4 space-y-4">
-                {birthdays.map((bday, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <img src={bday.avatar} alt={bday.name} className="w-10 h-10 rounded-full shadow-sm" />
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-800">{bday.name}</h4>
-                        <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider limit-lines-1">{bday.role}</p>
-                      </div>
-                    </div>
-                    <Tooltip content="Enviar Mensagem">
-                      <button className="text-gray-400 hover:text-brand-primary p-2 hover:bg-brand-primary/10 rounded-full transition-colors">
-                        <MessageSquare className="w-4 h-4" />
-                      </button>
-                    </Tooltip>
-                  </div>
-                ))}
-              </div>
+      {/* HEADER BANNER */}
+      <div className="bg-navy-900 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #041433 0%, #0a2254 100%)' }}>
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #FF7A1A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #2563EB 0%, transparent 40%)' }} />
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+          <div className="flex items-center gap-5">
+            <img src={users[0].avatar} alt="Seu Perfil" className="w-16 h-16 rounded-full border-2 border-white/20 shadow-lg" />
+            <div>
+              <h1 className="text-white font-bold text-2xl" style={{ fontFamily: 'Outfit, sans-serif' }}>Rede Social</h1>
+              <p className="text-white/60 text-sm mt-0.5">Compartilhe conquistas, ideias e novidades com sua equipe</p>
             </div>
-
           </div>
 
-          {/* CENTER COLUMN: FEED */}
-          <div className="flex-grow max-w-2xl w-full mx-auto space-y-6">
-            
-            {/* CRIAR POST BOX */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-               <div className="flex gap-4 mb-4">
-                 <img src={users[0].avatar} alt="Seu Perfil" className="w-10 h-10 rounded-full shadow-sm" />
-                 <input 
-                   type="text" 
-                   placeholder="Compartilhe algo com a rede..." 
-                   className="flex-grow bg-gray-50 border border-gray-200 rounded-full px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all"
-                 />
-               </div>
-               <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <div className="flex gap-1">
-                    <Tooltip content="Anexar Imagem" direction="top">
-                      <button className="p-2 text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-full transition-colors">
-                        <Camera className="w-5 h-5" />
-                      </button>
-                    </Tooltip>
-                    <Tooltip content="Anexar Arquivo" direction="top">
-                      <button className="p-2 text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-full transition-colors">
-                        <Paperclip className="w-5 h-5" />
-                      </button>
-                    </Tooltip>
+          {/* Destaques - faixa horizontal */}
+          <div className="mt-6 flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide">
+            <span className="text-white/40 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Destaques</span>
+            {users.map(user => (
+              <button
+                key={user.id}
+                onClick={() => setActiveProfile(user)}
+                className="flex flex-col items-center gap-1.5 group flex-shrink-0"
+              >
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-brand-primary to-orange-300 group-hover:scale-105 transition-transform">
+                    <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full border-2 border-[#041433]" />
                   </div>
-                  <button className="bg-brand-primary text-white font-medium text-sm px-5 py-1.5 rounded-full hover:opacity-90 shadow-sm transition-opacity">
-                    Publicar
-                  </button>
-               </div>
-            </div>
-
-            {/* FEED DE POSTS */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Feed Recente</h3>
-                <button className="text-sm text-brand-primary font-medium hover:underline flex items-center gap-1">
-                  Filtrar timeline 
-                </button>
-              </div>
-
-              {posts.map((post) => {
-                const isLiked = likedPosts.includes(post.id);
-                return (
-                  <motion.div 
-                    key={post.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-                  >
-                    {/* Cabeçalho do Post */}
-                    <div className="p-5 pb-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src={post.user.avatar} 
-                          alt={post.user.name} 
-                          className="w-12 h-12 rounded-full shadow-sm cursor-pointer hover:ring-2 hover:ring-brand-primary hover:ring-offset-2 transition-all" 
-                          onClick={() => setActiveProfile(post.user)}
-                        />
-                        <div>
-                          <h4 
-                            className="font-bold text-gray-900 cursor-pointer hover:text-brand-primary transition-colors"
-                            onClick={() => setActiveProfile(post.user)}
-                          >
-                            {post.user.name}
-                          </h4>
-                          <p className="text-xs text-gray-400">{post.time} • {post.user.role}</p>
-                        </div>
-                      </div>
-                      <Tooltip content="Mais Opções">
-                        <button className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors">
-                          <MoreHorizontal className="w-5 h-5" />
-                        </button>
-                      </Tooltip>
-                    </div>
-
-                    {/* Corpo do Post */}
-                    <div className="p-5 pt-2">
-                      <p className="text-gray-700 leading-relaxed text-[15px] mb-4">
-                        {post.content}
-                      </p>
-                      {post.image && (
-                        <div className="rounded-xl overflow-hidden mb-2 border border-gray-100">
-                          <img src={post.image} alt="Conteúdo da publicação" className="w-full h-auto object-cover max-h-80" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Rodapé - Action Bar */}
-                    <div className="px-5 py-3 border-t border-gray-50 bg-gray-50/50 flex items-center gap-6">
-                      <button 
-                        onClick={() => toggleLike(post.id)}
-                        className={`flex items-center gap-2 font-medium text-sm transition-colors ${
-                          isLiked ? 'text-brand-primary' : 'text-gray-500 hover:text-gray-800'
-                        }`}
-                      >
-                        <motion.div
-                          animate={{ scale: isLiked ? [1, 1.3, 1] : 1 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Heart className="w-5 h-5" fill={isLiked ? "currentColor" : "none"} />
-                        </motion.div>
-                        {post.likes + (isLiked ? 1 : 0)}
-                      </button>
-
-                      <button 
-                        onClick={() => toggleComments(post.id)}
-                        className="flex items-center gap-2 font-medium text-sm text-gray-500 hover:text-gray-800 transition-colors"
-                      >
-                        <MessageSquare className="w-5 h-5" />
-                        {post.commentsList.length} Comentários
-                      </button>
-                    </div>
-
-                    {/* Comentários */}
-                    <AnimatePresence>
-                      {expandedComments.includes(post.id) && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="px-5 border-t border-gray-100 bg-gray-50/30 overflow-hidden"
-                        >
-                          <div className="py-4 space-y-4">
-                            {post.commentsList.map(comment => (
-                              <div key={comment.id} className="flex gap-3 text-sm">
-                                <img src={comment.user.avatar} alt={comment.user.name} className="w-8 h-8 rounded-full shadow-sm" />
-                                <div className="bg-white border border-gray-100 rounded-xl rounded-tl-sm p-3 flex-grow shadow-sm">
-                                  <div className="flex justify-between items-start mb-1">
-                                    <span className="font-bold text-gray-900">{comment.user.name}</span>
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{comment.time}</span>
-                                  </div>
-                                  <p className="text-gray-700 leading-relaxed">{comment.text}</p>
-                                </div>
-                              </div>
-                            ))}
-                            
-                            <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
-                              <img src={users[0].avatar} alt="Seu Perfil" className="w-8 h-8 rounded-full shadow-sm" />
-                              <div className="flex-grow flex relative">
-                                <input 
-                                  type="text" 
-                                  placeholder="Escreva um comentário..." 
-                                  className="w-full bg-white border border-gray-200 rounded-full pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary shadow-sm transition-all"
-                                  value={commentInputs[post.id] || ''}
-                                  onChange={(e) => setCommentInputs({...commentInputs, [post.id]: e.target.value})}
-                                  onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                                />
-                                <div className="absolute right-1 top-1/2 -translate-y-1/2">
-                                  <Tooltip content="Enviar" direction="left">
-                                    <button 
-                                      onClick={() => handleAddComment(post.id)}
-                                      className={`p-1.5 rounded-full transition-colors ${
-                                        commentInputs[post.id]?.trim() ? 'bg-brand-primary text-white hover:bg-brand-primary/90' : 'text-gray-400 bg-gray-100 hover:bg-gray-200'
-                                      }`}
-                                      disabled={!commentInputs[post.id]?.trim()}
-                                    >
-                                      <Send className="w-4 h-4" />
-                                    </button>
-                                  </Tooltip>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
-            </div>
-            
+                </div>
+                <span className="text-white/70 text-[10px] font-medium whitespace-nowrap group-hover:text-white transition-colors">{user.name.split(' ')[0]}</span>
+              </button>
+            ))}
           </div>
-
         </div>
       </div>
 
-      {/* OVERLAY E MODAL DE PERFIL */}
+      {/* ANIVERSARIANTES BANNER */}
+      <div className="bg-brand-primary/8 border-b border-brand-primary/15" style={{ background: 'rgba(255,122,26,0.06)' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4 overflow-x-auto">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Gift className="text-brand-primary w-4 h-4" />
+            <span className="text-brand-primary font-bold text-xs uppercase tracking-wider">Aniversariantes</span>
+          </div>
+          <div className="w-px h-4 bg-brand-primary/20 flex-shrink-0" />
+          <div className="flex items-center gap-4">
+            {birthdays.map((bday, i) => (
+              <div key={i} className="flex items-center gap-2 flex-shrink-0">
+                <img src={bday.avatar} alt={bday.name} className="w-7 h-7 rounded-full shadow-sm" />
+                <div>
+                  <span className="text-sm font-semibold text-gray-800">{bday.name}</span>
+                  <span className="text-xs text-gray-500 ml-1.5">{bday.role}</span>
+                </div>
+                <Tooltip content="Enviar Parabéns">
+                  <button className="text-gray-400 hover:text-brand-primary p-1.5 hover:bg-brand-primary/10 rounded-full transition-colors">
+                    <MessageSquare className="w-3.5 h-3.5" />
+                  </button>
+                </Tooltip>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* FEED */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-5">
+
+        {/* CRIAR POST */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-5">
+          <div className="flex gap-4 mb-4">
+            <img src={users[0].avatar} alt="Seu Perfil" className="w-10 h-10 rounded-full shadow-sm flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Compartilhe algo com a rede..."
+              className="flex-grow bg-gray-50 border border-gray-200 rounded-full px-5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all"
+            />
+          </div>
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div className="flex gap-1">
+              <Tooltip content="Anexar Imagem" direction="top">
+                <button className="p-2 text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-full transition-colors">
+                  <Camera className="w-5 h-5" />
+                </button>
+              </Tooltip>
+              <Tooltip content="Anexar Arquivo" direction="top">
+                <button className="p-2 text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-full transition-colors">
+                  <Paperclip className="w-5 h-5" />
+                </button>
+              </Tooltip>
+            </div>
+            <button className="bg-brand-primary text-white font-semibold text-sm px-6 py-2 rounded-full hover:opacity-90 shadow-sm transition-opacity">
+              Publicar
+            </button>
+          </div>
+        </div>
+
+        {/* LABEL DO FEED */}
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-5 rounded-full bg-brand-primary" />
+            <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Feed Recente</h3>
+          </div>
+          <button className="text-sm text-brand-primary font-medium hover:underline">
+            Filtrar timeline
+          </button>
+        </div>
+
+        {/* POSTS */}
+        {posts.map((post, index) => {
+          const isLiked = likedPosts.includes(post.id);
+          return (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 }}
+              className="bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-5 pb-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setActiveProfile(post.user)} className="flex-shrink-0">
+                    <img
+                      src={post.user.avatar}
+                      alt={post.user.name}
+                      className="w-11 h-11 rounded-full shadow-sm hover:ring-2 hover:ring-brand-primary hover:ring-offset-2 transition-all"
+                    />
+                  </button>
+                  <div>
+                    <button
+                      onClick={() => setActiveProfile(post.user)}
+                      className="font-bold text-gray-900 hover:text-brand-primary transition-colors text-[15px] leading-tight"
+                    >
+                      {post.user.name}
+                    </button>
+                    <p className="text-xs text-gray-400 mt-0.5">{post.time} · {post.user.role}</p>
+                  </div>
+                </div>
+                <Tooltip content="Mais Opções">
+                  <button className="text-gray-400 hover:bg-gray-100 p-2 rounded-full transition-colors">
+                    <MoreHorizontal className="w-5 h-5" />
+                  </button>
+                </Tooltip>
+              </div>
+
+              {/* Conteúdo */}
+              <div className="px-5 pb-4">
+                <p className="text-gray-700 leading-relaxed text-[15px] mb-4">{post.content}</p>
+                {post.image && (
+                  <div className="rounded-xl overflow-hidden border border-gray-100">
+                    <img src={post.image} alt="Publicação" className="w-full h-auto object-cover max-h-96" />
+                  </div>
+                )}
+              </div>
+
+              {/* Action bar */}
+              <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-6">
+                <button
+                  onClick={() => toggleLike(post.id)}
+                  className={`flex items-center gap-2 font-semibold text-sm transition-colors ${isLiked ? 'text-brand-primary' : 'text-gray-500 hover:text-gray-800'}`}
+                >
+                  <motion.div animate={{ scale: isLiked ? [1, 1.35, 1] : 1 }} transition={{ duration: 0.25 }}>
+                    <Heart className="w-5 h-5" fill={isLiked ? 'currentColor' : 'none'} />
+                  </motion.div>
+                  {post.likes + (isLiked ? 1 : 0)}
+                </button>
+
+                <button
+                  onClick={() => toggleComments(post.id)}
+                  className="flex items-center gap-2 font-semibold text-sm text-gray-500 hover:text-gray-800 transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  {post.commentsList.length} Comentários
+                </button>
+              </div>
+
+              {/* Comentários */}
+              <AnimatePresence>
+                {expandedComments.includes(post.id) && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="border-t border-gray-100 bg-gray-50/40 overflow-hidden"
+                  >
+                    <div className="px-5 py-4 space-y-4">
+                      {post.commentsList.map(comment => (
+                        <div key={comment.id} className="flex gap-3 text-sm">
+                          <img src={comment.user.avatar} alt={comment.user.name} className="w-8 h-8 rounded-full shadow-sm flex-shrink-0" />
+                          <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 flex-grow shadow-sm">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="font-bold text-gray-900">{comment.user.name}</span>
+                              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{comment.time}</span>
+                            </div>
+                            <p className="text-gray-700 leading-relaxed">{comment.text}</p>
+                          </div>
+                        </div>
+                      ))}
+
+                      <div className="flex gap-3 pt-3 border-t border-gray-100">
+                        <img src={users[0].avatar} alt="Seu Perfil" className="w-8 h-8 rounded-full shadow-sm flex-shrink-0" />
+                        <div className="flex-grow flex relative">
+                          <input
+                            type="text"
+                            placeholder="Escreva um comentário..."
+                            className="w-full bg-white border border-gray-200 rounded-full pl-4 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary shadow-sm transition-all"
+                            value={commentInputs[post.id] || ''}
+                            onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                          />
+                          <div className="absolute right-1 top-1/2 -translate-y-1/2">
+                            <Tooltip content="Enviar" direction="left">
+                              <button
+                                onClick={() => handleAddComment(post.id)}
+                                className={`p-1.5 rounded-full transition-colors ${commentInputs[post.id]?.trim() ? 'bg-brand-primary text-white hover:bg-brand-primary/90' : 'text-gray-400 bg-gray-100 hover:bg-gray-200'}`}
+                                disabled={!commentInputs[post.id]?.trim()}
+                              >
+                                <Send className="w-4 h-4" />
+                              </button>
+                            </Tooltip>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* MODAL DE PERFIL */}
       <AnimatePresence>
         {activeProfile && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[60]"
               onClick={() => setActiveProfile(null)}
             />
-            
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, x: 20 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, x: 20 }}
-              className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[70] flex flex-col"
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-[70] flex flex-col"
             >
-              <div className="relative h-32 bg-brand-primary/10">
+              <div className="relative h-28" style={{ background: 'linear-gradient(135deg, #041433 0%, #0a2254 100%)' }}>
+                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #FF7A1A 0%, transparent 60%)' }} />
                 <div className="absolute top-4 right-4">
-                  <Tooltip content="Fechar perfil" direction="left">
-                    <button 
-                      onClick={() => setActiveProfile(null)}
-                      className="p-2 bg-white/50 hover:bg-white rounded-full text-gray-700 transition"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </Tooltip>
+                  <button onClick={() => setActiveProfile(null)} className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition">
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-
-              <div className="px-8 -mt-12 mb-6">
-                <img 
-                  src={activeProfile.avatar} 
-                  alt={activeProfile.name} 
-                  className="w-24 h-24 rounded-full border-4 border-white shadow-lg mb-4 bg-white" 
-                />
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">{activeProfile.name}</h2>
-                <p className="text-brand-primary font-medium">{activeProfile.role}</p>
+              <div className="px-6 -mt-10 mb-4">
+                <img src={activeProfile.avatar} alt={activeProfile.name} className="w-20 h-20 rounded-full border-4 border-white shadow-lg mb-3 bg-white" />
+                <h2 className="text-xl font-bold text-gray-900 mb-0.5" style={{ fontFamily: 'Outfit, sans-serif' }}>{activeProfile.name}</h2>
+                <p className="text-brand-primary font-medium text-sm">{activeProfile.role}</p>
               </div>
-
-              <div className="px-8 flex items-center gap-6 mb-6 pb-6 border-b border-gray-100">
-                 <div className="text-center">
-                   <span className="block text-2xl font-bold text-gray-900">45</span>
-                   <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">Posts</span>
-                 </div>
-                 <div className="text-center">
-                   <span className="block text-2xl font-bold text-gray-900">12</span>
-                   <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">Grupos</span>
-                 </div>
-                 <div className="text-center">
-                   <span className="block text-2xl font-bold text-gray-900">2.4k</span>
-                   <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">Likes</span>
-                 </div>
+              <div className="px-6 flex items-center gap-8 mb-5 pb-5 border-b border-gray-100">
+                {[['45', 'Posts'], ['12', 'Grupos'], ['2.4k', 'Likes']].map(([val, label]) => (
+                  <div key={label} className="text-center">
+                    <span className="block text-xl font-bold text-gray-900">{val}</span>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{label}</span>
+                  </div>
+                ))}
               </div>
-
-              <div className="flex-grow overflow-y-auto px-8 pb-8">
-                <h3 className="font-bold text-gray-900 mb-4">Últimas Publicações</h3>
-                <div className="space-y-4">
-                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                     <p className="text-sm text-gray-600 line-clamp-3">Estou muito feliz de anunciar a nova turma do treinamento de liderança!</p>
-                     <span className="text-xs text-gray-400 mt-2 block">Há 2 dias</span>
-                   </div>
-                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                     <p className="text-sm text-gray-600 line-clamp-3">Agradecimentos ao time pelo empenho na entrega de sexta-feira.</p>
-                     <span className="text-xs text-gray-400 mt-2 block">Semana passada</span>
-                   </div>
+              <div className="flex-grow overflow-y-auto px-6 pb-8">
+                <h3 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">Últimas Publicações</h3>
+                <div className="space-y-3">
+                  {['Estou muito feliz de anunciar a nova turma do treinamento de liderança!', 'Agradecimentos ao time pelo empenho na entrega de sexta-feira.'].map((text, i) => (
+                    <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                      <p className="text-sm text-gray-600 line-clamp-3">{text}</p>
+                      <span className="text-xs text-gray-400 mt-2 block">{i === 0 ? 'Há 2 dias' : 'Semana passada'}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-
             </motion.div>
           </>
         )}
