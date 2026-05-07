@@ -239,6 +239,100 @@ const SECTIONS: Section[] = [
       description: 'Desenvolva disciplina operacional, ownership e foco em metas organizacionais.',
       duration: '6h 55min', price: 'R$ 139,90' },
   ] },
+  { id: 'qa1', title: 'Treinamentos QA em Alta', variant: 'avancado-1', items: [
+    { id: 'qa1-0', type: 'COURSE', thumb: course01, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Introdução ao QA na Lector Live',
+      description: 'Visão geral do papel do QA, responsabilidades do time e como o trabalho se integra ao ciclo de desenvolvimento.',
+      duration: '1h 30min', price: '' },
+    { id: 'qa1-1', type: 'COURSE', thumb: course02, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Tipos de Tarefas: Correções e Implementações',
+      description: 'Entenda a diferença entre validar um bug corrigido e testar uma funcionalidade nova do início ao fim.',
+      duration: '1h 15min', price: '' },
+    { id: 'qa1-2', type: 'COURSE', thumb: course03, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Fluxo de Liberação: HML e Produção',
+      description: 'Passo a passo do processo de liberação: como o QA atua em cada etapa desde o recebimento até a aprovação em produção.',
+      duration: '1h 45min', price: '' },
+    { id: 'qa1-3', type: 'COURSE', thumb: course04, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Gerenciando o Painel de Liberações',
+      description: 'Como usar e manter o painel atualizado: colunas, status das tarefas e consistência com os grupos de comunicação.',
+      duration: '1h 00min', price: '' },
+    { id: 'qa1-4', type: 'COURSE', thumb: course05, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Executando o Checklist Completo do Sistema',
+      description: 'Como distribuir e executar o checklist após cada liberação, com foco em Trilhas, Treinamentos e Vitrines.',
+      duration: '2h 00min', price: '' },
+    { id: 'qa1-5', type: 'COURSE', thumb: course06, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Documentando Chamados Corretamente',
+      description: 'Estrutura completa de um chamado: descrição, passo a passo, evidências, ambiente, versão e campos do painel lateral.',
+      duration: '1h 30min', price: '' },
+    { id: 'qa1-6', type: 'COURSE', thumb: course07, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Regras de Reprovação e Aprovação em HML',
+      description: 'Critérios claros para reprovar ou aprovar tarefas, o que fazer com bugs adicionais e como documentar cada decisão.',
+      duration: '1h 20min', price: '' },
+    { id: 'qa1-7', type: 'COURSE', thumb: course08, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Comunicação no Time: Grupos e Alinhamento',
+      description: 'Como usar o Grupo Liberações e o Grupo Suporte Interno para manter informações alinhadas entre painel e canais.',
+      duration: '0h 45min', price: '' },
+    { id: 'qa1-8', type: 'COURSE', thumb: course09, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Boas Práticas e Critérios de Qualidade',
+      description: 'Como priorizar testes, avaliar impacto, testar fluxos relacionados e garantir que nenhuma tarefa seja aprovada sem certeza.',
+      duration: '2h 10min', price: '' },
+    { id: 'qa1-9', type: 'COURSE', thumb: course10, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Automação de Testes: Fundamentos e Boas Práticas',
+      description: 'Quando e o que automatizar, como estruturar testes independentes e manter a suíte atualizada a cada liberação.',
+      duration: '3h 00min', price: '' },
+    { id: 'qa1-10', type: 'COURSE', thumb: course11, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Criação e Manutenção de Manuais da Plataforma',
+      description: 'Como revisar, atualizar e garantir que os manuais reflitam o comportamento atual do sistema após cada liberação.',
+      duration: '1h 40min', price: '' },
+  ] },
+
+  { id: 'qt1', title: 'Trilhas QA em Destaque', variant: 'avancado-1', items: [
+    { id: 'qt1-0', type: 'TRAIL', thumb: trail01, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Onboarding QA Lector',
+      description: 'Percurso completo de entrada no time de QA: cultura, processos, ferramentas e primeiros testes.',
+      duration: '6h 30min', price: '' },
+    { id: 'qt1-1', type: 'TRAIL', thumb: trail02, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Validação de Fluxos Críticos',
+      description: 'Aprenda a testar os fluxos de maior impacto: login, matrícula, pagamento, trilhas e progresso do usuário.',
+      duration: '8h 00min', price: '' },
+    { id: 'qt1-2', type: 'TRAIL', thumb: trail03, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Gestão do Painel e Chamados',
+      description: 'Domine o painel de liberações e a documentação de chamados para manter o processo sem gargalos.',
+      duration: '5h 00min', price: '' },
+    { id: 'qt1-3', type: 'TRAIL', thumb: trail04, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Checklist Completo do Sistema',
+      description: 'Construa e execute o checklist de todas as abas do sistema com foco em Trilhas, Treinamentos e Vitrines.',
+      duration: '7h 30min', price: '' },
+    { id: 'qt1-4', type: 'TRAIL', thumb: trail05, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Automação de Testes na Lector',
+      description: 'Do zero à suíte automatizada: fluxos críticos, seletores estáveis, comandos reutilizáveis e manutenção contínua.',
+      duration: '10h 00min', price: '' },
+    { id: 'qt1-5', type: 'TRAIL', thumb: trail06, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Documentação e Manuais da Plataforma',
+      description: 'Como criar, revisar e distribuir manuais claros que acompanham cada liberação do sistema.',
+      duration: '4h 30min', price: '' },
+    { id: 'qt1-6', type: 'TRAIL', thumb: trail07, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Testes por Perfil de Usuário',
+      description: 'Valide o comportamento separado de alunos, administradores e gestores do início ao fim do fluxo.',
+      duration: '6h 00min', price: '' },
+    { id: 'qt1-7', type: 'TRAIL', thumb: trail08, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Comunicação e Alinhamento de Time',
+      description: 'Boas práticas de uso dos grupos de WhatsApp, atualização de painel e consistência de informações.',
+      duration: '3h 00min', price: '' },
+    { id: 'qt1-8', type: 'TRAIL', thumb: trail09, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Priorização e Gestão de Tarefas QA',
+      description: 'Como organizar o dia, priorizar demandas críticas e garantir que nenhuma tarefa fique sem validação.',
+      duration: '5h 30min', price: '' },
+    { id: 'qt1-9', type: 'TRAIL', thumb: trail10, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Prevenção de Regressão',
+      description: 'Identifique padrões de erro recorrentes, documente como padrão e implemente testes para evitar que se repitam.',
+      duration: '7h 00min', price: '' },
+    { id: 'qt1-10', type: 'TRAIL', thumb: trail11, authors: 'Time QA Lector', progress: 0, grade: 0,
+      title: 'Trilha Qualidade em Produção',
+      description: 'Rotina pós-liberação em produção: como agir rápido diante de falhas, acionar o time e documentar o ocorrido.',
+      duration: '4h 00min', price: '' },
+  ] },
+
   { id: 'a2', title: 'Avançado 2', variant: 'avancado-2', items: generateItems(11, 'a2') },
   { id: 'a3', title: 'Avançado 3', variant: 'avancado-3', items: generateItems(11, 'a3') },
   { id: 'a4', title: 'Avançado 4', variant: 'avancado-4', items: generateItems(11, 'a4') },
@@ -264,12 +358,24 @@ const VITRINES: Vitrine[] = [
   { id: 'v4', nome: 'Vitrine IA & Automação',  descricao: 'Cursos de IA e ferramentas digitais',  categoria: 'Produtos',    cor: '#8B5CF6' },
   { id: 'v5', nome: 'Vitrine Liderança',       descricao: 'Desenvolvimento de líderes',           categoria: 'Produtos',    cor: '#10B981' },
   { id: 'v6', nome: 'Vitrine Empresa X',       descricao: 'Portal exclusivo — Empresa X',         categoria: 'Clientes',    cor: '#F59E0B' },
+  { id: 'v7', nome: 'Vitrine QA',              descricao: 'Biblioteca de QA — Lector Live',       categoria: 'QA',          cor: '#0EA5E9' },
 ];
 
 const CATEGORIA_COR: Record<string, string> = {
   Corporativo: 'bg-blue-50 text-blue-700',
   Produtos:    'bg-purple-50 text-purple-700',
   Clientes:    'bg-amber-50 text-amber-700',
+  QA:          'bg-sky-50 text-sky-600',
+};
+
+const VITRINE_SECTIONS: Record<string, string[]> = {
+  v1: ['a1', 't1'],
+  v2: ['a1', 't1'],
+  v3: ['a1', 't1'],
+  v4: ['a1', 't1'],
+  v5: ['a1', 't1'],
+  v6: ['a1', 't1'],
+  v7: ['qa1', 'qt1'],
 };
 
 // --- Components ---
@@ -473,13 +579,16 @@ const Sidebar = ({
   setActiveTab,
   isOpen,
   onClose,
+  activeVitrineId,
+  setActiveVitrineId,
 }: {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  activeVitrineId: string;
+  setActiveVitrineId: (id: string) => void;
 }) => {
-  const [activeVitrineId, setActiveVitrineId] = useState('v1');
   const [vitrineBusca, setVitrineBusca] = useState('');
 
   // Close sidebar on desktop resize or Escape key
@@ -4009,9 +4118,11 @@ const ThemeSwitcher = ({
 export default function App() {
   const [activeTab, setActiveTab] = useState('Conteúdo');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeVitrineId, setActiveVitrineId] = useState('v1');
 
   const handleMenuToggle = useCallback(() => setIsSidebarOpen(v => !v), []);
   const handleSidebarClose = useCallback(() => setIsSidebarOpen(false), []);
+  const handleVitrineChange = useCallback((id: string) => setActiveVitrineId(id), []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -4024,6 +4135,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         isOpen={isSidebarOpen}
         onClose={handleSidebarClose}
+        activeVitrineId={activeVitrineId}
+        setActiveVitrineId={handleVitrineChange}
       />
       {/* Content offset: pt-16 for topbar, lg:pl-64 for sidebar */}
       <div className="pt-16 lg:pl-64">
@@ -4040,9 +4153,11 @@ export default function App() {
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
                     <div className="flex-1 overflow-hidden">
-                      {SECTIONS.filter((section) => section.variant === 'avancado-1').map((section) => (
-                        <ContentSection key={section.id} section={section} />
-                      ))}
+                      {SECTIONS
+                        .filter(s => (VITRINE_SECTIONS[activeVitrineId] ?? ['a1', 't1']).includes(s.id))
+                        .map(section => (
+                          <ContentSection key={section.id} section={section} />
+                        ))}
                     </div>
                   </div>
                 </div>
