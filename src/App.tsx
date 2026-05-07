@@ -386,15 +386,16 @@ const VITRINE_SECTIONS: Record<string, string[]> = {
 const Topbar = ({
   onMenuToggle,
   setActiveTab,
+  activeTab,
 }: {
   onMenuToggle: () => void;
   setActiveTab: (tab: string) => void;
+  activeTab: string;
 }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
-  const navItems = ['Minha Área', 'Social'];
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -492,6 +493,23 @@ const Topbar = ({
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Navigation tabs */}
+        <div className="hidden md:flex items-center gap-1">
+          {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                activeTab === tab
+                  ? 'bg-brand-primary/10 text-brand-primary'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
         {/* Right actions */}
@@ -4213,17 +4231,10 @@ export default function App() {
       <Topbar
         onMenuToggle={handleMenuToggle}
         setActiveTab={setActiveTab}
-      />
-      <Sidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isOpen={isSidebarOpen}
-        onClose={handleSidebarClose}
-        activeVitrineId={activeVitrineId}
-        setActiveVitrineId={handleVitrineChange}
       />
-      {/* Content offset: pt-16 for topbar, lg:pl-64 for sidebar */}
-      <div className="pt-16 lg:pl-64">
+      {/* Content offset: pt-16 for topbar */}
+      <div className="pt-16">
         <main className="min-h-[calc(100vh-64px)]">
           <AnimatePresence mode="wait">
             {activeTab === 'Conteúdo' && (
