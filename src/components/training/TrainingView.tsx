@@ -501,8 +501,8 @@ export default function TrainingView({ courseId }: { courseId?: string }) {
                   </button>
                   <button 
                     onClick={() => activeLessonId && activeLessonId < lessonList.length && setActiveLessonId(activeLessonId + 1)}
-                    disabled={activeLessonId === lessons.length}
-                    className={`flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-widest ${activeLessonId === lessons.length ? 'text-gray-300' : 'text-brand active:text-[#003366]'}`}
+                    disabled={activeLessonId === lessonList.length}
+                    className={`flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-widest ${activeLessonId === lessonList.length ? 'text-gray-300' : 'text-brand active:text-[#003366]'}`}
                   >
                     Próximo <ChevronRight size={14} />
                   </button>
