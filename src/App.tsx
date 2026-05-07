@@ -528,7 +528,25 @@ const Sidebar = ({
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto py-4 px-3">
-          {/* Vitrines label */}
+          {/* Menu principal */}
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => handleNavClick(id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                activeTab === id
+                  ? 'bg-brand-primary/8 text-brand-primary'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              {label}
+            </button>
+          ))}
+
+          <div className="h-px bg-gray-100 mx-1 my-3" />
+
+          {/* Vitrines */}
           <p className="text-[11px] font-semibold text-gray-400 px-2 mb-2 tracking-wide">Vitrines</p>
           <div className="relative mb-2">
             <input
@@ -569,28 +587,6 @@ const Sidebar = ({
                 );
               })}
             </div>
-          ))}
-          <button className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 hover:text-brand-primary transition-colors">
-            <Plus className="w-3.5 h-3.5" />
-            Nova Vitrine
-          </button>
-
-          <div className="h-px bg-gray-100 mx-1 my-3" />
-
-          <p className="text-[11px] font-semibold text-gray-400 px-2 mb-1 tracking-wide">Menu</p>
-          {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => handleNavClick(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                activeTab === id
-                  ? 'bg-brand-primary/8 text-brand-primary'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-              }`}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              {label}
-            </button>
           ))}
         </div>
       </aside>
