@@ -255,7 +255,7 @@ const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: 
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
 
-  const navItems = ['Conteúdo', 'Social', 'Minha Área'];
+  const navItems = ['Minha Área', 'Social'];
 
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
