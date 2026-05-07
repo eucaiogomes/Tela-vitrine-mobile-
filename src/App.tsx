@@ -641,6 +641,10 @@ const SocialView = () => {
     else if (viewerStoryIdx > 0) { setViewerStoryIdx(i => i - 1); setViewerSegIdx(0); setSegProgress(0); }
   };
 
+  const [likedStories, setLikedStories] = useState<string[]>([]);
+  const [storyReply, setStoryReply] = useState('');
+  const toggleStoryLike = (key: string) => setLikedStories(p => p.includes(key) ? p.filter(k => k !== key) : [...p, key]);
+
   const openViewer = (idx: number) => {
     setViewerStoryIdx(idx); setViewerSegIdx(0); setSegProgress(0); setViewerOpen(true);
     setStories(prev => prev.map((s, i) => i === idx ? { ...s, viewed: true } : s));
@@ -1078,71 +1082,166 @@ const SocialView = () => {
         {viewerOpen && stories[viewerStoryIdx] && (() => {
           const story = stories[viewerStoryIdx];
           const seg = story.segments[viewerSegIdx];
+          const prevStory = stories[viewerStoryIdx - 1];
+          const nextStory = stories[viewerStoryIdx + 1];
+          const likeKey = `${story.id}-${viewerSegIdx}`;
+          const isLiked = likedStories.includes(likeKey);
+
+          const SideCard = ({ s, side }: { s: Story; side: 'left' | 'right' }) => (
+            <div
+              onClick={side === 'left' ? goPrev : goNext}
+              className="absolute top-1/2 cursor-pointer select-none"
+              style={{
+                transform: `translateY(-50%) translateX(${side === 'left' ? '-65%' : '65%'}) scale(0.87)`,
+                [side === 'left' ? 'right' : 'left']: '50%',
+                zIndex: 5,
+                opacity: 0.65,
+              }}
+            >
+              <div className="w-[280px] aspect-[9/16] rounded-2xl overflow-hidden bg-gray-900 shadow-2xl max-h-[72vh]">
+                {s.segments[0].type === 'image'
+                  ? <img src={s.segments[0].url} alt="" className="w-full h-full object-cover" />
+                  : <video src={s.segments[0].url} className="w-full h-full object-cover scale-x-[-1]" muted />
+                }
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                  <div className="flex items-center gap-2">
+                    <img src={s.user.avatar} alt={s.user.name} className="w-8 h-8 rounded-full border-2 border-white/50" />
+                    <div>
+                      <p className="text-white font-bold text-sm leading-tight">{s.user.name}</p>
+                      <p className="text-white/60 text-[11px]">1 h</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+
           return (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[80] bg-black flex items-center justify-center"
+              className="fixed inset-0 z-[80] flex flex-col items-center justify-center"
+              style={{ background: 'rgba(0,0,0,0.92)' }}
             >
-              {/* Tap zones */}
-              <div className="absolute inset-0 flex z-10">
-                <div className="flex-1 cursor-pointer" onClick={goPrev} />
-                <div className="flex-1 cursor-pointer" onClick={goNext} />
-              </div>
+              {/* Close */}
+              <button
+                onClick={() => setViewerOpen(false)}
+                className="absolute top-5 right-5 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition"
+              >
+                <X className="w-6 h-6" />
+              </button>
 
-              {/* Story content */}
-              <div className="relative w-full max-w-sm h-full max-h-[100dvh] flex flex-col">
-                {seg.type === 'image' && (
-                  <img src={seg.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                )}
-                {seg.type === 'video' && (
-                  <video
-                    ref={viewerVideoRef}
-                    src={seg.url}
-                    autoPlay
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
-                    onEnded={goNext}
-                    onTimeUpdate={e => {
-                      const v = e.currentTarget;
-                      if (v.duration) setSegProgress((v.currentTime / v.duration) * 100);
-                    }}
-                  />
-                )}
+              {/* Cards area */}
+              <div className="relative flex items-center justify-center w-full overflow-hidden" style={{ height: 'calc(100dvh - 90px)' }}>
 
-                {/* Gradient top overlay */}
-                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
-                {/* Gradient bottom overlay */}
-                <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                {/* Side cards */}
+                {prevStory && <SideCard s={prevStory} side="left" />}
+                {nextStory && <SideCard s={nextStory} side="right" />}
 
-                {/* Progress bars */}
-                <div className="relative z-20 flex gap-1 px-3 pt-3">
-                  {story.segments.map((_, i) => (
-                    <div key={i} className="flex-1 h-[3px] rounded-full bg-white/30 overflow-hidden">
-                      <motion.div
-                        className="h-full bg-white rounded-full"
-                        animate={{ width: i < viewerSegIdx ? '100%' : i === viewerSegIdx ? `${segProgress}%` : '0%' }}
-                        transition={{ duration: 0.05 }}
-                      />
+                {/* Active card */}
+                <motion.div
+                  key={`story-${viewerStoryIdx}`}
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative z-10 flex-shrink-0"
+                  style={{ width: 'min(360px, 90vw)' }}
+                >
+                  <div className="relative w-full aspect-[9/16] rounded-2xl overflow-hidden bg-gray-900 shadow-2xl" style={{ maxHeight: 'calc(100dvh - 90px)' }}>
+
+                    {/* Tap zones */}
+                    <div className="absolute inset-0 flex z-20 pointer-events-auto">
+                      <div className="flex-1 cursor-pointer" onClick={goPrev} />
+                      <div className="flex-1 cursor-pointer" onClick={goNext} />
                     </div>
-                  ))}
-                </div>
 
-                {/* User info */}
-                <div className="relative z-20 flex items-center justify-between px-4 pt-3 pb-2">
-                  <div className="flex items-center gap-3">
-                    <img src={story.user.avatar} alt={story.user.name} className="w-9 h-9 rounded-full border-2 border-white/60 shadow" />
-                    <div>
-                      <p className="text-white font-bold text-sm leading-tight">{story.user.name}</p>
-                      <p className="text-white/60 text-[11px]">{story.user.role}</p>
+                    {/* Media */}
+                    {seg.type === 'image'
+                      ? <img src={seg.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                      : <video
+                          ref={viewerVideoRef}
+                          src={seg.url}
+                          autoPlay
+                          playsInline
+                          className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+                          onEnded={goNext}
+                          onTimeUpdate={e => { const v = e.currentTarget; if (v.duration) setSegProgress((v.currentTime / v.duration) * 100); }}
+                        />
+                    }
+
+                    {/* Gradients */}
+                    <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+
+                    {/* Progress bars */}
+                    <div className="relative z-30 flex gap-[3px] px-3 pt-3">
+                      {story.segments.map((_, i) => (
+                        <div key={i} className="flex-1 h-[3px] rounded-full bg-white/30 overflow-hidden">
+                          <div
+                            className="h-full bg-white rounded-full transition-none"
+                            style={{ width: i < viewerSegIdx ? '100%' : i === viewerSegIdx ? `${segProgress}%` : '0%' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* User info row */}
+                    <div className="relative z-30 flex items-center gap-3 px-4 pt-3">
+                      <img src={story.user.avatar} alt={story.user.name} className="w-9 h-9 rounded-full border-2 border-white/60 shadow" />
+                      <div className="flex-1">
+                        <p className="text-white font-bold text-sm leading-tight">{story.user.name}</p>
+                        <p className="text-white/60 text-[11px]">1 h · {story.user.role}</p>
+                      </div>
                     </div>
                   </div>
-                  <button onClick={() => setViewerOpen(false)} className="p-1.5 rounded-full bg-black/30 hover:bg-black/50 text-white transition z-30 relative">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
+                </motion.div>
               </div>
+
+              {/* Reply bar */}
+              <div className="w-full flex items-center gap-3 px-4 pb-4 pt-3" style={{ maxWidth: 'min(360px, 90vw)' }}>
+                <input
+                  type="text"
+                  placeholder={`Responder a ${story.user.name.split(' ')[0]}...`}
+                  value={storyReply}
+                  onChange={e => setStoryReply(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && setStoryReply('')}
+                  className="flex-grow bg-white/10 border border-white/25 rounded-full px-4 py-2.5 text-white text-sm placeholder-white/40 focus:outline-none focus:border-white/50 transition"
+                />
+                <motion.button
+                  onClick={() => toggleStoryLike(likeKey)}
+                  animate={{ scale: isLiked ? [1, 1.35, 1] : 1 }}
+                  transition={{ duration: 0.25 }}
+                  className={`p-2 flex-shrink-0 transition ${isLiked ? 'text-red-400' : 'text-white/60 hover:text-white'}`}
+                >
+                  <Heart className="w-6 h-6" fill={isLiked ? 'currentColor' : 'none'} />
+                </motion.button>
+                <button
+                  onClick={() => setStoryReply('')}
+                  className="p-2 flex-shrink-0 text-white/60 hover:text-white transition"
+                >
+                  <Send className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Chevron nav buttons */}
+              {prevStory && (
+                <button
+                  onClick={goPrev}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-sm"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              )}
+              {nextStory && (
+                <button
+                  onClick={goNext}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-sm"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
             </motion.div>
           );
         })()}
