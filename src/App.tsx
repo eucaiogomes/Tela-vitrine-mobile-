@@ -655,7 +655,15 @@ const StoryViewerSideCard = ({ s, side, onPrev, onNext }: { s: Story; side: 'lef
   </div>
 );
 
+const SOCIAL_BANNER_SLIDES = [
+  { text: 'Bem-vindo à sua plataforma de aprendizagem', sub: 'Cresça junto com sua equipe todos os dias' },
+  { text: 'Compartilhe conquistas e ideias', sub: 'Celebre cada avanço com quem importa' },
+  { text: 'Desenvolva novas habilidades', sub: 'Seu próximo nível começa aqui' },
+  { text: 'Conecte-se com sua organização', sub: 'Troca de conhecimento que transforma' },
+];
+
 const SocialView = () => {
+  const [bannerIdx, setBannerIdx] = useState(0);
   const [activeProfile, setActiveProfile] = useState<any | null>(null);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
@@ -679,6 +687,11 @@ const SocialView = () => {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const t = setInterval(() => setBannerIdx(i => (i + 1) % SOCIAL_BANNER_SLIDES.length), 4000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     if (!recorderOpen) {
@@ -863,47 +876,33 @@ const SocialView = () => {
     <div className="bg-[#F7F9FC] min-h-[calc(100vh-64px)] relative">
 
       {/* HEADER BANNER */}
-      <div className="bg-navy-900 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #041433 0%, #0a2254 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #041433 0%, #0a2254 100%)' }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #FF7A1A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #2563EB 0%, transparent 40%)' }} />
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-          <div className="flex items-center gap-5">
-            <img src={users[0].avatar} alt="Seu Perfil" className="w-16 h-16 rounded-full border-2 border-white/20 shadow-lg" />
-            <div>
-              <h1 className="text-white font-bold text-2xl" style={{ fontFamily: 'Outfit, sans-serif' }}>Rede Social</h1>
-              <p className="text-white/60 text-sm mt-0.5">Compartilhe conquistas, ideias e novidades com sua equipe</p>
-            </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative flex flex-col items-center text-center">
+          <img src={logoLector} alt="Lector" className="h-10 w-auto mb-6 brightness-0 invert" />
+          <div className="relative h-20 w-full flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={bannerIdx}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.45, ease: 'easeInOut' }}
+                className="absolute text-center px-4"
+              >
+                <p className="text-white text-xl sm:text-2xl font-bold leading-snug">{SOCIAL_BANNER_SLIDES[bannerIdx].text}</p>
+                <p className="text-white/55 text-sm mt-1.5">{SOCIAL_BANNER_SLIDES[bannerIdx].sub}</p>
+              </motion.div>
+            </AnimatePresence>
           </div>
-
-          {/* Destaques - Stories com chevrons */}
-          <div className="mt-6 flex items-center gap-2">
-            <span className="text-white/40 text-xs font-bold uppercase tracking-widest whitespace-nowrap flex-shrink-0">Destaques</span>
-            <button onClick={() => scrollStory('left')} className="flex-shrink-0 text-white/30 hover:text-white/70 transition-colors p-0.5">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <div ref={storyRef} className="flex items-end gap-4 overflow-x-hidden pb-1" style={{ scrollbarWidth: 'none' }}>
-              {/* Botão novo Story */}
-              <button onClick={() => setRecorderOpen(true)} className="flex flex-col items-center gap-1.5 group flex-shrink-0">
-                <div className="w-12 h-12 rounded-full border-2 border-dashed border-white/30 flex items-center justify-center group-hover:border-brand-primary/60 transition-colors">
-                  <Plus className="w-5 h-5 text-white/40 group-hover:text-brand-primary/80 transition-colors" />
-                </div>
-                <span className="text-white/50 text-[10px] font-medium whitespace-nowrap group-hover:text-white/70 transition-colors">Novo</span>
-              </button>
-              {stories.map((story, idx) => (
-                <button
-                  key={story.id}
-                  onClick={() => openViewer(idx)}
-                  className="flex flex-col items-center gap-1.5 group flex-shrink-0"
-                >
-                  <div className={`w-12 h-12 rounded-full p-[2px] group-hover:scale-105 transition-transform ${story.viewed ? 'bg-white/20' : 'bg-gradient-to-br from-brand-primary to-orange-300'}`}>
-                    <img src={story.user.avatar} alt={story.user.name} className="w-full h-full rounded-full border-2 border-[#041433]" />
-                  </div>
-                  <span className="text-white/70 text-[10px] font-medium whitespace-nowrap group-hover:text-white transition-colors">{story.user.name.split(' ')[0]}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => scrollStory('right')} className="flex-shrink-0 text-white/30 hover:text-white/70 transition-colors p-0.5">
-              <ChevronRight className="w-4 h-4" />
-            </button>
+          <div className="flex items-center gap-1.5 mt-4">
+            {SOCIAL_BANNER_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setBannerIdx(i)}
+                className={`rounded-full transition-all duration-300 ${i === bannerIdx ? 'w-5 h-1.5 bg-brand-primary' : 'w-1.5 h-1.5 bg-white/25 hover:bg-white/50'}`}
+              />
+            ))}
           </div>
         </div>
       </div>
