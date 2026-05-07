@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
 import { 
@@ -51,7 +51,8 @@ import {
   MoreHorizontal,
   Send,
   ShoppingBag,
-  ChevronDown
+  ChevronDown,
+  Plus
 } from 'lucide-react';
 import heroYoungProfessional from './assets/hero-young-professional.jpg';
 import logoLector from './assets/logo-lector.svg';
@@ -522,6 +523,10 @@ const SocialView = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
   const [commentInputs, setCommentInputs] = useState<Record<number, string>>({});
+  const storyRef = useRef<HTMLDivElement>(null);
+  const bdayRef = useRef<HTMLDivElement>(null);
+  const scrollStory = (dir: 'left' | 'right') => storyRef.current?.scrollBy({ left: dir === 'right' ? 140 : -140, behavior: 'smooth' });
+  const scrollBday = (dir: 'left' | 'right') => bdayRef.current?.scrollBy({ left: dir === 'right' ? 200 : -200, behavior: 'smooth' });
 
   const toggleLike = (id: number) => {
     if (likedPosts.includes(id)) {
@@ -624,36 +629,52 @@ const SocialView = () => {
             </div>
           </div>
 
-          {/* Destaques - faixa horizontal */}
-          <div className="mt-6 flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide">
-            <span className="text-white/40 text-xs font-bold uppercase tracking-widest whitespace-nowrap">Destaques</span>
-            {users.map(user => (
-              <button
-                key={user.id}
-                onClick={() => setActiveProfile(user)}
-                className="flex flex-col items-center gap-1.5 group flex-shrink-0"
-              >
-                <div className="relative">
+          {/* Destaques - Stories com chevrons */}
+          <div className="mt-6 flex items-center gap-2">
+            <span className="text-white/40 text-xs font-bold uppercase tracking-widest whitespace-nowrap flex-shrink-0">Destaques</span>
+            <button onClick={() => scrollStory('left')} className="flex-shrink-0 text-white/30 hover:text-white/70 transition-colors p-0.5">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <div ref={storyRef} className="flex items-end gap-4 overflow-x-hidden pb-1" style={{ scrollbarWidth: 'none' }}>
+              {/* Botão novo Story */}
+              <button className="flex flex-col items-center gap-1.5 group flex-shrink-0">
+                <div className="w-12 h-12 rounded-full border-2 border-dashed border-white/30 flex items-center justify-center group-hover:border-brand-primary/60 transition-colors">
+                  <Plus className="w-5 h-5 text-white/40 group-hover:text-brand-primary/80 transition-colors" />
+                </div>
+                <span className="text-white/50 text-[10px] font-medium whitespace-nowrap group-hover:text-white/70 transition-colors">Novo</span>
+              </button>
+              {users.map(user => (
+                <button
+                  key={user.id}
+                  onClick={() => setActiveProfile(user)}
+                  className="flex flex-col items-center gap-1.5 group flex-shrink-0"
+                >
                   <div className="w-12 h-12 rounded-full p-[2px] bg-gradient-to-br from-brand-primary to-orange-300 group-hover:scale-105 transition-transform">
                     <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full border-2 border-[#041433]" />
                   </div>
-                </div>
-                <span className="text-white/70 text-[10px] font-medium whitespace-nowrap group-hover:text-white transition-colors">{user.name.split(' ')[0]}</span>
-              </button>
-            ))}
+                  <span className="text-white/70 text-[10px] font-medium whitespace-nowrap group-hover:text-white transition-colors">{user.name.split(' ')[0]}</span>
+                </button>
+              ))}
+            </div>
+            <button onClick={() => scrollStory('right')} className="flex-shrink-0 text-white/30 hover:text-white/70 transition-colors p-0.5">
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
 
       {/* ANIVERSARIANTES BANNER */}
-      <div className="bg-brand-primary/8 border-b border-brand-primary/15" style={{ background: 'rgba(255,122,26,0.06)' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4 overflow-x-auto">
+      <div className="border-b border-brand-primary/15" style={{ background: 'rgba(255,122,26,0.06)' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
           <div className="flex items-center gap-2 flex-shrink-0">
             <Gift className="text-brand-primary w-4 h-4" />
-            <span className="text-brand-primary font-bold text-xs uppercase tracking-wider">Aniversariantes</span>
+            <span className="text-brand-primary font-bold text-xs uppercase tracking-wider whitespace-nowrap">Aniversariantes</span>
           </div>
           <div className="w-px h-4 bg-brand-primary/20 flex-shrink-0" />
-          <div className="flex items-center gap-4">
+          <button onClick={() => scrollBday('left')} className="flex-shrink-0 text-gray-400 hover:text-brand-primary transition-colors p-0.5">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div ref={bdayRef} className="flex items-center gap-5 overflow-x-hidden" style={{ scrollbarWidth: 'none' }}>
             {birthdays.map((bday, i) => (
               <div key={i} className="flex items-center gap-2 flex-shrink-0">
                 <img src={bday.avatar} alt={bday.name} className="w-7 h-7 rounded-full shadow-sm" />
@@ -669,6 +690,9 @@ const SocialView = () => {
               </div>
             ))}
           </div>
+          <button onClick={() => scrollBday('right')} className="flex-shrink-0 text-gray-400 hover:text-brand-primary transition-colors p-0.5">
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
