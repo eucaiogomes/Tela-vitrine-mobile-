@@ -274,30 +274,183 @@ const CATEGORIA_COR: Record<string, string> = {
 
 // --- Components ---
 
-const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+// ============================================================
+// TOPBAR
+// ============================================================
+const Topbar = ({
+  onMenuToggle,
+  setActiveTab,
+}: {
+  onMenuToggle: () => void;
+  setActiveTab: (tab: string) => void;
+}) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
 
-  // Vitrine Switcher
-  const [isVitrineSwitcherOpen, setIsVitrineSwitcherOpen] = useState(false);
+  useEffect(() => {
+    if (searchQuery.trim().length > 1) {
+      const allItems = SECTIONS.flatMap(s => s.items);
+      const filtered = allItems
+        .filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        .slice(0, 5);
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchQuery]);
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-100 shadow-sm">
+      <div className="flex items-center h-full px-4 gap-3">
+        {/* Hamburger - mobile only */}
+        <button
+          onClick={onMenuToggle}
+          className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors lg:hidden flex-shrink-0"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* Logo - mobile only (desktop has it in sidebar) */}
+        <div className="lg:hidden flex-shrink-0 cursor-pointer" onClick={() => setActiveTab('Conteúdo')}>
+          <img src={logoLector} alt="Lector" className="h-9 w-auto" />
+        </div>
+
+        {/* Search */}
+        <div className="relative flex-1 max-w-sm">
+          <input
+            type="text"
+            placeholder="Pesquisar..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-gray-100 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-full text-sm transition-all duration-300"
+          />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          <AnimatePresence>
+            {suggestions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
+              >
+                <div className="p-2">
+                  {suggestions.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => { setSearchQuery(''); setSuggestions([]); }}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors group"
+                    >
+                      <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                        <img src={item.thumb} alt="" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-gray-900 group-hover:text-brand-primary transition-colors line-clamp-1">{item.title}</div>
+                        <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{item.type === 'COURSE' ? 'Treinamento' : item.type}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-1 ml-auto">
+          <Tooltip content="Notificações">
+            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Idioma">
+            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
+              <Globe className="h-5 w-5" />
+            </button>
+          </Tooltip>
+          <div className="h-8 w-px bg-gray-200 mx-1" />
+          <div className="relative">
+            <button
+              onClick={() => setIsUserMenuOpen(v => !v)}
+              className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
+                <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
+            </button>
+            <AnimatePresence>
+              {isUserMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
+                >
+                  <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
+                    <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
+                    <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
+                  </div>
+                  <button
+                    onClick={() => setIsMinhaAreaOpen(v => !v)}
+                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors"
+                  >
+                    <div className="flex items-center gap-3"><LayoutDashboard className="h-4 w-4" /> Minha Area</div>
+                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {isMinhaAreaOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden bg-gray-50/30"
+                      >
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Play className="h-3.5 w-3.5" /> Meus Treinamentos</button>
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Compass className="h-3.5 w-3.5" /> Minhas Trilhas</button>
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Star className="h-3.5 w-3.5" /> Minhas Habilidades</button>
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Award className="h-3.5 w-3.5" /> Meus Certificados</button>
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Calendar className="h-3.5 w-3.5" /> Meu Calendário</button>
+                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras</button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Users className="h-4 w-4" /> Selecionar perfil</button>
+                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Globe className="h-4 w-4" /> Alterar idioma</button>
+                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Download className="h-4 w-4" /> Instalar</button>
+                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><CheckCircle className="h-4 w-4" /> Validar termos de Aceite</button>
+                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><BookOpen className="h-4 w-4" /> Ver glossário</button>
+                  <div className="h-px bg-gray-100 my-2" />
+                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium"><LogOut className="h-4 w-4" /> Sair</button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+const Sidebar = ({
+  activeTab,
+  setActiveTab,
+  isOpen,
+  onClose,
+}: {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
   const [activeVitrineId, setActiveVitrineId] = useState('v1');
   const [vitrineBusca, setVitrineBusca] = useState('');
-  const vitrineSwitcherRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (vitrineSwitcherRef.current && !vitrineSwitcherRef.current.contains(e.target as Node)) {
-        setIsVitrineSwitcherOpen(false);
-      }
-    };
-    if (isVitrineSwitcherOpen) document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [isVitrineSwitcherOpen]);
-
-  const activeVitrine = VITRINES.find(v => v.id === activeVitrineId) ?? VITRINES[0];
   const vitrineFiltradas = vitrineBusca.trim().length > 0
     ? VITRINES.filter(v =>
         v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) ||
@@ -306,368 +459,124 @@ const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: 
     : VITRINES;
   const categorias = [...new Set(vitrineFiltradas.map(v => v.categoria))];
 
-  const navItems = ['Conteúdo', 'Social', 'Minha Área'];
+  const NAV_ITEMS = [
+    { id: 'Conteúdo', label: 'Conteúdo', icon: BookOpen },
+    { id: 'Social', label: 'Social', icon: Users },
+    { id: 'Minha Área', label: 'Minha Área', icon: LayoutDashboard },
+  ];
 
-  useEffect(() => {
-    if (searchQuery.trim().length > 1) {
-      const allItems = SECTIONS.flatMap(section => section.items);
-      const filtered = allItems.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5); // Limit to 5 suggestions
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
-  }, [searchQuery]);
+  const handleNavClick = (id: string) => { setActiveTab(id); onClose(); };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm w-full">
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
-        <div className="flex justify-between h-16 items-center w-full">
-          {/* LOGO + VITRINE SWITCHER - Left aligned */}
-          <div className="flex items-center flex-1 gap-3">
-            {/* Logo */}
-            <div className="flex-shrink-0 flex items-center cursor-pointer group" onClick={() => setActiveTab('Conteúdo')}>
-              <img src={logoLector} alt="Lector" className="h-10 w-auto group-hover:scale-105 transition-transform duration-200" />
-            </div>
-
-            {/* Separator */}
-            <div className="h-6 w-px bg-gray-200 hidden sm:block" />
-
-            {/* Vitrine Switcher */}
-            <div ref={vitrineSwitcherRef} className="relative hidden sm:block">
-              <button
-                onClick={() => { setIsVitrineSwitcherOpen(v => !v); setVitrineBusca(''); }}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all border ${
-                  isVitrineSwitcherOpen
-                    ? 'bg-gray-100 border-gray-200 text-gray-900'
-                    : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-100 text-gray-700'
-                }`}
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                  style={{ background: activeVitrine.cor }}
-                />
-                <span className="max-w-[140px] truncate">{activeVitrine.nome}</span>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0 ${isVitrineSwitcherOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              <AnimatePresence>
-                {isVitrineSwitcherOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
-                  >
-                    {/* Header */}
-                    <div className="px-4 pt-4 pb-3 border-b border-gray-100">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Alterar Vitrine</p>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Buscar vitrine..."
-                          value={vitrineBusca}
-                          onChange={e => setVitrineBusca(e.target.value)}
-                          autoFocus
-                          className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition"
-                        />
-                        <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-gray-400" />
-                      </div>
-                    </div>
-
-                    {/* Vitrine list by category */}
-                    <div className="py-2 max-h-72 overflow-y-auto">
-                      {categorias.length === 0 && (
-                        <p className="text-sm text-gray-400 text-center py-6">Nenhuma vitrine encontrada</p>
-                      )}
-                      {categorias.map(cat => (
-                        <div key={cat}>
-                          <div className="px-4 pt-3 pb-1 flex items-center gap-2">
-                            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${CATEGORIA_COR[cat] ?? 'bg-gray-100 text-gray-500'}`}>
-                              {cat}
-                            </span>
-                          </div>
-                          {vitrineFiltradas.filter(v => v.categoria === cat).map(vitrine => {
-                            const isActive = vitrine.id === activeVitrineId;
-                            return (
-                              <button
-                                key={vitrine.id}
-                                onClick={() => { setActiveVitrineId(vitrine.id); setIsVitrineSwitcherOpen(false); }}
-                                className={`w-full flex items-center gap-3 px-4 py-2.5 transition-colors group/item ${
-                                  isActive ? 'bg-brand-primary/5' : 'hover:bg-gray-50'
-                                }`}
-                              >
-                                <span
-                                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-black"
-                                  style={{ background: vitrine.cor }}
-                                >
-                                  {vitrine.nome.charAt(0)}
-                                </span>
-                                <div className="flex-1 text-left min-w-0">
-                                  <p className={`text-sm font-semibold truncate ${isActive ? 'text-brand-primary' : 'text-gray-800 group-hover/item:text-gray-900'}`}>
-                                    {vitrine.nome}
-                                  </p>
-                                  <p className="text-[11px] text-gray-400 truncate">{vitrine.descricao}</p>
-                                </div>
-                                {isActive && (
-                                  <Check className="w-4 h-4 text-brand-primary flex-shrink-0" />
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="border-t border-gray-100 p-2">
-                      <button className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-brand-primary transition-colors">
-                        <Plus className="w-4 h-4" />
-                        Nova Vitrine
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          
-          {/* MENU TABS - Center aligned */}
-          <div className="hidden md:flex flex-none items-center justify-center space-x-2">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                onClick={() => setActiveTab(item)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 relative ${
-                  activeTab === item 
-                    ? 'text-brand-primary' 
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                }`}
-              >
-                {item}
-                {activeTab === item && (
-                  <motion.div 
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-brand-primary/10 rounded-full -z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* SEARCH & ACTIONS - Right aligned */}
-          <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
-            <div className="relative group">
-              <input 
-                type="text" 
-                placeholder="Pesquisar..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-gray-100 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-full text-sm transition-all duration-300 w-48 lg:w-64"
-              />
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-brand-primary transition-colors" />
-              
-              {/* Search Suggestions Dropdown */}
-              <AnimatePresence>
-                {suggestions.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-                  >
-                    <div className="p-2">
-                      {suggestions.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            setSearchQuery('');
-                            setSuggestions([]);
-                            // Here you could navigate to the item
-                          }}
-                          className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors group"
-                        >
-                          <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src={item.thumb} alt="" className="w-full h-full object-cover" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold text-gray-900 group-hover:text-brand-primary transition-colors line-clamp-1">
-                              {item.title}
-                            </div>
-                            <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
-                              {item.type === 'COURSE' ? 'Treinamento' : item.type}
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            
-            <Tooltip content="Notificações">
-              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors relative group">
-                <Bell className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-              </button>
-            </Tooltip>
-            
-            <Tooltip content="Idioma">
-              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
-                <Globe className="h-5 w-5" />
-              </button>
-            </Tooltip>
-            
-            <div className="h-8 w-px bg-gray-200 mx-2"></div>
-            
-            <div className="relative">
-              <button 
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
-                  <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
-                </div>
-                <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
-              </button>
-
-              <AnimatePresence>
-                {isUserMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
-                  >
-                    <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
-                      <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
-                      <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
-                    </div>
-                    
-                    <button 
-                      onClick={() => setIsMinhaAreaOpen(!isMinhaAreaOpen)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <LayoutDashboard className="h-4 w-4" /> Minha Area
-                      </div>
-                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    <AnimatePresence>
-                      {isMinhaAreaOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden bg-gray-50/30"
-                        >
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <Play className="h-3.5 w-3.5" /> Meus Treinamentos
-                          </button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <Compass className="h-3.5 w-3.5" /> Minhas Trilhas
-                          </button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <Star className="h-3.5 w-3.5" /> Minhas Habilidades
-                          </button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <Award className="h-3.5 w-3.5" /> Meus Certificados
-                          </button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <Calendar className="h-3.5 w-3.5" /> Meu Calendário
-                          </button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                            <ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                      <Users className="h-4 w-4" /> Selecionar perfil
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                      <Globe className="h-4 w-4" /> Alterar idioma
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                      <Download className="h-4 w-4" /> Instalar
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                      <CheckCircle className="h-4 w-4" /> Validar termos de Aceite
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors">
-                      <BookOpen className="h-4 w-4" /> Ver glossário
-                    </button>
-                    
-                    <div className="h-px bg-gray-100 my-2"></div>
-                    
-                    <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium">
-                      <LogOut className="h-4 w-4" /> Sair
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          <div className="md:hidden flex items-center">
-            <Tooltip content="Menu" direction="left">
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
-              >
-                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </Tooltip>
-          </div>
+    <>
+      {/* Single sidebar — CSS transform handles mobile open/close */}
+      <aside
+        className={`fixed left-0 top-0 lg:top-16 h-full lg:h-[calc(100vh-64px)] w-64 bg-white border-r border-gray-100 z-40 flex flex-col
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+      >
+        {/* Mobile header */}
+        <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100 flex-shrink-0 lg:hidden">
+          <img src={logoLector} alt="Lector" className="h-9 w-auto cursor-pointer" onClick={() => { setActiveTab('Conteúdo'); onClose(); }} />
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="w-5 h-5" />
+          </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
-          >
-            <div className="px-4 pt-2 pb-6 space-y-1">
-              {navItems.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => {
-                    setActiveTab(item);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`block w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                    activeTab === item ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
-              <div className="pt-4 border-t border-gray-100 mt-4">
-                <div className="flex items-center gap-3 px-4 py-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
-                    <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <div className="text-base font-medium text-gray-800">Caio Gomes</div>
-                    <div className="text-sm text-gray-500">suporte2@lectortec.com.br</div>
-                  </div>
-                </div>
-              </div>
+        {/* Desktop logo */}
+        <div className="hidden lg:flex items-center px-5 py-4 border-b border-gray-100 flex-shrink-0">
+          <img
+            src={logoLector}
+            alt="Lector"
+            className="h-9 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => setActiveTab('Conteúdo')}
+          />
+        </div>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto py-4 px-3">
+          {/* VITRINES */}
+          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2 mb-2">Vitrines</p>
+          <div className="relative mb-2">
+            <input
+              type="text"
+              placeholder="Buscar vitrine..."
+              value={vitrineBusca}
+              onChange={e => setVitrineBusca(e.target.value)}
+              className="w-full pl-7 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition"
+            />
+            <Search className="absolute left-2 top-[7px] w-3.5 h-3.5 text-gray-400" />
+          </div>
+
+          {categorias.length === 0 && (
+            <p className="text-xs text-gray-400 text-center py-3">Nenhuma encontrada</p>
+          )}
+          {categorias.map(cat => (
+            <div key={cat} className="mb-1">
+              <p className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 mb-0.5 ${CATEGORIA_COR[cat] ?? 'text-gray-400'}`}>{cat}</p>
+              {vitrineFiltradas.filter(v => v.categoria === cat).map(vitrine => {
+                const isActive = vitrine.id === activeVitrineId;
+                return (
+                  <button
+                    key={vitrine.id}
+                    onClick={() => { setActiveVitrineId(vitrine.id); onClose(); }}
+                    className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg transition-colors ${
+                      isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <span
+                      className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-white text-[10px] font-black"
+                      style={{ background: vitrine.cor }}
+                    >
+                      {vitrine.nome.charAt(0)}
+                    </span>
+                    <span className="flex-1 text-left text-xs font-semibold truncate">{vitrine.nome}</span>
+                    {isActive && <Check className="w-3 h-3 flex-shrink-0" />}
+                  </button>
+                );
+              })}
             </div>
-          </motion.div>
+          ))}
+          <button className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 hover:text-brand-primary transition-colors">
+            <Plus className="w-3.5 h-3.5" />
+            Nova Vitrine
+          </button>
+
+          <div className="h-px bg-gray-100 mx-1 my-3" />
+
+          {/* NAVEGAÇÃO */}
+          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2 mb-1">Navegação</p>
+          {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => handleNavClick(id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                activeTab === id
+                  ? 'bg-brand-primary/10 text-brand-primary'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* Backdrop - mobile only */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            onClick={onClose}
+          />
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 };
 
@@ -4071,58 +3980,69 @@ const ThemeSwitcher = ({
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Conteúdo');
-  const [showSocialSidebar] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-grow">
-        <AnimatePresence mode="wait">
-          {activeTab === 'Conteúdo' && (
-            <motion.div
-              key="conteudo"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Hero />
-              <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
-                <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
-                  <div className="flex-1 overflow-hidden">
-                    {SECTIONS.filter((section) => section.variant === 'avancado-1').map((section) => (
-                      <ContentSection key={section.id} section={section} />
-                    ))}
+    <div className="min-h-screen bg-white">
+      <Topbar
+        onMenuToggle={() => setIsSidebarOpen(v => !v)}
+        setActiveTab={setActiveTab}
+      />
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+      {/* Content offset: pt-16 for topbar, lg:pl-64 for sidebar */}
+      <div className="pt-16 lg:pl-64">
+        <main className="min-h-[calc(100vh-64px)]">
+          <AnimatePresence mode="wait">
+            {activeTab === 'Conteúdo' && (
+              <motion.div
+                key="conteudo"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Hero />
+                <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
+                  <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+                    <div className="flex-1 overflow-hidden">
+                      {SECTIONS.filter((section) => section.variant === 'avancado-1').map((section) => (
+                        <ContentSection key={section.id} section={section} />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
 
-          {activeTab === 'Social' && (
-            <motion.div
-              key="social"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <SocialView />
-            </motion.div>
-          )}
+            {activeTab === 'Social' && (
+              <motion.div
+                key="social"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <SocialView />
+              </motion.div>
+            )}
 
-          {activeTab === 'Minha Área' && (
-            <motion.div
-              key="minha-area"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <MyAreaView />
-            </motion.div>
-          )}
-
-        </AnimatePresence>
-      </main>
-      <Footer />
+            {activeTab === 'Minha Área' && (
+              <motion.div
+                key="minha-area"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <MyAreaView />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
