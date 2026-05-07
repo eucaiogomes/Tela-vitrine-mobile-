@@ -535,6 +535,36 @@ const INITIAL_STORIES: Story[] = [
   { id: 4, user: STORY_USERS[3], viewed: false, segments: [{ type: 'image', url: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=890&fit=crop' }] },
 ];
 
+const StoryViewerSideCard = ({ s, side, onPrev, onNext }: { s: Story; side: 'left' | 'right'; onPrev: () => void; onNext: () => void }) => (
+  <div
+    onClick={side === 'left' ? onPrev : onNext}
+    className="absolute top-1/2 cursor-pointer select-none"
+    style={{
+      transform: `translateY(-50%) translateX(${side === 'left' ? '-65%' : '65%'}) scale(0.87)`,
+      [side === 'left' ? 'right' : 'left']: '50%',
+      zIndex: 5,
+      opacity: 0.65,
+    }}
+  >
+    <div className="w-[280px] aspect-[9/16] rounded-2xl overflow-hidden bg-gray-900 shadow-2xl max-h-[72vh]">
+      {s.segments[0].type === 'image'
+        ? <img src={s.segments[0].url} alt="" className="w-full h-full object-cover" />
+        : <video src={s.segments[0].url} className="w-full h-full object-cover scale-x-[-1]" muted />
+      }
+      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+        <div className="flex items-center gap-2">
+          <img src={s.user.avatar} alt={s.user.name} className="w-8 h-8 rounded-full border-2 border-white/50" />
+          <div>
+            <p className="text-white font-bold text-sm leading-tight">{s.user.name}</p>
+            <p className="text-white/60 text-[11px]">1 h</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const SocialView = () => {
   const [activeProfile, setActiveProfile] = useState<any | null>(null);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
@@ -1087,35 +1117,6 @@ const SocialView = () => {
           const likeKey = `${story.id}-${viewerSegIdx}`;
           const isLiked = likedStories.includes(likeKey);
 
-          const SideCard = ({ s, side }: { s: Story; side: 'left' | 'right' }) => (
-            <div
-              onClick={side === 'left' ? goPrev : goNext}
-              className="absolute top-1/2 cursor-pointer select-none"
-              style={{
-                transform: `translateY(-50%) translateX(${side === 'left' ? '-65%' : '65%'}) scale(0.87)`,
-                [side === 'left' ? 'right' : 'left']: '50%',
-                zIndex: 5,
-                opacity: 0.65,
-              }}
-            >
-              <div className="w-[280px] aspect-[9/16] rounded-2xl overflow-hidden bg-gray-900 shadow-2xl max-h-[72vh]">
-                {s.segments[0].type === 'image'
-                  ? <img src={s.segments[0].url} alt="" className="w-full h-full object-cover" />
-                  : <video src={s.segments[0].url} className="w-full h-full object-cover scale-x-[-1]" muted />
-                }
-                <div className="absolute inset-0 bg-black/20" />
-                <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                  <div className="flex items-center gap-2">
-                    <img src={s.user.avatar} alt={s.user.name} className="w-8 h-8 rounded-full border-2 border-white/50" />
-                    <div>
-                      <p className="text-white font-bold text-sm leading-tight">{s.user.name}</p>
-                      <p className="text-white/60 text-[11px]">1 h</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
 
           return (
             <motion.div
@@ -1137,8 +1138,8 @@ const SocialView = () => {
               <div className="relative flex items-center justify-center w-full overflow-hidden" style={{ height: 'calc(100dvh - 90px)' }}>
 
                 {/* Side cards */}
-                {prevStory && <SideCard s={prevStory} side="left" />}
-                {nextStory && <SideCard s={nextStory} side="right" />}
+                {prevStory && <StoryViewerSideCard s={prevStory} side="left" onPrev={goPrev} onNext={goNext} />}
+                {nextStory && <StoryViewerSideCard s={nextStory} side="right" onPrev={goPrev} onNext={goNext} />}
 
                 {/* Active card */}
                 <motion.div
