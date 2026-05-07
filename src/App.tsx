@@ -247,6 +247,31 @@ const SECTIONS: Section[] = [
   { id: 'a7', title: 'Avançado 7 (Pôster)', variant: 'avancado-7', items: generateItems(11, 'a7') },
 ];
 
+// --- Vitrine Switcher Data ---
+
+interface Vitrine {
+  id: string;
+  nome: string;
+  descricao: string;
+  categoria: string;
+  cor: string;
+}
+
+const VITRINES: Vitrine[] = [
+  { id: 'v1', nome: 'Vitrine Padrão',          descricao: 'Portal corporativo principal',          categoria: 'Corporativo', cor: '#FF7A1A' },
+  { id: 'v2', nome: 'Vitrine RH',              descricao: 'Treinamentos para equipe de RH',        categoria: 'Corporativo', cor: '#2563EB' },
+  { id: 'v3', nome: 'Vitrine Onboarding',      descricao: 'Integração de novos colaboradores',    categoria: 'Corporativo', cor: '#EC4899' },
+  { id: 'v4', nome: 'Vitrine IA & Automação',  descricao: 'Cursos de IA e ferramentas digitais',  categoria: 'Produtos',    cor: '#8B5CF6' },
+  { id: 'v5', nome: 'Vitrine Liderança',       descricao: 'Desenvolvimento de líderes',           categoria: 'Produtos',    cor: '#10B981' },
+  { id: 'v6', nome: 'Vitrine Empresa X',       descricao: 'Portal exclusivo — Empresa X',         categoria: 'Clientes',    cor: '#F59E0B' },
+];
+
+const CATEGORIA_COR: Record<string, string> = {
+  Corporativo: 'bg-blue-50 text-blue-700',
+  Produtos:    'bg-purple-50 text-purple-700',
+  Clientes:    'bg-amber-50 text-amber-700',
+};
+
 // --- Components ---
 
 const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => {
@@ -255,6 +280,31 @@ const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: 
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
+
+  // Vitrine Switcher
+  const [isVitrineSwitcherOpen, setIsVitrineSwitcherOpen] = useState(false);
+  const [activeVitrineId, setActiveVitrineId] = useState('v1');
+  const [vitrineBusca, setVitrineBusca] = useState('');
+  const vitrineSwitcherRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (vitrineSwitcherRef.current && !vitrineSwitcherRef.current.contains(e.target as Node)) {
+        setIsVitrineSwitcherOpen(false);
+      }
+    };
+    if (isVitrineSwitcherOpen) document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isVitrineSwitcherOpen]);
+
+  const activeVitrine = VITRINES.find(v => v.id === activeVitrineId) ?? VITRINES[0];
+  const vitrineFiltradas = vitrineBusca.trim().length > 0
+    ? VITRINES.filter(v =>
+        v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) ||
+        v.categoria.toLowerCase().includes(vitrineBusca.toLowerCase())
+      )
+    : VITRINES;
+  const categorias = [...new Set(vitrineFiltradas.map(v => v.categoria))];
 
   const navItems = ['Conteúdo', 'Social', 'Minha Área'];
 
@@ -274,10 +324,113 @@ const Navbar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: 
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm w-full">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
         <div className="flex justify-between h-16 items-center w-full">
-          {/* LOGO - Left aligned */}
-          <div className="flex items-center flex-1">
+          {/* LOGO + VITRINE SWITCHER - Left aligned */}
+          <div className="flex items-center flex-1 gap-3">
+            {/* Logo */}
             <div className="flex-shrink-0 flex items-center cursor-pointer group" onClick={() => setActiveTab('Conteúdo')}>
               <img src={logoLector} alt="Lector" className="h-10 w-auto group-hover:scale-105 transition-transform duration-200" />
+            </div>
+
+            {/* Separator */}
+            <div className="h-6 w-px bg-gray-200 hidden sm:block" />
+
+            {/* Vitrine Switcher */}
+            <div ref={vitrineSwitcherRef} className="relative hidden sm:block">
+              <button
+                onClick={() => { setIsVitrineSwitcherOpen(v => !v); setVitrineBusca(''); }}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all border ${
+                  isVitrineSwitcherOpen
+                    ? 'bg-gray-100 border-gray-200 text-gray-900'
+                    : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-100 text-gray-700'
+                }`}
+              >
+                <span
+                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  style={{ background: activeVitrine.cor }}
+                />
+                <span className="max-w-[140px] truncate">{activeVitrine.nome}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0 ${isVitrineSwitcherOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {isVitrineSwitcherOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
+                  >
+                    {/* Header */}
+                    <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Alterar Vitrine</p>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Buscar vitrine..."
+                          value={vitrineBusca}
+                          onChange={e => setVitrineBusca(e.target.value)}
+                          autoFocus
+                          className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition"
+                        />
+                        <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-gray-400" />
+                      </div>
+                    </div>
+
+                    {/* Vitrine list by category */}
+                    <div className="py-2 max-h-72 overflow-y-auto">
+                      {categorias.length === 0 && (
+                        <p className="text-sm text-gray-400 text-center py-6">Nenhuma vitrine encontrada</p>
+                      )}
+                      {categorias.map(cat => (
+                        <div key={cat}>
+                          <div className="px-4 pt-3 pb-1 flex items-center gap-2">
+                            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${CATEGORIA_COR[cat] ?? 'bg-gray-100 text-gray-500'}`}>
+                              {cat}
+                            </span>
+                          </div>
+                          {vitrineFiltradas.filter(v => v.categoria === cat).map(vitrine => {
+                            const isActive = vitrine.id === activeVitrineId;
+                            return (
+                              <button
+                                key={vitrine.id}
+                                onClick={() => { setActiveVitrineId(vitrine.id); setIsVitrineSwitcherOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-2.5 transition-colors group/item ${
+                                  isActive ? 'bg-brand-primary/5' : 'hover:bg-gray-50'
+                                }`}
+                              >
+                                <span
+                                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[11px] font-black"
+                                  style={{ background: vitrine.cor }}
+                                >
+                                  {vitrine.nome.charAt(0)}
+                                </span>
+                                <div className="flex-1 text-left min-w-0">
+                                  <p className={`text-sm font-semibold truncate ${isActive ? 'text-brand-primary' : 'text-gray-800 group-hover/item:text-gray-900'}`}>
+                                    {vitrine.nome}
+                                  </p>
+                                  <p className="text-[11px] text-gray-400 truncate">{vitrine.descricao}</p>
+                                </div>
+                                {isActive && (
+                                  <Check className="w-4 h-4 text-brand-primary flex-shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="border-t border-gray-100 p-2">
+                      <button className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-brand-primary transition-colors">
+                        <Plus className="w-4 h-4" />
+                        Nova Vitrine
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
           
