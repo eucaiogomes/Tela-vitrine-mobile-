@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { getCourseById } from '../../data/catalog';
 import { 
   Play, 
   CheckCircle2, 
@@ -34,15 +35,14 @@ interface Lesson {
   duration: string;
 }
 
-const lessons: Lesson[] = [
-  { id: 1, title: 'Boas-vindas', status: 'completed', type: 'Vídeos', duration: '02:30' },
-  { id: 2, title: 'Visão Geral', status: 'current', type: 'Vídeos', duration: '12:00' },
-  { id: 3, title: 'Manual de Trilhas', status: 'locked', type: 'Documentos', duration: '15 min' },
-  { id: 4, title: 'Treinamento de Fluxos', status: 'locked', type: 'Vídeos', duration: '45:00' },
-  { id: 5, title: 'Criando Artigos', status: 'locked', type: 'Scorm', duration: '20:00' },
-  { id: 6, title: 'Contrato Presencial', status: 'locked', type: 'Aula presencial', duration: '01:30h' },
-  { id: 7, title: 'Avaliação de Desempenho', status: 'locked', type: 'Avaliação', duration: '30:00' },
-  { id: 8, title: 'Gravação da Mentoria', status: 'locked', type: 'Vídeos', duration: '02:00h' },
+const DEFAULT_LESSONS: Lesson[] = [
+  { id: 1, title: 'Boas-vindas ao Curso', status: 'completed', type: 'Vídeos', duration: '02:30' },
+  { id: 2, title: 'Introdução ao Conteúdo', status: 'current', type: 'Vídeos', duration: '15:00' },
+  { id: 3, title: 'Material de Apoio', status: 'locked', type: 'Documentos', duration: '15 min' },
+  { id: 4, title: 'Módulo Principal', status: 'locked', type: 'Vídeos', duration: '30:00' },
+  { id: 5, title: 'Prática Interativa', status: 'locked', type: 'Scorm', duration: '20:00' },
+  { id: 6, title: 'Sessão Presencial', status: 'locked', type: 'Aula presencial', duration: '01:30h' },
+  { id: 7, title: 'Avaliação Final', status: 'locked', type: 'Avaliação', duration: '30:00' },
 ];
 
 const MiniCircularProgress = ({ percentage, label, color = "var(--brand-color)" }: { percentage: number, label: string, color?: string }) => {
@@ -87,15 +87,22 @@ const MiniCircularProgress = ({ percentage, label, color = "var(--brand-color)" 
   );
 };
 
-export default function TrainingView() {
+export default function TrainingView({ courseId }: { courseId?: string }) {
   const navigate = useNavigate();
   const goHome = () => navigate({ to: '/' });
-  const [activeLessonId, setActiveLessonId] = useState<number | null>(2);
+
+  const courseData = useMemo(() => getCourseById(courseId ?? ''), [courseId]);
+  const courseTitle = courseData?.title ?? 'Treinamento';
+  const initialLessons: Lesson[] = (courseData?.lessons ?? DEFAULT_LESSONS) as Lesson[];
+
+  const [activeLessonId, setActiveLessonId] = useState<number | null>(
+    initialLessons.find(l => l.status === 'current')?.id ?? initialLessons[0]?.id ?? 1
+  );
   const [activeTab, setActiveTab] = useState('descricao');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMobileFocusMode, setIsMobileFocusMode] = useState(false);
-  const [lessonList, setLessonList] = useState(lessons);
+  const [lessonList, setLessonList] = useState<Lesson[]>(initialLessons);
 
   const handleToggleLesson = (id: number) => {
     setActiveLessonId(prev => prev === id ? null : id);
@@ -234,7 +241,7 @@ export default function TrainingView() {
                 >
                   <X size={18} />
                 </button>
-                <h2 className="text-[11.5px] font-bold uppercase tracking-tight">Configurando o seu Movidesk</h2>
+                <h2 className="text-[11.5px] font-bold uppercase tracking-tight leading-tight">{courseTitle}</h2>
               </div>
               
               <div className="space-y-4">
@@ -290,7 +297,7 @@ export default function TrainingView() {
                     <LogOut size={18} className="rotate-180" />
                   </button>
                   <h2 className="absolute inset-x-0 bottom-6 text-[13px] font-black uppercase tracking-widest text-center px-16 truncate">
-                    Configurando o seu Movidesk
+                    {courseTitle}
                   </h2>
                   <button 
                     onClick={() => setIsMobileFocusMode(true)}
@@ -332,9 +339,9 @@ export default function TrainingView() {
               <span className="text-gray-200 mx-1.5">/</span>
               <span>Sala de Aula</span>
               <span className="text-gray-200 mx-1.5">/</span>
-              <span>Liderança do Futuro</span>
+              <span className="truncate max-w-[150px]">{courseTitle}</span>
               <span className="text-gray-200 mx-1.5">/</span>
-              <span className="text-[#cc0000] truncate max-w-[150px]">Treinamento de Fluxos</span>
+              <span className="text-[#cc0000] truncate max-w-[150px]">{activeLesson.title}</span>
             </div>
 
             <AnimatePresence>
@@ -390,7 +397,7 @@ export default function TrainingView() {
               <span className="text-gray-200">/</span>
               <span className="hover:text-gray-600 cursor-pointer transition-colors">Sala de Aula</span>
               <span className="text-gray-200">/</span>
-              <span className="hover:text-gray-600 cursor-pointer transition-colors">Configurando o seu Movidesk</span>
+              <span className="hover:text-gray-600 cursor-pointer transition-colors truncate max-w-[200px]">{courseTitle}</span>
               <span className="text-gray-200">/</span>
               <span className="text-brand">{activeLesson.title}</span>
             </nav>
@@ -433,9 +440,9 @@ export default function TrainingView() {
                       className="absolute right-[-60px] top-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
                     >
                       <button 
-                        onClick={() => activeLessonId && activeLessonId < lessons.length && setActiveLessonId(activeLessonId + 1)}
+                        onClick={() => activeLessonId && activeLessonId < lessonList.length && setActiveLessonId(activeLessonId + 1)}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-xl transition-all active:scale-95 ${
-                          activeLessonId && activeLessonId < lessons.length 
+                          activeLessonId && activeLessonId < lessonList.length 
                             ? 'bg-brand text-white shadow-brand/20 hover:scale-110 cursor-pointer' 
                             : 'bg-gray-100 text-gray-300 cursor-not-allowed'
                         }`}
@@ -493,7 +500,7 @@ export default function TrainingView() {
                     <ChevronLeft size={14} /> Anterior
                   </button>
                   <button 
-                    onClick={() => activeLessonId && activeLessonId < lessons.length && setActiveLessonId(activeLessonId + 1)}
+                    onClick={() => activeLessonId && activeLessonId < lessonList.length && setActiveLessonId(activeLessonId + 1)}
                     disabled={activeLessonId === lessons.length}
                     className={`flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-widest ${activeLessonId === lessons.length ? 'text-gray-300' : 'text-brand active:text-[#003366]'}`}
                   >

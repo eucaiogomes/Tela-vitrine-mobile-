@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { getTrailById } from '../../data/catalog';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
 import { PerformanceDashboard } from './PerformanceDashboard';
@@ -118,27 +119,33 @@ const MiniCircularProgress = ({ percentage, label, color = "var(--brand-color)" 
   );
 };
 
-export const TrilhaView: React.FC<{ completedTrainings?: string[], onNavigateToTraining?: () => void }> = ({ completedTrainings = [], onNavigateToTraining }) => {
+export const TrilhaView: React.FC<{ trailId?: string, completedTrainings?: string[], onNavigateToTraining?: () => void }> = ({ trailId, completedTrainings = [], onNavigateToTraining }) => {
   const navigate = useNavigate();
   const goHome = () => navigate({ to: '/' });
+
+  const trailData = useMemo(() => getTrailById(trailId ?? ''), [trailId]);
+  const trailTitle = trailData?.title ?? 'Trilha de Formação';
+  const trilha = trailData?.etapas ?? mockTrilha;
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('descricao');
   const [isMobileFocusMode, setIsMobileFocusMode] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  
+
   const [expandedEtapas, setExpandedEtapas] = useState<Record<string, boolean>>({
     'e1': false,
     'e2': true,
   });
 
-  const [activeContentId, setActiveContentId] = useState('t1');
+  const firstContentId = trilha[0]?.items?.[0]?.id ?? 'c1';
+  const [activeContentId, setActiveContentId] = useState(firstContentId);
 
   const toggleEtapa = (id: string) => {
     setExpandedEtapas(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   const getActiveContent = () => {
-    for (const etapa of mockTrilha) {
+    for (const etapa of trilha) {
       for (const item of etapa.items) {
         if (item.id === activeContentId) return item;
       }
@@ -266,7 +273,7 @@ export const TrilhaView: React.FC<{ completedTrainings?: string[], onNavigateToT
                 >
                   <X size={18} />
                 </button>
-                <h2 className="text-[11.5px] font-bold uppercase tracking-tight leading-tight">Trilha de Formação Avançada</h2>
+                <h2 className="text-[11.5px] font-bold uppercase tracking-tight leading-tight">{trailTitle}</h2>
               </div>
               
               <div className="space-y-4">
@@ -300,7 +307,7 @@ export const TrilhaView: React.FC<{ completedTrainings?: string[], onNavigateToT
 
             {/* Scrollable Etapas List */}
             <div className="flex-1 overflow-y-auto custom-scrollbar">
-              {mockTrilha.map((etapa) => (
+              {trilha.map((etapa) => (
                 <div key={etapa.id} className="border-b border-gray-200/50 last:border-b-0 bg-white">
                   {/* Etapa Header (Level 1) */}
                   <button 
@@ -692,7 +699,7 @@ export const TrilhaView: React.FC<{ completedTrainings?: string[], onNavigateToT
 
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-8">
-                {mockTrilha.map((etapa) => (
+                {trilha.map((etapa) => (
                   <div key={etapa.id} className="border-b border-gray-200/50 last:border-b-0 bg-white">
                     <button 
                       onClick={() => toggleEtapa(etapa.id)}
