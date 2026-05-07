@@ -655,6 +655,16 @@ const StoryViewerSideCard = ({ s, side, onPrev, onNext }: { s: Story; side: 'lef
   </div>
 );
 
+const SOCIAL_FEEDS = [
+  { id: 'geral', label: 'Geral' },
+  { id: 'rh', label: 'Recursos Humanos' },
+  { id: 'tecnologia', label: 'Tecnologia' },
+  { id: 'lideranca', label: 'Liderança' },
+  { id: 'comercial', label: 'Comercial' },
+  { id: 'projetos', label: 'Projetos' },
+  { id: 'inovacao', label: 'Inovação' },
+];
+
 const SOCIAL_BANNER_SLIDES = [
   { text: 'Bem-vindo à sua plataforma de aprendizagem', sub: 'Cresça junto com sua equipe todos os dias' },
   { text: 'Compartilhe conquistas e ideias', sub: 'Celebre cada avanço com quem importa' },
@@ -664,14 +674,15 @@ const SOCIAL_BANNER_SLIDES = [
 
 const SocialView = () => {
   const [bannerIdx, setBannerIdx] = useState(0);
+  const [activeFeed, setActiveFeed] = useState('geral');
   const [activeProfile, setActiveProfile] = useState<any | null>(null);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
   const [commentInputs, setCommentInputs] = useState<Record<number, string>>({});
   const storyRef = useRef<HTMLDivElement>(null);
-  const bdayRef = useRef<HTMLDivElement>(null);
+  const feedRef = useRef<HTMLDivElement>(null);
   const scrollStory = (dir: 'left' | 'right') => storyRef.current?.scrollBy({ left: dir === 'right' ? 140 : -140, behavior: 'smooth' });
-  const scrollBday = (dir: 'left' | 'right') => bdayRef.current?.scrollBy({ left: dir === 'right' ? 200 : -200, behavior: 'smooth' });
+  const scrollFeed = (dir: 'left' | 'right') => feedRef.current?.scrollBy({ left: dir === 'right' ? 180 : -180, behavior: 'smooth' });
 
   // ── Stories ──────────────────────────────────────────────────────
   const [stories, setStories] = useState<Story[]>(INITIAL_STORIES);
@@ -867,10 +878,6 @@ const SocialView = () => {
     setCommentInputs({ ...commentInputs, [postId]: '' });
   };
 
-  const birthdays = [
-    { name: 'Abrahão Soares', role: 'MDR ACCOUNT', avatar: 'https://ui-avatars.com/api/?name=Abrahão+Soares&background=E0E7FF&color=4338CA' },
-    { name: 'Ana Barbosa de Lima', role: 'RECURSOS HUMANOS', avatar: 'https://ui-avatars.com/api/?name=Ana+Barbosa&background=ECFCCB&color=4D7C0F' },
-  ];
 
   return (
     <div className="bg-[#F7F9FC] min-h-[calc(100vh-64px)] relative">
@@ -907,34 +914,28 @@ const SocialView = () => {
         </div>
       </div>
 
-      {/* ANIVERSARIANTES BANNER */}
-      <div className="border-b border-brand-primary/15" style={{ background: 'rgba(255,122,26,0.06)' }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Gift className="text-brand-primary w-4 h-4" />
-            <span className="text-brand-primary font-bold text-xs uppercase tracking-wider whitespace-nowrap">Aniversariantes</span>
-          </div>
-          <div className="w-px h-4 bg-brand-primary/20 flex-shrink-0" />
-          <button onClick={() => scrollBday('left')} className="flex-shrink-0 text-gray-400 hover:text-brand-primary transition-colors p-0.5">
+      {/* FEEDS / FÓRUNS */}
+      <div className="bg-white border-b border-gray-100 sticky top-16 z-10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-1">
+          <button onClick={() => scrollFeed('left')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <div ref={bdayRef} className="flex items-center gap-5 overflow-x-hidden" style={{ scrollbarWidth: 'none' }}>
-            {birthdays.map((bday, i) => (
-              <div key={i} className="flex items-center gap-2 flex-shrink-0">
-                <img src={bday.avatar} alt={bday.name} className="w-7 h-7 rounded-full shadow-sm" />
-                <div>
-                  <span className="text-sm font-semibold text-gray-800">{bday.name}</span>
-                  <span className="text-xs text-gray-500 ml-1.5">{bday.role}</span>
-                </div>
-                <Tooltip content="Enviar Parabéns">
-                  <button className="text-gray-400 hover:text-brand-primary p-1.5 hover:bg-brand-primary/10 rounded-full transition-colors">
-                    <MessageSquare className="w-3.5 h-3.5" />
-                  </button>
-                </Tooltip>
-              </div>
+          <div ref={feedRef} className="flex items-center gap-2 overflow-x-hidden flex-1" style={{ scrollbarWidth: 'none' }}>
+            {SOCIAL_FEEDS.map(feed => (
+              <button
+                key={feed.id}
+                onClick={() => setActiveFeed(feed.id)}
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  activeFeed === feed.id
+                    ? 'bg-brand-primary text-white shadow-sm'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                }`}
+              >
+                {feed.label}
+              </button>
             ))}
           </div>
-          <button onClick={() => scrollBday('right')} className="flex-shrink-0 text-gray-400 hover:text-brand-primary transition-colors p-0.5">
+          <button onClick={() => scrollFeed('right')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
