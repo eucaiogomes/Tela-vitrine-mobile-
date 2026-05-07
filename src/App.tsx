@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
-import { 
-  Search, 
-  Bell, 
-  Globe, 
-  Book, 
-  ChevronRight, 
-  ChevronLeft, 
-  Clock, 
-  Star, 
+import {
+  Search,
+  Bell,
+  Globe,
+  Book,
+  ChevronRight,
+  ChevronLeft,
+  Clock,
+  Star,
   Users,
   LayoutDashboard,
   MessageSquare,
@@ -139,199 +139,295 @@ const SECTIONS: Section[] = [
   { id: 's3', title: 'Simples 3 (Barras)', variant: 'simples-3', items: generateItems(11, 's3') },
   { id: 's4', title: 'Simples 4 (Circular)', variant: 'simples-4', items: generateItems(11, 's4') },
   { id: 's5', title: 'Simples 5 (Preço)', variant: 'simples-5', items: generateItems(11, 's5') },
-  
+
   { id: 'c1', title: 'Completo 1 (Básico)', variant: 'completo-1', items: generateItems(11, 'c1') },
   { id: 'c2', title: 'Completo 2 (Duração)', variant: 'completo-2', items: generateItems(11, 'c2') },
   { id: 'c3', title: 'Completo 3 (Barras)', variant: 'completo-3', items: generateItems(11, 'c3') },
   { id: 'c4', title: 'Completo 4 (Circular)', variant: 'completo-4', items: generateItems(11, 'c4') },
   { id: 'c5', title: 'Completo 5 (Preço)', variant: 'completo-5', items: generateItems(11, 'c5') },
 
-  { id: 'a1', title: 'Cursos em Alta', variant: 'avancado-1', items: [
-    { id: 'a1-0', type: 'COURSE', thumb: course01, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Fundamentos de Inteligência Artificial para Negócios',
-      description: 'Introdução prática aos conceitos de IA, aplicações empresariais e oportunidades de automação.',
-      duration: '3h 20min', price: 'R$ 89,90' },
-    { id: 'a1-1', type: 'COURSE', thumb: course02, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'ChatGPT para Produtividade no Trabalho',
-      description: 'Aprenda a usar prompts e fluxos de trabalho para acelerar tarefas diárias com IA.',
-      duration: '2h 45min', price: 'R$ 79,90' },
-    { id: 'a1-2', type: 'COURSE', thumb: course03, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Automação de Processos com Inteligência Artificial',
-      description: 'Crie rotinas automatizadas para reduzir tarefas manuais e ganhar escala operacional.',
-      duration: '4h 10min', price: 'R$ 119,90' },
-    { id: 'a1-3', type: 'COURSE', thumb: course04, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Gestão do Tempo com Ferramentas de IA',
-      description: 'Técnicas e ferramentas inteligentes para organização pessoal e priorização.',
-      duration: '2h 10min', price: 'R$ 69,90' },
-    { id: 'a1-4', type: 'COURSE', thumb: course05, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'IA Aplicada à Criação de Conteúdo',
-      description: 'Produza textos, apresentações e materiais visuais com auxílio de IA generativa.',
-      duration: '3h 00min', price: 'R$ 84,90' },
-    { id: 'a1-5', type: 'COURSE', thumb: course06, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Excel Inteligente com IA',
-      description: 'Use inteligência artificial para análise de dados, fórmulas e dashboards rápidos.',
-      duration: '2h 30min', price: 'R$ 74,90' },
-    { id: 'a1-6', type: 'COURSE', thumb: course07, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Notion e Organização Inteligente',
-      description: 'Estruture conhecimento, tarefas e projetos com sistemas digitais otimizados.',
-      duration: '1h 55min', price: 'R$ 59,90' },
-    { id: 'a1-7', type: 'COURSE', thumb: course08, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Prompt Engineering para Profissionais',
-      description: 'Técnicas avançadas para criar prompts eficientes e obter melhores respostas de IA.',
-      duration: '3h 40min', price: 'R$ 99,90' },
-    { id: 'a1-8', type: 'COURSE', thumb: course09, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Assistentes Virtuais para Atendimento e Suporte',
-      description: 'Configure fluxos e assistentes inteligentes para melhorar suporte e experiência.',
-      duration: '2h 50min', price: 'R$ 79,90' },
-    { id: 'a1-9', type: 'COURSE', thumb: course10, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Dashboards e Relatórios com IA',
-      description: 'Transforme dados em insights visuais usando ferramentas analíticas inteligentes.',
-      duration: '3h 15min', price: 'R$ 94,90' },
-    { id: 'a1-10', type: 'COURSE', thumb: course11, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Produtividade Pessoal com Sistemas Inteligentes',
-      description: 'Metodologias e ferramentas para foco, execução e alta performance no trabalho.',
-      duration: '2h 20min', price: 'R$ 64,90' },
-  ] },
+  {
+    id: 'a1', title: 'Cursos em Alta', variant: 'avancado-1', items: [
+      {
+        id: 'a1-0', type: 'COURSE', thumb: course01, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Fundamentos de Inteligência Artificial para Negócios',
+        description: 'Introdução prática aos conceitos de IA, aplicações empresariais e oportunidades de automação.',
+        duration: '3h 20min', price: 'R$ 89,90'
+      },
+      {
+        id: 'a1-1', type: 'COURSE', thumb: course02, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'ChatGPT para Produtividade no Trabalho',
+        description: 'Aprenda a usar prompts e fluxos de trabalho para acelerar tarefas diárias com IA.',
+        duration: '2h 45min', price: 'R$ 79,90'
+      },
+      {
+        id: 'a1-2', type: 'COURSE', thumb: course03, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Automação de Processos com Inteligência Artificial',
+        description: 'Crie rotinas automatizadas para reduzir tarefas manuais e ganhar escala operacional.',
+        duration: '4h 10min', price: 'R$ 119,90'
+      },
+      {
+        id: 'a1-3', type: 'COURSE', thumb: course04, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Gestão do Tempo com Ferramentas de IA',
+        description: 'Técnicas e ferramentas inteligentes para organização pessoal e priorização.',
+        duration: '2h 10min', price: 'R$ 69,90'
+      },
+      {
+        id: 'a1-4', type: 'COURSE', thumb: course05, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'IA Aplicada à Criação de Conteúdo',
+        description: 'Produza textos, apresentações e materiais visuais com auxílio de IA generativa.',
+        duration: '3h 00min', price: 'R$ 84,90'
+      },
+      {
+        id: 'a1-5', type: 'COURSE', thumb: course06, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Excel Inteligente com IA',
+        description: 'Use inteligência artificial para análise de dados, fórmulas e dashboards rápidos.',
+        duration: '2h 30min', price: 'R$ 74,90'
+      },
+      {
+        id: 'a1-6', type: 'COURSE', thumb: course07, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Notion e Organização Inteligente',
+        description: 'Estruture conhecimento, tarefas e projetos com sistemas digitais otimizados.',
+        duration: '1h 55min', price: 'R$ 59,90'
+      },
+      {
+        id: 'a1-7', type: 'COURSE', thumb: course08, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Prompt Engineering para Profissionais',
+        description: 'Técnicas avançadas para criar prompts eficientes e obter melhores respostas de IA.',
+        duration: '3h 40min', price: 'R$ 99,90'
+      },
+      {
+        id: 'a1-8', type: 'COURSE', thumb: course09, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Assistentes Virtuais para Atendimento e Suporte',
+        description: 'Configure fluxos e assistentes inteligentes para melhorar suporte e experiência.',
+        duration: '2h 50min', price: 'R$ 79,90'
+      },
+      {
+        id: 'a1-9', type: 'COURSE', thumb: course10, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Dashboards e Relatórios com IA',
+        description: 'Transforme dados em insights visuais usando ferramentas analíticas inteligentes.',
+        duration: '3h 15min', price: 'R$ 94,90'
+      },
+      {
+        id: 'a1-10', type: 'COURSE', thumb: course11, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Produtividade Pessoal com Sistemas Inteligentes',
+        description: 'Metodologias e ferramentas para foco, execução e alta performance no trabalho.',
+        duration: '2h 20min', price: 'R$ 64,90'
+      },
+    ]
+  },
 
-  { id: 't1', title: 'Trilhas em Destaque', variant: 'avancado-1', items: [
-    { id: 't1-0', type: 'TRAIL', thumb: trail01, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Gestão do Tempo e Prioridades',
-      description: 'Estruture sua rotina, organize demandas e aumente eficiência na execução diária.',
-      duration: '8h 20min', price: 'R$ 169,90' },
-    { id: 't1-1', type: 'TRAIL', thumb: trail02, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Comunicação Corporativa de Alta Performance',
-      description: 'Desenvolva comunicação clara, objetiva e estratégica para ambientes corporativos.',
-      duration: '7h 45min', price: 'R$ 159,90' },
-    { id: 't1-2', type: 'TRAIL', thumb: trail03, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Produtividade e Organização Digital',
-      description: 'Implemente sistemas, ferramentas e métodos para organizar tarefas, arquivos e projetos.',
-      duration: '9h 10min', price: 'R$ 179,90' },
-    { id: 't1-3', type: 'TRAIL', thumb: trail04, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Eficiência Operacional e Processos',
-      description: 'Aprenda boas práticas para padronização, melhoria contínua e otimização de rotinas.',
-      duration: '10h 30min', price: 'R$ 199,90' },
-    { id: 't1-4', type: 'TRAIL', thumb: trail05, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Reuniões Produtivas e Gestão de Follow-up',
-      description: 'Conduza reuniões mais objetivas e mantenha alinhamento entre times e projetos.',
-      duration: '5h 50min', price: 'R$ 129,90' },
-    { id: 't1-5', type: 'TRAIL', thumb: trail06, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Colaboração e Trabalho em Equipe',
-      description: 'Fortaleça alinhamento, colaboração entre áreas e execução conjunta de metas.',
-      duration: '8h 00min', price: 'R$ 164,90' },
-    { id: 't1-6', type: 'TRAIL', thumb: trail07, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Gestão de Projetos para Times Corporativos',
-      description: 'Planejamento, acompanhamento e entrega de projetos com maior previsibilidade.',
-      duration: '11h 15min', price: 'R$ 219,90' },
-    { id: 't1-7', type: 'TRAIL', thumb: trail08, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Organização de Demandas e Fluxos de Trabalho',
-      description: 'Estruture processos internos, priorização e acompanhamento de atividades.',
-      duration: '7h 35min', price: 'R$ 149,90' },
-    { id: 't1-8', type: 'TRAIL', thumb: trail09, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Liderança e Performance de Equipes',
-      description: 'Desenvolva habilidades para acompanhamento de resultados e gestão de pessoas.',
-      duration: '10h 40min', price: 'R$ 209,90' },
-    { id: 't1-9', type: 'TRAIL', thumb: trail10, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Atendimento, Relacionamento e Excelência Operacional',
-      description: 'Melhore experiência interna e externa com processos e comunicação eficientes.',
-      duration: '8h 25min', price: 'R$ 169,90' },
-    { id: 't1-10', type: 'TRAIL', thumb: trail11, authors: 'Equipe Lector', progress: 70, grade: 50,
-      title: 'Trilha Cultura de Resultado e Accountability',
-      description: 'Desenvolva disciplina operacional, ownership e foco em metas organizacionais.',
-      duration: '6h 55min', price: 'R$ 139,90' },
-  ] },
-  { id: 'qa1', title: 'Treinamentos QA em Alta', variant: 'avancado-1', items: [
-    { id: 'qa1-0', type: 'COURSE', thumb: course01, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Introdução ao QA na Lector Live',
-      description: 'Visão geral do papel do QA, responsabilidades do time e como o trabalho se integra ao ciclo de desenvolvimento.',
-      duration: '1h 30min', price: '' },
-    { id: 'qa1-1', type: 'COURSE', thumb: course02, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Tipos de Tarefas: Correções e Implementações',
-      description: 'Entenda a diferença entre validar um bug corrigido e testar uma funcionalidade nova do início ao fim.',
-      duration: '1h 15min', price: '' },
-    { id: 'qa1-2', type: 'COURSE', thumb: course03, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Fluxo de Liberação: HML e Produção',
-      description: 'Passo a passo do processo de liberação: como o QA atua em cada etapa desde o recebimento até a aprovação em produção.',
-      duration: '1h 45min', price: '' },
-    { id: 'qa1-3', type: 'COURSE', thumb: course04, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Gerenciando o Painel de Liberações',
-      description: 'Como usar e manter o painel atualizado: colunas, status das tarefas e consistência com os grupos de comunicação.',
-      duration: '1h 00min', price: '' },
-    { id: 'qa1-4', type: 'COURSE', thumb: course05, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Executando o Checklist Completo do Sistema',
-      description: 'Como distribuir e executar o checklist após cada liberação, com foco em Trilhas, Treinamentos e Vitrines.',
-      duration: '2h 00min', price: '' },
-    { id: 'qa1-5', type: 'COURSE', thumb: course06, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Documentando Chamados Corretamente',
-      description: 'Estrutura completa de um chamado: descrição, passo a passo, evidências, ambiente, versão e campos do painel lateral.',
-      duration: '1h 30min', price: '' },
-    { id: 'qa1-6', type: 'COURSE', thumb: course07, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Regras de Reprovação e Aprovação em HML',
-      description: 'Critérios claros para reprovar ou aprovar tarefas, o que fazer com bugs adicionais e como documentar cada decisão.',
-      duration: '1h 20min', price: '' },
-    { id: 'qa1-7', type: 'COURSE', thumb: course08, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Comunicação no Time: Grupos e Alinhamento',
-      description: 'Como usar o Grupo Liberações e o Grupo Suporte Interno para manter informações alinhadas entre painel e canais.',
-      duration: '0h 45min', price: '' },
-    { id: 'qa1-8', type: 'COURSE', thumb: course09, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Boas Práticas e Critérios de Qualidade',
-      description: 'Como priorizar testes, avaliar impacto, testar fluxos relacionados e garantir que nenhuma tarefa seja aprovada sem certeza.',
-      duration: '2h 10min', price: '' },
-    { id: 'qa1-9', type: 'COURSE', thumb: course10, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Automação de Testes: Fundamentos e Boas Práticas',
-      description: 'Quando e o que automatizar, como estruturar testes independentes e manter a suíte atualizada a cada liberação.',
-      duration: '3h 00min', price: '' },
-    { id: 'qa1-10', type: 'COURSE', thumb: course11, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Criação e Manutenção de Manuais da Plataforma',
-      description: 'Como revisar, atualizar e garantir que os manuais reflitam o comportamento atual do sistema após cada liberação.',
-      duration: '1h 40min', price: '' },
-  ] },
+  {
+    id: 't1', title: 'Trilhas em Destaque', variant: 'avancado-1', items: [
+      {
+        id: 't1-0', type: 'TRAIL', thumb: trail01, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Gestão do Tempo e Prioridades',
+        description: 'Estruture sua rotina, organize demandas e aumente eficiência na execução diária.',
+        duration: '8h 20min', price: 'R$ 169,90'
+      },
+      {
+        id: 't1-1', type: 'TRAIL', thumb: trail02, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Comunicação Corporativa de Alta Performance',
+        description: 'Desenvolva comunicação clara, objetiva e estratégica para ambientes corporativos.',
+        duration: '7h 45min', price: 'R$ 159,90'
+      },
+      {
+        id: 't1-2', type: 'TRAIL', thumb: trail03, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Produtividade e Organização Digital',
+        description: 'Implemente sistemas, ferramentas e métodos para organizar tarefas, arquivos e projetos.',
+        duration: '9h 10min', price: 'R$ 179,90'
+      },
+      {
+        id: 't1-3', type: 'TRAIL', thumb: trail04, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Eficiência Operacional e Processos',
+        description: 'Aprenda boas práticas para padronização, melhoria contínua e otimização de rotinas.',
+        duration: '10h 30min', price: 'R$ 199,90'
+      },
+      {
+        id: 't1-4', type: 'TRAIL', thumb: trail05, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Reuniões Produtivas e Gestão de Follow-up',
+        description: 'Conduza reuniões mais objetivas e mantenha alinhamento entre times e projetos.',
+        duration: '5h 50min', price: 'R$ 129,90'
+      },
+      {
+        id: 't1-5', type: 'TRAIL', thumb: trail06, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Colaboração e Trabalho em Equipe',
+        description: 'Fortaleça alinhamento, colaboração entre áreas e execução conjunta de metas.',
+        duration: '8h 00min', price: 'R$ 164,90'
+      },
+      {
+        id: 't1-6', type: 'TRAIL', thumb: trail07, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Gestão de Projetos para Times Corporativos',
+        description: 'Planejamento, acompanhamento e entrega de projetos com maior previsibilidade.',
+        duration: '11h 15min', price: 'R$ 219,90'
+      },
+      {
+        id: 't1-7', type: 'TRAIL', thumb: trail08, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Organização de Demandas e Fluxos de Trabalho',
+        description: 'Estruture processos internos, priorização e acompanhamento de atividades.',
+        duration: '7h 35min', price: 'R$ 149,90'
+      },
+      {
+        id: 't1-8', type: 'TRAIL', thumb: trail09, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Liderança e Performance de Equipes',
+        description: 'Desenvolva habilidades para acompanhamento de resultados e gestão de pessoas.',
+        duration: '10h 40min', price: 'R$ 209,90'
+      },
+      {
+        id: 't1-9', type: 'TRAIL', thumb: trail10, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Atendimento, Relacionamento e Excelência Operacional',
+        description: 'Melhore experiência interna e externa com processos e comunicação eficientes.',
+        duration: '8h 25min', price: 'R$ 169,90'
+      },
+      {
+        id: 't1-10', type: 'TRAIL', thumb: trail11, authors: 'Equipe Lector', progress: 70, grade: 50,
+        title: 'Trilha Cultura de Resultado e Accountability',
+        description: 'Desenvolva disciplina operacional, ownership e foco em metas organizacionais.',
+        duration: '6h 55min', price: 'R$ 139,90'
+      },
+    ]
+  },
+  {
+    id: 'qa1', title: 'Treinamentos QA em Alta', variant: 'avancado-1', items: [
+      {
+        id: 'qa1-0', type: 'COURSE', thumb: course01, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Introdução ao QA na Lector Live',
+        description: 'Visão geral do papel do QA, responsabilidades do time e como o trabalho se integra ao ciclo de desenvolvimento.',
+        duration: '1h 30min', price: ''
+      },
+      {
+        id: 'qa1-1', type: 'COURSE', thumb: course02, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Tipos de Tarefas: Correções e Implementações',
+        description: 'Entenda a diferença entre validar um bug corrigido e testar uma funcionalidade nova do início ao fim.',
+        duration: '1h 15min', price: ''
+      },
+      {
+        id: 'qa1-2', type: 'COURSE', thumb: course03, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Fluxo de Liberação: HML e Produção',
+        description: 'Passo a passo do processo de liberação: como o QA atua em cada etapa desde o recebimento até a aprovação em produção.',
+        duration: '1h 45min', price: ''
+      },
+      {
+        id: 'qa1-3', type: 'COURSE', thumb: course04, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Gerenciando o Painel de Liberações',
+        description: 'Como usar e manter o painel atualizado: colunas, status das tarefas e consistência com os grupos de comunicação.',
+        duration: '1h 00min', price: ''
+      },
+      {
+        id: 'qa1-4', type: 'COURSE', thumb: course05, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Executando o Checklist Completo do Sistema',
+        description: 'Como distribuir e executar o checklist após cada liberação, com foco em Trilhas, Treinamentos e Vitrines.',
+        duration: '2h 00min', price: ''
+      },
+      {
+        id: 'qa1-5', type: 'COURSE', thumb: course06, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Documentando Chamados Corretamente',
+        description: 'Estrutura completa de um chamado: descrição, passo a passo, evidências, ambiente, versão e campos do painel lateral.',
+        duration: '1h 30min', price: ''
+      },
+      {
+        id: 'qa1-6', type: 'COURSE', thumb: course07, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Regras de Reprovação e Aprovação em HML',
+        description: 'Critérios claros para reprovar ou aprovar tarefas, o que fazer com bugs adicionais e como documentar cada decisão.',
+        duration: '1h 20min', price: ''
+      },
+      {
+        id: 'qa1-7', type: 'COURSE', thumb: course08, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Comunicação no Time: Grupos e Alinhamento',
+        description: 'Como usar o Grupo Liberações e o Grupo Suporte Interno para manter informações alinhadas entre painel e canais.',
+        duration: '0h 45min', price: ''
+      },
+      {
+        id: 'qa1-8', type: 'COURSE', thumb: course09, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Boas Práticas e Critérios de Qualidade',
+        description: 'Como priorizar testes, avaliar impacto, testar fluxos relacionados e garantir que nenhuma tarefa seja aprovada sem certeza.',
+        duration: '2h 10min', price: ''
+      },
+      {
+        id: 'qa1-9', type: 'COURSE', thumb: course10, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Automação de Testes: Fundamentos e Boas Práticas',
+        description: 'Quando e o que automatizar, como estruturar testes independentes e manter a suíte atualizada a cada liberação.',
+        duration: '3h 00min', price: ''
+      },
+      {
+        id: 'qa1-10', type: 'COURSE', thumb: course11, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Criação e Manutenção de Manuais da Plataforma',
+        description: 'Como revisar, atualizar e garantir que os manuais reflitam o comportamento atual do sistema após cada liberação.',
+        duration: '1h 40min', price: ''
+      },
+    ]
+  },
 
-  { id: 'qt1', title: 'Trilhas QA em Destaque', variant: 'avancado-1', items: [
-    { id: 'qt1-0', type: 'TRAIL', thumb: trail01, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Onboarding QA Lector',
-      description: 'Percurso completo de entrada no time de QA: cultura, processos, ferramentas e primeiros testes.',
-      duration: '6h 30min', price: '' },
-    { id: 'qt1-1', type: 'TRAIL', thumb: trail02, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Validação de Fluxos Críticos',
-      description: 'Aprenda a testar os fluxos de maior impacto: login, matrícula, pagamento, trilhas e progresso do usuário.',
-      duration: '8h 00min', price: '' },
-    { id: 'qt1-2', type: 'TRAIL', thumb: trail03, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Gestão do Painel e Chamados',
-      description: 'Domine o painel de liberações e a documentação de chamados para manter o processo sem gargalos.',
-      duration: '5h 00min', price: '' },
-    { id: 'qt1-3', type: 'TRAIL', thumb: trail04, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Checklist Completo do Sistema',
-      description: 'Construa e execute o checklist de todas as abas do sistema com foco em Trilhas, Treinamentos e Vitrines.',
-      duration: '7h 30min', price: '' },
-    { id: 'qt1-4', type: 'TRAIL', thumb: trail05, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Automação de Testes na Lector',
-      description: 'Do zero à suíte automatizada: fluxos críticos, seletores estáveis, comandos reutilizáveis e manutenção contínua.',
-      duration: '10h 00min', price: '' },
-    { id: 'qt1-5', type: 'TRAIL', thumb: trail06, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Documentação e Manuais da Plataforma',
-      description: 'Como criar, revisar e distribuir manuais claros que acompanham cada liberação do sistema.',
-      duration: '4h 30min', price: '' },
-    { id: 'qt1-6', type: 'TRAIL', thumb: trail07, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Testes por Perfil de Usuário',
-      description: 'Valide o comportamento separado de alunos, administradores e gestores do início ao fim do fluxo.',
-      duration: '6h 00min', price: '' },
-    { id: 'qt1-7', type: 'TRAIL', thumb: trail08, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Comunicação e Alinhamento de Time',
-      description: 'Boas práticas de uso dos grupos de WhatsApp, atualização de painel e consistência de informações.',
-      duration: '3h 00min', price: '' },
-    { id: 'qt1-8', type: 'TRAIL', thumb: trail09, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Priorização e Gestão de Tarefas QA',
-      description: 'Como organizar o dia, priorizar demandas críticas e garantir que nenhuma tarefa fique sem validação.',
-      duration: '5h 30min', price: '' },
-    { id: 'qt1-9', type: 'TRAIL', thumb: trail10, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Prevenção de Regressão',
-      description: 'Identifique padrões de erro recorrentes, documente como padrão e implemente testes para evitar que se repitam.',
-      duration: '7h 00min', price: '' },
-    { id: 'qt1-10', type: 'TRAIL', thumb: trail11, authors: 'Time QA Lector', progress: 0, grade: 0,
-      title: 'Trilha Qualidade em Produção',
-      description: 'Rotina pós-liberação em produção: como agir rápido diante de falhas, acionar o time e documentar o ocorrido.',
-      duration: '4h 00min', price: '' },
-  ] },
+  {
+    id: 'qt1', title: 'Trilhas QA em Destaque', variant: 'avancado-1', items: [
+      {
+        id: 'qt1-0', type: 'TRAIL', thumb: trail01, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Onboarding QA Lector',
+        description: 'Percurso completo de entrada no time de QA: cultura, processos, ferramentas e primeiros testes.',
+        duration: '6h 30min', price: ''
+      },
+      {
+        id: 'qt1-1', type: 'TRAIL', thumb: trail02, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Validação de Fluxos Críticos',
+        description: 'Aprenda a testar os fluxos de maior impacto: login, matrícula, pagamento, trilhas e progresso do usuário.',
+        duration: '8h 00min', price: ''
+      },
+      {
+        id: 'qt1-2', type: 'TRAIL', thumb: trail03, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Gestão do Painel e Chamados',
+        description: 'Domine o painel de liberações e a documentação de chamados para manter o processo sem gargalos.',
+        duration: '5h 00min', price: ''
+      },
+      {
+        id: 'qt1-3', type: 'TRAIL', thumb: trail04, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Checklist Completo do Sistema',
+        description: 'Construa e execute o checklist de todas as abas do sistema com foco em Trilhas, Treinamentos e Vitrines.',
+        duration: '7h 30min', price: ''
+      },
+      {
+        id: 'qt1-4', type: 'TRAIL', thumb: trail05, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Automação de Testes na Lector',
+        description: 'Do zero à suíte automatizada: fluxos críticos, seletores estáveis, comandos reutilizáveis e manutenção contínua.',
+        duration: '10h 00min', price: ''
+      },
+      {
+        id: 'qt1-5', type: 'TRAIL', thumb: trail06, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Documentação e Manuais da Plataforma',
+        description: 'Como criar, revisar e distribuir manuais claros que acompanham cada liberação do sistema.',
+        duration: '4h 30min', price: ''
+      },
+      {
+        id: 'qt1-6', type: 'TRAIL', thumb: trail07, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Testes por Perfil de Usuário',
+        description: 'Valide o comportamento separado de alunos, administradores e gestores do início ao fim do fluxo.',
+        duration: '6h 00min', price: ''
+      },
+      {
+        id: 'qt1-7', type: 'TRAIL', thumb: trail08, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Comunicação e Alinhamento de Time',
+        description: 'Boas práticas de uso dos grupos de WhatsApp, atualização de painel e consistência de informações.',
+        duration: '3h 00min', price: ''
+      },
+      {
+        id: 'qt1-8', type: 'TRAIL', thumb: trail09, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Priorização e Gestão de Tarefas QA',
+        description: 'Como organizar o dia, priorizar demandas críticas e garantir que nenhuma tarefa fique sem validação.',
+        duration: '5h 30min', price: ''
+      },
+      {
+        id: 'qt1-9', type: 'TRAIL', thumb: trail10, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Prevenção de Regressão',
+        description: 'Identifique padrões de erro recorrentes, documente como padrão e implemente testes para evitar que se repitam.',
+        duration: '7h 00min', price: ''
+      },
+      {
+        id: 'qt1-10', type: 'TRAIL', thumb: trail11, authors: 'Time QA Lector', progress: 0, grade: 0,
+        title: 'Trilha Qualidade em Produção',
+        description: 'Rotina pós-liberação em produção: como agir rápido diante de falhas, acionar o time e documentar o ocorrido.',
+        duration: '4h 00min', price: ''
+      },
+    ]
+  },
 
   { id: 'a2', title: 'Avançado 2', variant: 'avancado-2', items: generateItems(11, 'a2') },
   { id: 'a3', title: 'Avançado 3', variant: 'avancado-3', items: generateItems(11, 'a3') },
@@ -352,20 +448,20 @@ interface Vitrine {
 }
 
 const VITRINES: Vitrine[] = [
-  { id: 'v1', nome: 'Vitrine Padrão',          descricao: 'Portal corporativo principal',          categoria: 'Corporativo', cor: '#FF7A1A' },
-  { id: 'v2', nome: 'Vitrine RH',              descricao: 'Treinamentos para equipe de RH',        categoria: 'Corporativo', cor: '#2563EB' },
-  { id: 'v3', nome: 'Vitrine Onboarding',      descricao: 'Integração de novos colaboradores',    categoria: 'Corporativo', cor: '#EC4899' },
-  { id: 'v4', nome: 'Vitrine IA & Automação',  descricao: 'Cursos de IA e ferramentas digitais',  categoria: 'Produtos',    cor: '#8B5CF6' },
-  { id: 'v5', nome: 'Vitrine Liderança',       descricao: 'Desenvolvimento de líderes',           categoria: 'Produtos',    cor: '#10B981' },
-  { id: 'v6', nome: 'Vitrine Empresa X',       descricao: 'Portal exclusivo — Empresa X',         categoria: 'Clientes',    cor: '#F59E0B' },
-  { id: 'v7', nome: 'Vitrine QA',              descricao: 'Biblioteca de QA — Lector Live',       categoria: 'QA',          cor: '#0EA5E9' },
+  { id: 'v1', nome: 'Vitrine Padrão', descricao: 'Portal corporativo principal', categoria: 'Corporativo', cor: '#FF7A1A' },
+  { id: 'v2', nome: 'Vitrine RH', descricao: 'Treinamentos para equipe de RH', categoria: 'Corporativo', cor: '#2563EB' },
+  { id: 'v3', nome: 'Vitrine Onboarding', descricao: 'Integração de novos colaboradores', categoria: 'Corporativo', cor: '#EC4899' },
+  { id: 'v4', nome: 'Vitrine IA & Automação', descricao: 'Cursos de IA e ferramentas digitais', categoria: 'Produtos', cor: '#8B5CF6' },
+  { id: 'v5', nome: 'Vitrine Liderança', descricao: 'Desenvolvimento de líderes', categoria: 'Produtos', cor: '#10B981' },
+  { id: 'v6', nome: 'Vitrine Empresa X', descricao: 'Portal exclusivo — Empresa X', categoria: 'Clientes', cor: '#F59E0B' },
+  { id: 'v7', nome: 'Vitrine QA', descricao: 'Biblioteca de QA — Lector Live', categoria: 'QA', cor: '#0EA5E9' },
 ];
 
 const CATEGORIA_COR: Record<string, string> = {
   Corporativo: 'bg-blue-50 text-blue-700',
-  Produtos:    'bg-purple-50 text-purple-700',
-  Clientes:    'bg-amber-50 text-amber-700',
-  QA:          'bg-sky-50 text-sky-600',
+  Produtos: 'bg-purple-50 text-purple-700',
+  Clientes: 'bg-amber-50 text-amber-700',
+  QA: 'bg-sky-50 text-sky-600',
 };
 
 const VITRINE_SECTIONS: Record<string, string[]> = {
@@ -378,7 +474,292 @@ const VITRINE_SECTIONS: Record<string, string[]> = {
   v7: ['qa1', 'qt1'],
 };
 
-// --- Components ---
+// ============================================================
+// CATEGORY DATA
+// ============================================================
+const CATEGORY_DATA = {
+  all: { label: "Todas as categorias", subs: [], vitrines: ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7'] },
+  corp: {
+    label: "Corporativo", subs: [
+      { id: "corp-onb", label: "Onboarding", vitriIds: ['v3'] },
+      { id: "corp-rh", label: "RH", vitriIds: ['v2'] },
+    ], vitrines: ['v1', 'v2', 'v3']
+  },
+  prod: {
+    label: "Produtos", subs: [
+      { id: "prod-ia", label: "IA & Automação", vitriIds: ['v4'] },
+      { id: "prod-lid", label: "Liderança", vitriIds: ['v5'] },
+    ], vitrines: ['v4', 'v5']
+  },
+  cli: { label: "Clientes", subs: [], vitrines: ['v6'] },
+  qa: { label: "QA", subs: [], vitrines: ['v7'] },
+};
+
+// ============================================================
+// VITRINE BREADCRUMB
+// ============================================================
+const VitrineBreadcrumb = ({ activeVitrineId }: { activeVitrineId: string }) => {
+  const vitrine = VITRINES.find(v => v.id === activeVitrineId);
+  if (!vitrine) return null;
+
+  let catLabel: string | null = null;
+  let subLabel: string | null = null;
+
+  for (const [key, data] of Object.entries(CATEGORY_DATA)) {
+    if (key === 'all') continue;
+    if ((data as any).vitrines?.includes(activeVitrineId)) {
+      catLabel = (data as any).label;
+      for (const sub of (data as any).subs ?? []) {
+        if (sub.vitriIds?.includes(activeVitrineId)) {
+          subLabel = sub.label;
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  const crumbs: { label: string; color?: string }[] = [
+    { label: catLabel ?? vitrine.categoria },
+    ...(subLabel ? [{ label: subLabel }] : []),
+    { label: vitrine.nome, color: vitrine.cor },
+  ];
+
+  return (
+    <div className="bg-white border-b border-gray-100">
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+        <div className="flex items-center gap-1.5 py-2">
+          {crumbs.map((crumb, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && (
+                <ChevronRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
+              )}
+              <span
+                className={`text-xs ${i === crumbs.length - 1
+                  ? 'font-semibold'
+                  : 'text-gray-400 font-medium'
+                  }`}
+                style={crumb.color ? { color: crumb.color } : undefined}
+              >
+                {crumb.label}
+              </span>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================
+// CATEGORY DROPDOWN
+// ============================================================
+
+const CategoryDropdown = ({
+  isOpen,
+  onClose,
+  activeVitrineId,
+  setActiveVitrineId,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  activeVitrineId: string;
+  setActiveVitrineId: (id: string) => void;
+}) => {
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeSub, setActiveSub] = useState<string | null>(null);
+
+  const getVitrinesForDisplay = () => {
+    if (activeCategory === 'all') return CATEGORY_DATA.all.vitrines;
+    const catData = CATEGORY_DATA[activeCategory as keyof typeof CATEGORY_DATA];
+    if (!activeSub) return catData.vitrines;
+    const sub = catData.subs.find(s => s.id === activeSub);
+    return sub?.vitriIds || [];
+  };
+
+  const vitrinesForDisplay = getVitrinesForDisplay();
+  const vitrineObjects = vitrinesForDisplay.map(id => VITRINES.find(v => v.id === id)).filter(Boolean);
+
+  const handleSelectVitrine = (vitrinaId: string) => {
+    setActiveVitrineId(vitrinaId);
+    onClose();
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-category-dropdown]')) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const currentCatData = CATEGORY_DATA[activeCategory as keyof typeof CATEGORY_DATA];
+  const hasSubs = currentCatData?.subs?.length > 0;
+  const catEntries = Object.entries(CATEGORY_DATA);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+      animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
+      exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+      transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+      data-category-dropdown
+      className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-gray-200"
+      style={{ boxShadow: '0 8px 32px 0 rgba(0,0,0,0.09)' }}
+    >
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-5">
+        <div className="flex gap-0 items-stretch">
+
+          {/* Col 1: Categorias */}
+          <div className="flex-shrink-0 w-48 pr-6">
+            <motion.p
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.18 }}
+              className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2"
+            >
+              Categoria
+            </motion.p>
+            <div className="flex flex-col gap-0.5">
+              {catEntries.map(([key, data], i) => (
+                <motion.button
+                  key={key}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.06 + i * 0.045, duration: 0.2, ease: 'easeOut' }}
+                  onClick={() => { setActiveCategory(key); setActiveSub(null); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${activeCategory === key
+                    ? 'bg-brand-primary/10 text-brand-primary'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                >
+                  <span>{data.label}</span>
+                  {activeCategory === key && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          {/* Divider 1 */}
+          <motion.div
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            transition={{ delay: 0.12, duration: 0.2, ease: 'easeOut' }}
+            className="w-px bg-gray-100 self-stretch origin-top flex-shrink-0"
+          />
+
+          {/* Col 2: Subcategorias (animated slide-in) */}
+          <AnimatePresence mode="wait">
+            {hasSubs && (
+              <motion.div
+                key={activeCategory}
+                initial={{ opacity: 0, width: 0, x: -12 }}
+                animate={{ opacity: 1, width: 160, x: 0 }}
+                exit={{ opacity: 0, width: 0, x: -12 }}
+                transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                className="flex-shrink-0 overflow-hidden"
+              >
+                <div className="pl-6 pr-4 w-[160px]">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Subcategoria</p>
+                  <div className="flex flex-col gap-0.5">
+                    <motion.button
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.08, duration: 0.18 }}
+                      onClick={() => setActiveSub(null)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${activeSub === null
+                        ? 'bg-brand-primary/10 text-brand-primary'
+                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                        }`}
+                    >
+                      Todas
+                    </motion.button>
+                    {currentCatData.subs.map((sub, i) => (
+                      <motion.button
+                        key={sub.id}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + i * 0.05, duration: 0.18 }}
+                        onClick={() => setActiveSub(sub.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${activeSub === sub.id
+                          ? 'bg-brand-primary text-white'
+                          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                          }`}
+                      >
+                        {sub.label}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Divider 2 */}
+          <motion.div
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            transition={{ delay: 0.14, duration: 0.2, ease: 'easeOut' }}
+            className="w-px bg-gray-100 self-stretch origin-top flex-shrink-0"
+          />
+
+          {/* Col 3: Vitrines */}
+          <div className="flex-1 min-w-0 pl-6">
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12, duration: 0.18 }}
+              className="flex items-center justify-between mb-3"
+            >
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vitrines disponíveis</p>
+              <span className="text-xs text-gray-400">{vitrineObjects.length} Vitrines</span>
+            </motion.div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+              {vitrineObjects.map((vitrine, i) => {
+                const isActive = vitrine!.id === activeVitrineId;
+                return (
+                  <motion.button
+                    key={vitrine!.id}
+                    initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: 0.14 + i * 0.04, duration: 0.2, ease: 'easeOut' }}
+                    onClick={() => handleSelectVitrine(vitrine!.id)}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all border text-left ${isActive
+                      ? 'border-brand-primary/30 bg-brand-primary/8 text-brand-primary shadow-sm'
+                      : 'border-gray-100 bg-gray-50 text-gray-700 hover:border-gray-200 hover:bg-white hover:shadow-sm'
+                      }`}
+                  >
+                    <span
+                      className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-xs font-black shadow-sm"
+                      style={{ background: vitrine!.cor }}
+                    >
+                      {vitrine!.nome.charAt(0)}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-xs font-semibold truncate">{vitrine!.nome}</div>
+                      <div className="text-[10px] text-gray-400 truncate">{vitrine!.descricao}</div>
+                    </div>
+                    {isActive && <Check className="w-3.5 h-3.5 ml-auto flex-shrink-0 text-brand-primary" />}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 
 // ============================================================
 // TOPBAR
@@ -387,10 +768,18 @@ const Topbar = ({
   onMenuToggle,
   setActiveTab,
   activeTab,
+  activeVitrineId,
+  setActiveVitrineId,
+  isDropdownOpen,
+  setIsDropdownOpen,
 }: {
   onMenuToggle: () => void;
   setActiveTab: (tab: string) => void;
   activeTab: string;
+  activeVitrineId: string;
+  setActiveVitrineId: (id: string) => void;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: (v: boolean) => void;
 }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
@@ -427,21 +816,9 @@ const Topbar = ({
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-100">
-      <div className="flex h-full">
-
-        {/* ── Brand zone: alinha com o sidebar (desktop) ── */}
-        <div className="hidden lg:flex items-center px-5 w-64 flex-shrink-0 border-r border-gray-100">
-          <img
-            src={logoLector}
-            alt="Lector"
-            className="h-8 w-auto cursor-pointer hover:opacity-75 transition-opacity"
-            onClick={() => setActiveTab('Conteúdo')}
-          />
-        </div>
-
-        {/* ── Content zone: alinha com a área principal ── */}
-        <div className="flex items-center flex-1 px-4 lg:px-6 gap-3 min-w-0">
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-100">
+        <div className="flex h-full items-center px-4 lg:px-6 gap-3">
           {/* Hamburger - mobile only */}
           <button
             onClick={onMenuToggle}
@@ -450,13 +827,13 @@ const Topbar = ({
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Logo - mobile only */}
-          <div className="lg:hidden flex-shrink-0 cursor-pointer" onClick={() => setActiveTab('Conteúdo')}>
+          {/* Logo */}
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => setActiveTab('Conteúdo')}>
             <img src={logoLector} alt="Lector" className="h-8 w-auto" />
           </div>
 
           {/* Search */}
-          <div ref={searchRef} className="relative flex-1 max-w-md">
+          <div ref={searchRef} className="relative flex-1 max-w-md min-w-0">
             <input
               type="text"
               placeholder="Pesquisar cursos, trilhas..."
@@ -465,128 +842,150 @@ const Topbar = ({
               className="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary/30 rounded-full text-sm transition-all duration-200 placeholder:text-gray-400"
             />
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
-          <AnimatePresence>
-            {suggestions.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-              >
-                <div className="p-2">
-                  {suggestions.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => { setSearchQuery(''); setSuggestions([]); }}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors group"
-                    >
-                      <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-                        <img src={item.thumb} alt="" className="w-full h-full object-cover" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-gray-900 group-hover:text-brand-primary transition-colors line-clamp-1">{item.title}</div>
-                        <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{item.type === 'COURSE' ? 'Treinamento' : item.type}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Navigation tabs */}
-        <div className="hidden md:flex items-center gap-1">
-          {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                activeTab === tab
-                  ? 'bg-brand-primary/10 text-brand-primary'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Right actions */}
-        <div className="flex items-center gap-1 ml-auto">
-          <Tooltip content="Notificações">
-            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-            </button>
-          </Tooltip>
-          <Tooltip content="Idioma">
-            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
-              <Globe className="h-5 w-5" />
-            </button>
-          </Tooltip>
-          <div className="h-8 w-px bg-gray-200 mx-1" />
-          <div ref={userMenuRef} className="relative">
-            <button
-              onClick={() => setIsUserMenuOpen(v => !v)}
-              className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
-                <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
-            </button>
             <AnimatePresence>
-              {isUserMenuOpen && (
+              {suggestions.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
                 >
-                  <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
-                    <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
-                    <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
-                  </div>
-                  <button
-                    onClick={() => setIsMinhaAreaOpen(v => !v)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors"
-                  >
-                    <div className="flex items-center gap-3"><LayoutDashboard className="h-4 w-4" /> Minha Area</div>
-                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {isMinhaAreaOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-gray-50/30"
+                  <div className="p-2">
+                    {suggestions.map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => { setSearchQuery(''); setSuggestions([]); }}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors group"
                       >
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Play className="h-3.5 w-3.5" /> Meus Treinamentos</button>
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Compass className="h-3.5 w-3.5" /> Minhas Trilhas</button>
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Star className="h-3.5 w-3.5" /> Minhas Habilidades</button>
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Award className="h-3.5 w-3.5" /> Meus Certificados</button>
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Calendar className="h-3.5 w-3.5" /> Meu Calendário</button>
-                        <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras</button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Users className="h-4 w-4" /> Selecionar perfil</button>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Globe className="h-4 w-4" /> Alterar idioma</button>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Download className="h-4 w-4" /> Instalar</button>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><CheckCircle className="h-4 w-4" /> Validar termos de Aceite</button>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><BookOpen className="h-4 w-4" /> Ver glossário</button>
-                  <div className="h-px bg-gray-100 my-2" />
-                  <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium"><LogOut className="h-4 w-4" /> Sair</button>
+                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                          <img src={item.thumb} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-gray-900 group-hover:text-brand-primary transition-colors line-clamp-1">{item.title}</div>
+                          <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{item.type === 'COURSE' ? 'Treinamento' : item.type}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
+          {/* Navigation tabs */}
+          <div className="hidden md:flex items-center gap-2 ml-4">
+            {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  if (tab === 'Conteúdo') {
+                    setIsDropdownOpen(!isDropdownOpen);
+                  } else {
+                    setIsDropdownOpen(false);
+                  }
+                }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${activeTab === tab
+                  ? 'bg-brand-primary/10 text-brand-primary'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-1 ml-auto">
+            <Tooltip content="Notificações">
+              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+              </button>
+            </Tooltip>
+            <Tooltip content="Idioma">
+              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
+                <Globe className="h-5 w-5" />
+              </button>
+            </Tooltip>
+            <div className="h-8 w-px bg-gray-200 mx-1" />
+            <div ref={userMenuRef} className="relative">
+              <button
+                onClick={() => setIsUserMenuOpen(v => !v)}
+                className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
+                  <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
+              </button>
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
+                  >
+                    <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
+                      <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
+                      <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
+                    </div>
+                    <button
+                      onClick={() => setIsMinhaAreaOpen(v => !v)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors"
+                    >
+                      <div className="flex items-center gap-3"><LayoutDashboard className="h-4 w-4" /> Minha Area</div>
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {isMinhaAreaOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden bg-gray-50/30"
+                        >
+                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Play className="h-3.5 w-3.5" /> Meus Treinamentos</button>
+                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Compass className="h-3.5 w-3.5" /> Minhas Trilhas</button>
+                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Star className="h-3.5 w-3.5" /> Minhas Habilidades</button>
+                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Award className="h-3.5 w-3.5" /> Meus Certificados</button>
+                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Calendar className="h-3.5 w-3.5" /> Meu Calendário</button>
+                          <button 
+                            onClick={() => { setActiveTab('Minhas Compras'); setIsUserMenuOpen(false); }}
+                            className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"
+                          >
+                            <ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Users className="h-4 w-4" /> Selecionar perfil</button>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Globe className="h-4 w-4" /> Alterar idioma</button>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Download className="h-4 w-4" /> Instalar</button>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><CheckCircle className="h-4 w-4" /> Validar termos de Aceite</button>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><BookOpen className="h-4 w-4" /> Ver glossário</button>
+                    <div className="h-px bg-gray-100 my-2" />
+                    <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium"><LogOut className="h-4 w-4" /> Sair</button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    </header>
+      </header>
+
+      <AnimatePresence>
+        {isDropdownOpen && (
+          <CategoryDropdown
+            isOpen={isDropdownOpen}
+            onClose={() => setIsDropdownOpen(false)}
+            activeVitrineId={activeVitrineId}
+            setActiveVitrineId={setActiveVitrineId}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -624,9 +1023,9 @@ const Sidebar = ({
 
   const vitrineFiltradas = vitrineBusca.trim().length > 0
     ? VITRINES.filter(v =>
-        v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) ||
-        v.categoria.toLowerCase().includes(vitrineBusca.toLowerCase())
-      )
+      v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) ||
+      v.categoria.toLowerCase().includes(vitrineBusca.toLowerCase())
+    )
     : VITRINES;
   const categorias = [...new Set(vitrineFiltradas.map(v => v.categoria))];
 
@@ -661,11 +1060,10 @@ const Sidebar = ({
             <button
               key={id}
               onClick={() => handleNavClick(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                activeTab === id
-                  ? 'bg-brand-primary/8 text-brand-primary'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeTab === id
+                ? 'bg-brand-primary/8 text-brand-primary'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+                }`}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
               {label}
@@ -699,9 +1097,8 @@ const Sidebar = ({
                   <button
                     key={vitrine.id}
                     onClick={() => { setActiveVitrineId(vitrine.id); onClose(); }}
-                    className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg transition-colors ${
-                      isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
+                    className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg transition-colors ${isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      }`}
                   >
                     <span
                       className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-white text-[10px] font-black"
@@ -1053,11 +1450,10 @@ const SocialView = () => {
               <button
                 key={feed.id}
                 onClick={() => setActiveFeed(feed.id)}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  activeFeed === feed.id
-                    ? 'bg-brand-primary text-white shadow-sm'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-                }`}
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeFeed === feed.id
+                  ? 'bg-brand-primary text-white shadow-sm'
+                  : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                  }`}
               >
                 {feed.label}
               </button>
@@ -1380,14 +1776,14 @@ const SocialView = () => {
                     {seg.type === 'image'
                       ? <img src={seg.url} alt="" className="absolute inset-0 w-full h-full object-cover" />
                       : <video
-                          ref={viewerVideoRef}
-                          src={seg.url}
-                          autoPlay
-                          playsInline
-                          className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
-                          onEnded={goNext}
-                          onTimeUpdate={e => { const v = e.currentTarget; if (v.duration) setSegProgress((v.currentTime / v.duration) * 100); }}
-                        />
+                        ref={viewerVideoRef}
+                        src={seg.url}
+                        autoPlay
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+                        onEnded={goNext}
+                        onTimeUpdate={e => { const v = e.currentTarget; if (v.duration) setSegProgress((v.currentTime / v.duration) * 100); }}
+                      />
                     }
 
                     {/* Gradients */}
@@ -1599,103 +1995,103 @@ const MyAreaTreinamentos = () => {
 
   return (
     <div className="space-y-6">
-      
+
       {/* Search and Filters Bar - Expanded */}
       <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm mb-6 flex flex-col gap-4">
-        
+
         {/* Top Row: Search and Quick Actions */}
         <div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
           <div className="relative flex-grow w-full max-w-2xl">
-            <input 
-              type="text" 
-              placeholder="Pesquisar treinamentos por nome..." 
+            <input
+              type="text"
+              placeholder="Pesquisar treinamentos por nome..."
               className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-lg text-sm transition-all text-gray-700"
             />
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           </div>
-          
+
           <div className="flex gap-2 w-full xl:w-auto overflow-x-visible pb-2 xl:pb-0 scrollbar-hide shrink-0 relative">
-             <div className="relative">
-               <button 
-                 onClick={() => setIsSituacaoOpen(!isSituacaoOpen)}
-                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-between gap-2 transition-colors whitespace-nowrap min-w-[140px]"
-               >
-                  <span>{selectedSituacao === 'Qualquer' ? 'Situação' : selectedSituacao}</span>
-                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isSituacaoOpen ? 'rotate-180' : ''}`} />
-               </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsSituacaoOpen(!isSituacaoOpen)}
+                className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-between gap-2 transition-colors whitespace-nowrap min-w-[140px]"
+              >
+                <span>{selectedSituacao === 'Qualquer' ? 'Situação' : selectedSituacao}</span>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isSituacaoOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-               <AnimatePresence>
-                 {isSituacaoOpen && (
-                   <motion.div 
-                     initial={{ opacity: 0, y: 10 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, y: 10 }}
-                     transition={{ duration: 0.2 }}
-                     className="absolute z-20 top-full mt-2 left-0 w-full min-w-[160px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
-                   >
-                     {situacaoOptions.map((opcao) => (
-                       <button
-                         key={opcao}
-                         onClick={() => {
-                           setSelectedSituacao(opcao);
-                           setIsSituacaoOpen(false);
-                         }}
-                         className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
-                       >
-                         {opcao}
-                       </button>
-                     ))}
-                   </motion.div>
-                 )}
-               </AnimatePresence>
-             </div>
+              <AnimatePresence>
+                {isSituacaoOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-20 top-full mt-2 left-0 w-full min-w-[160px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                  >
+                    {situacaoOptions.map((opcao) => (
+                      <button
+                        key={opcao}
+                        onClick={() => {
+                          setSelectedSituacao(opcao);
+                          setIsSituacaoOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
+                      >
+                        {opcao}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-             <button 
-               onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
-               className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
-             >
-                <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
-                <span>Filtros</span>
-             </button>
+            <button
+              onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
+              className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
+            >
+              <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
+              <span>Filtros</span>
+            </button>
 
-             <div className="relative">
-               <button 
-                 onClick={() => setIsExportOpen(!isExportOpen)}
-                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-colors whitespace-nowrap min-w-[150px] justify-center"
-               >
-                  <Download className="w-4 h-4 text-gray-400" />
-                  <span>Exportar Dados</span>
-               </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsExportOpen(!isExportOpen)}
+                className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-colors whitespace-nowrap min-w-[150px] justify-center"
+              >
+                <Download className="w-4 h-4 text-gray-400" />
+                <span>Exportar Dados</span>
+              </button>
 
-               <AnimatePresence>
-                 {isExportOpen && (
-                   <motion.div 
-                     initial={{ opacity: 0, y: 10 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, y: 10 }}
-                     transition={{ duration: 0.2 }}
-                     className="absolute z-20 top-full mt-2 right-0 w-full min-w-[150px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
-                   >
-                     {exportOptions.map((opcao) => (
-                       <button
-                         key={opcao}
-                         onClick={() => setIsExportOpen(false)}
-                         className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
-                       >
-                         {opcao}
-                       </button>
-                     ))}
-                   </motion.div>
-                 )}
-               </AnimatePresence>
-             </div>
+              <AnimatePresence>
+                {isExportOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-20 top-full mt-2 right-0 w-full min-w-[150px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                  >
+                    {exportOptions.map((opcao) => (
+                      <button
+                        key={opcao}
+                        onClick={() => setIsExportOpen(false)}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
+                      >
+                        {opcao}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
         {/* Bottom Row: Advanced Date Filters */}
         <AnimatePresence>
           {isAdvancedFiltersOpen && (
-            <motion.div 
+            <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -1703,7 +2099,7 @@ const MyAreaTreinamentos = () => {
               className="overflow-hidden"
             >
               <div className="flex flex-col lg:flex-row gap-4 pt-4 border-t border-gray-100">
-                
+
                 {/* Data Inscricao Filter */}
                 <div className="flex-1">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filtrar por Inscrição</label>
@@ -1750,7 +2146,7 @@ const MyAreaTreinamentos = () => {
           {curso.situacao.includes('Concluído') && (
             <div className="absolute top-0 left-0 w-1 h-full bg-green-500/80"></div>
           )}
-          
+
           {/* Esquerda: Informações do Curso */}
           <div className="flex-grow xl:w-1/2">
             <div className="flex items-center gap-2 mb-2">
@@ -1758,27 +2154,27 @@ const MyAreaTreinamentos = () => {
                 {curso.situacao}
               </span>
             </div>
-            
+
             <h3 className="text-xl font-bold text-gray-900 leading-tight mb-4 pr-4">
               {curso.nome}
             </h3>
-            
+
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-gray-500">
               {curso.cargaHoraria !== '-' && (
-                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-gray-400"/> {curso.cargaHoraria}</span>
+                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-gray-400" /> {curso.cargaHoraria}</span>
               )}
               {curso.inscricao !== '-' && (
-                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-gray-400"/> Inscrito em: {curso.inscricao}</span>
+                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-gray-400" /> Inscrito em: {curso.inscricao}</span>
               )}
               {curso.termino !== '-' && (
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-600/60"/> Término: {curso.termino}</span>
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-600/60" /> Término: {curso.termino}</span>
               )}
             </div>
           </div>
 
           {/* Direita: Progresso e Ações */}
           <div className="flex flex-col sm:flex-row xl:w-1/2 items-start xl:items-center justify-between gap-6 pt-5 xl:pt-0 border-t xl:border-t-0 xl:border-l border-gray-100 xl:pl-8">
-            
+
             {/* Medidores */}
             <div className="flex flex-col gap-3 w-full xl:w-48 shrink-0">
               {/* Barra de Progresso */}
@@ -1786,22 +2182,22 @@ const MyAreaTreinamentos = () => {
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Progresso</span>
                 <div className="flex items-center gap-2">
                   <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`} 
+                    <div
+                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`}
                       style={{ width: `${curso.progresso}%` }}
                     ></div>
                   </div>
                   <span className="text-xs font-bold text-gray-700 w-12 text-right">{curso.progresso.toFixed(2)}%</span>
                 </div>
               </div>
-              
+
               {/* Barra de Aproveitamento */}
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Aproveitamento</span>
                 <div className="flex items-center gap-2">
                   <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`} 
+                    <div
+                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`}
                       style={{ width: `${curso.aproveitamento}%` }}
                     ></div>
                   </div>
@@ -1817,7 +2213,7 @@ const MyAreaTreinamentos = () => {
                   <Play size={16} fill="currentColor" /> Estudar
                 </button>
               )}
-              
+
               {curso.situacao === 'Aguardando correção de avaliações' && (
                 <button disabled className="w-full sm:w-auto bg-gray-100/50 text-gray-400 cursor-not-allowed px-6 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2">
                   <Clock size={16} /> Em Correção
@@ -1835,23 +2231,23 @@ const MyAreaTreinamentos = () => {
                 </div>
               )}
             </div>
-            
+
           </div>
         </div>
       ))}
-      
+
       {/* Paginação */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <span className="text-xs text-gray-500">Mostrando de 1 até 5 de 78 registros</span>
         <div className="flex gap-1">
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Anterior</button>
-           <button className="px-3 py-1 bg-brand-primary text-white rounded-md text-sm font-medium">1</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Próximo</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Anterior</button>
+          <button className="px-3 py-1 bg-brand-primary text-white rounded-md text-sm font-medium">1</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Próximo</button>
         </div>
       </div>
-      
+
     </div>
   );
 };
@@ -1874,11 +2270,10 @@ const MyAreaHabilidades = () => {
           <button
             key={role}
             onClick={() => setActiveRole(role)}
-            className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              activeRole === role
-                ? 'bg-brand-primary text-white shadow-sm'
-                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-            }`}
+            className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${activeRole === role
+              ? 'bg-brand-primary text-white shadow-sm'
+              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+              }`}
           >
             {activeRole === role && role !== 'Todos' ? <span className="mr-2">✓</span> : null}
             {role}
@@ -1889,41 +2284,41 @@ const MyAreaHabilidades = () => {
       {/* Banner do Cargo Selecionado */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col md:flex-row items-center gap-8 shadow-sm">
         <div className="flex-grow w-full text-center md:text-left">
-           <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-             <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
-               <Briefcase size={20} />
-             </div>
-             <h3 className="text-2xl font-bold text-gray-900">{activeRole}</h3>
-           </div>
-           <p className="text-gray-500 max-w-2xl text-sm leading-relaxed mx-auto md:mx-0">
-             Base de conhecimento, treinamentos e avaliações necessárias para o exercício e capacitação rápida na função de {activeRole}.
-           </p>
+          <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+              <Briefcase size={20} />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900">{activeRole}</h3>
+          </div>
+          <p className="text-gray-500 max-w-2xl text-sm leading-relaxed mx-auto md:mx-0">
+            Base de conhecimento, treinamentos e avaliações necessárias para o exercício e capacitação rápida na função de {activeRole}.
+          </p>
         </div>
-        
+
         <div className="flex-shrink-0 flex items-center gap-5 bg-gray-50 px-6 py-4 rounded-xl border border-gray-100 w-full md:w-auto justify-center">
-           <div className="text-right">
-             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Prontidão para o Cargo</p>
-             <span className="text-3xl font-display font-bold text-brand-primary">33%</span>
-           </div>
-           <div className="relative w-16 h-16">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                <path className="text-gray-200" strokeWidth="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path className="text-brand-primary" strokeWidth="4" strokeDasharray="33, 100" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              </svg>
-           </div>
+          <div className="text-right">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Prontidão para o Cargo</p>
+            <span className="text-3xl font-display font-bold text-brand-primary">33%</span>
+          </div>
+          <div className="relative w-16 h-16">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+              <path className="text-gray-200" strokeWidth="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path className="text-brand-primary" strokeWidth="4" strokeDasharray="33, 100" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+          </div>
         </div>
       </div>
 
       {/* Lista de Conhecimentos */}
       <div>
         <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-           Conhecimentos Obrigatórios <span className="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-bold">{trainings.length}</span>
+          Conhecimentos Obrigatórios <span className="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-bold">{trainings.length}</span>
         </h4>
-        
+
         <div className="space-y-3">
           {trainings.map(train => (
             <div key={train.id} className="bg-white rounded-xl border border-gray-200 p-4 md:p-5 flex flex-col lg:flex-row items-center gap-6 hover:shadow-md transition-all">
-              
+
               {/* Info Esquerda */}
               <div className="flex items-start gap-4 w-full lg:w-5/12 flex-shrink-0">
                 <div className="w-10 h-10 bg-gray-50 border border-gray-100 text-gray-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -1960,15 +2355,15 @@ const MyAreaHabilidades = () => {
               {/* Status & Action direita */}
               <div className="w-full lg:w-3/12 flex items-center justify-between lg:justify-end gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-gray-100 mt-2 lg:mt-0">
                 <div className="flex justify-start">
-                   {train.validated ? (
-                     <span className="flex items-center gap-1.5 text-xs font-bold text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
-                       <CheckCircle size={14} /> Validado
-                     </span>
-                   ) : (
-                     <span className="flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
-                       <AlertCircle size={14} /> Pendente
-                     </span>
-                   )}
+                  {train.validated ? (
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
+                      <CheckCircle size={14} /> Validado
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+                      <AlertCircle size={14} /> Pendente
+                    </span>
+                  )}
                 </div>
                 <button className="text-gray-400 border border-gray-200 hover:border-blue-200 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0" title="Ver detalhes da habilidade">
                   <Eye size={18} />
@@ -2073,80 +2468,80 @@ const MyAreaTrilhas = () => {
           </div>
 
           <div className="flex gap-2 w-full xl:w-auto overflow-x-visible pb-2 xl:pb-0 scrollbar-hide shrink-0 relative">
-             <div className="relative">
-               <button
-                 onClick={() => setIsSituacaoOpen(!isSituacaoOpen)}
-                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-between gap-2 transition-colors whitespace-nowrap min-w-[140px]"
-               >
-                  <span>{selectedSituacao === 'Qualquer' ? 'Situação' : selectedSituacao}</span>
-                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isSituacaoOpen ? 'rotate-180' : ''}`} />
-               </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsSituacaoOpen(!isSituacaoOpen)}
+                className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-between gap-2 transition-colors whitespace-nowrap min-w-[140px]"
+              >
+                <span>{selectedSituacao === 'Qualquer' ? 'Situação' : selectedSituacao}</span>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isSituacaoOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-               <AnimatePresence>
-                 {isSituacaoOpen && (
-                   <motion.div
-                     initial={{ opacity: 0, y: 10 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, y: 10 }}
-                     transition={{ duration: 0.2 }}
-                     className="absolute z-20 top-full mt-2 left-0 w-full min-w-[240px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
-                   >
-                     {situacaoOptions.map((opcao) => (
-                       <button
-                         key={opcao}
-                         onClick={() => {
-                           setSelectedSituacao(opcao);
-                           setIsSituacaoOpen(false);
-                         }}
-                         className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
-                       >
-                         {opcao}
-                       </button>
-                     ))}
-                   </motion.div>
-                 )}
-               </AnimatePresence>
-             </div>
+              <AnimatePresence>
+                {isSituacaoOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-20 top-full mt-2 left-0 w-full min-w-[240px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                  >
+                    {situacaoOptions.map((opcao) => (
+                      <button
+                        key={opcao}
+                        onClick={() => {
+                          setSelectedSituacao(opcao);
+                          setIsSituacaoOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
+                      >
+                        {opcao}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-             <button
-               onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
-               className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
-             >
-                <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
-                <span>Filtros</span>
-             </button>
+            <button
+              onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
+              className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
+            >
+              <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
+              <span>Filtros</span>
+            </button>
 
-             <div className="relative">
-               <button
-                 onClick={() => setIsExportOpen(!isExportOpen)}
-                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-colors whitespace-nowrap min-w-[150px] justify-center"
-               >
-                  <Download className="w-4 h-4 text-gray-400" />
-                  <span>Exportar Dados</span>
-               </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsExportOpen(!isExportOpen)}
+                className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-colors whitespace-nowrap min-w-[150px] justify-center"
+              >
+                <Download className="w-4 h-4 text-gray-400" />
+                <span>Exportar Dados</span>
+              </button>
 
-               <AnimatePresence>
-                 {isExportOpen && (
-                   <motion.div
-                     initial={{ opacity: 0, y: 10 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     exit={{ opacity: 0, y: 10 }}
-                     transition={{ duration: 0.2 }}
-                     className="absolute z-20 top-full mt-2 right-0 w-full min-w-[150px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
-                   >
-                     {exportOptions.map((opcao) => (
-                       <button
-                         key={opcao}
-                         onClick={() => setIsExportOpen(false)}
-                         className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
-                       >
-                         {opcao}
-                       </button>
-                     ))}
-                   </motion.div>
-                 )}
-               </AnimatePresence>
-             </div>
+              <AnimatePresence>
+                {isExportOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-20 top-full mt-2 right-0 w-full min-w-[150px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                  >
+                    {exportOptions.map((opcao) => (
+                      <button
+                        key={opcao}
+                        onClick={() => setIsExportOpen(false)}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
+                      >
+                        {opcao}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
@@ -2229,13 +2624,13 @@ const MyAreaTrilhas = () => {
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-gray-500">
               {trilha.cargaHoraria !== '-' && (
-                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-gray-400"/> {trilha.cargaHoraria}</span>
+                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-gray-400" /> {trilha.cargaHoraria}</span>
               )}
               {trilha.inscricao !== '-' && (
-                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-gray-400"/> Inscrito em: {trilha.inscricao}</span>
+                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-gray-400" /> Inscrito em: {trilha.inscricao}</span>
               )}
               {trilha.termino !== '-' && (
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-600/60"/> Término: {trilha.termino}</span>
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-600/60" /> Término: {trilha.termino}</span>
               )}
             </div>
           </div>
@@ -2308,11 +2703,11 @@ const MyAreaTrilhas = () => {
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <span className="text-xs text-gray-500">Mostrando de 1 até 5 de 12 registros</span>
         <div className="flex gap-1">
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Anterior</button>
-           <button className="px-3 py-1 bg-brand-primary text-white rounded-md text-sm font-medium">1</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
-           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Próximo</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Anterior</button>
+          <button className="px-3 py-1 bg-brand-primary text-white rounded-md text-sm font-medium">1</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+          <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Próximo</button>
         </div>
       </div>
 
@@ -2405,11 +2800,11 @@ const MyAreaCalendario = () => {
   );
   const cyclePriority = (id: number) =>
     setTasks(prev => prev.map(t => t.id !== id ? t : {
-      ...t, priority: ({ high: 'medium', medium: 'low', low: 'high' } as Record<string,string>)[t.priority] as 'high'|'medium'|'low'
+      ...t, priority: ({ high: 'medium', medium: 'low', low: 'high' } as Record<string, string>)[t.priority] as 'high' | 'medium' | 'low'
     }));
   const deleteTask = (id: number) => setTasks(prev => prev.filter(t => t.id !== id));
-  const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   const priorityBadge: Record<string, string> = {
     high: 'bg-red-50 text-red-600 border-red-200',
@@ -2488,7 +2883,7 @@ const MyAreaCalendario = () => {
 
         {/* Legenda */}
         <div className="px-5 pb-4 flex flex-wrap gap-4">
-          {[['#FF7A1A','Aulas'],['#EF4444','Prazos'],['#2563EB','Webinars'],['#10B981','Trilhas'],['#F59E0B','Certificações']].map(([c, l]) => (
+          {[['#FF7A1A', 'Aulas'], ['#EF4444', 'Prazos'], ['#2563EB', 'Webinars'], ['#10B981', 'Trilhas'], ['#F59E0B', 'Certificações']].map(([c, l]) => (
             <div key={l} className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c as string }} />
               <span className="text-[11px] text-gray-500 font-medium">{l}</span>
@@ -2564,13 +2959,12 @@ const MyAreaCalendario = () => {
 
           {/* Filtros */}
           <div className="flex gap-1 mb-4 bg-gray-100 rounded-lg p-1">
-            {([['all','Todas'], ['pending','Pendentes'], ['done','Concluídas']] as const).map(([val, label]) => (
+            {([['all', 'Todas'], ['pending', 'Pendentes'], ['done', 'Concluídas']] as const).map(([val, label]) => (
               <button
                 key={val}
                 onClick={() => setTaskFilter(val)}
-                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition-all ${
-                  taskFilter === val ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition-all ${taskFilter === val ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 {label}
               </button>
@@ -2581,7 +2975,7 @@ const MyAreaCalendario = () => {
           <div className="flex gap-2 mb-4">
             {/* Seletor de prioridade */}
             <button
-              onClick={() => setNewTaskPriority(p => ({ high: 'medium', medium: 'low', low: 'high' } as Record<string,'high'|'medium'|'low'>)[p])}
+              onClick={() => setNewTaskPriority(p => ({ high: 'medium', medium: 'low', low: 'high' } as Record<string, 'high' | 'medium' | 'low'>)[p])}
               className={`px-2.5 py-2 rounded-lg text-[10px] font-bold uppercase border transition flex-shrink-0 ${priorityBadge[newTaskPriority]}`}
               title="Clique para trocar a prioridade"
             >
@@ -2715,11 +3109,10 @@ const MyAreaView = () => {
               <button
                 key={label}
                 onClick={() => setActiveSubTab(label)}
-                className={`flex items-center gap-2 px-5 py-4 text-sm font-bold transition-all whitespace-nowrap border-b-[3px] flex-shrink-0 ${
-                  activeSubTab === label
-                    ? 'border-brand-primary text-brand-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-200'
-                }`}
+                className={`flex items-center gap-2 px-5 py-4 text-sm font-bold transition-all whitespace-nowrap border-b-[3px] flex-shrink-0 ${activeSubTab === label
+                  ? 'border-brand-primary text-brand-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-200'
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 {label}
@@ -2790,7 +3183,7 @@ const HERO_SLIDES_DEFAULT = [
       'Mensure os fatores psicossociais do ambiente de trabalho com o instrumento Copsoq e gere planos de ação baseados em evidências.',
     card: (
       <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
-           style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 60%, #FF7A1A 140%)' }}>
+        style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 60%, #FF7A1A 140%)' }}>
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
@@ -2827,7 +3220,7 @@ const HERO_SLIDES_QA = [
       'Biblioteca completa do time de QA: do onboarding ao checklist completo do sistema. Valide fluxos, documente chamados e evite regressões com processos sólidos.',
     card: (
       <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
-           style={{ background: 'linear-gradient(135deg, #082040 0%, #0c2d5e 55%, #0EA5E9 160%)' }}>
+        style={{ background: 'linear-gradient(135deg, #082040 0%, #0c2d5e 55%, #0EA5E9 160%)' }}>
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
@@ -2866,7 +3259,7 @@ const HERO_SLIDES_QA = [
       'Aprenda a estruturar testes independentes, escolher o que automatizar e manter a suíte atualizada a cada liberação — sem aumentar a complexidade do processo.',
     card: (
       <div className="relative rounded-3xl overflow-hidden aspect-[4/5] p-6 flex flex-col justify-between"
-           style={{ background: 'linear-gradient(135deg, #061830 0%, #0a2550 60%, #FF7A1A 160%)' }}>
+        style={{ background: 'linear-gradient(135deg, #061830 0%, #0a2550 60%, #FF7A1A 160%)' }}>
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white text-[10px] font-semibold tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
@@ -2921,24 +3314,23 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
               transition={{ duration: 0.5 }}
               className="absolute inset-0"
             >
-              <img 
-                src={BANNERS[currentBanner].url} 
-                alt="Banner" 
+              <img
+                src={BANNERS[currentBanner].url}
+                alt="Banner"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-brand-secondary/40 to-transparent"></div>
             </motion.div>
           </AnimatePresence>
-          
+
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {BANNERS.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentBanner(i)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  currentBanner === i ? 'w-8 bg-white' : 'bg-white/50'
-                }`}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${currentBanner === i ? 'w-8 bg-white' : 'bg-white/50'
+                  }`}
               />
             ))}
           </div>
@@ -2959,14 +3351,14 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
                 Encontre seu conteúdo
               </h1>
               <p className="mt-3 text-[15px] text-gray-500 max-w-3xl leading-relaxed">
-                Procure por conhecimento feito para te ajudar na sua área ou na sua carreira. 
+                Procure por conhecimento feito para te ajudar na sua área ou na sua carreira.
                 Você pode aprender escolhendo um treinamento, uma trilha, documento, evento gravado ou vídeo.
               </p>
-              
+
               <div className="mt-6 relative max-w-full">
-                <input 
-                  type="text" 
-                  placeholder="Procure por treinamento, trilha, documento, evento gravado ou vídeo" 
+                <input
+                  type="text"
+                  placeholder="Procure por treinamento, trilha, documento, evento gravado ou vídeo"
                   className="w-full pl-10 pr-24 py-3.5 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-300 text-sm"
                 />
                 <Search className="absolute left-3.5 top-4 h-4 w-4 text-gray-400" />
@@ -2992,9 +3384,9 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
       {/* Orbital decorative pattern */}
       <div className="absolute inset-0 orbit-pattern opacity-60 pointer-events-none" />
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full pointer-events-none"
-           style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 65%)' }} />
+        style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 65%)' }} />
       <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full pointer-events-none"
-           style={{ background: 'radial-gradient(circle, rgba(255,122,26,0.10) 0%, transparent 65%)' }} />
+        style={{ background: 'radial-gradient(circle, rgba(255,122,26,0.10) 0%, transparent 65%)' }} />
 
       {/* Subtle grid */}
       <div
@@ -3044,9 +3436,8 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
               key={i}
               onClick={() => setCurrentBanner(i)}
               aria-label={`Ir para slide ${i + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                currentBanner % slides.length === i ? 'w-8 bg-orange-500' : 'w-2 bg-white/30 hover:bg-white/50'
-              }`}
+              className={`h-2 rounded-full transition-all duration-300 ${currentBanner % slides.length === i ? 'w-8 bg-orange-500' : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
             />
           ))}
         </div>
@@ -3081,24 +3472,23 @@ const HeroV2 = () => {
             transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
-            <img 
-              src={BANNERS[currentBanner].url} 
-              alt="Banner" 
+            <img
+              src={BANNERS[currentBanner].url}
+              alt="Banner"
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 bg-black/10"></div>
           </motion.div>
         </AnimatePresence>
-        
+
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {BANNERS.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentBanner(i)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentBanner === i ? 'w-8 bg-white' : 'bg-white/50'
-              }`}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${currentBanner === i ? 'w-8 bg-white' : 'bg-white/50'
+                }`}
             />
           ))}
         </div>
@@ -3121,11 +3511,11 @@ const HeroV2 = () => {
           <p className="mt-4 text-gray-500 leading-relaxed">
             Procure por conhecimento feito para te ajudar na sua área ou na sua carreira. Você pode aprender escolhendo um treinamento, uma trilha, documento, evento gravado ou vídeo.
           </p>
-          
+
           <div className="mt-8 relative w-full">
-            <input 
-              type="text" 
-              placeholder="Procure por treinamento, trilha, documento, evento gravado ou vídeo" 
+            <input
+              type="text"
+              placeholder="Procure por treinamento, trilha, documento, evento gravado ou vídeo"
               className="w-full pl-12 pr-32 py-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-300 text-sm"
             />
             <Search className="absolute left-4 top-[18px] h-5 w-5 text-gray-400" />
@@ -3150,14 +3540,14 @@ const HeroV3 = () => {
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute top-10 left-10 w-40 h-40 bg-brand-primary/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-60 h-60 bg-brand-primary/20 rounded-full blur-3xl"></div>
-          <div className="absolute left-0 top-0 w-24 h-full opacity-20" 
-               style={{ backgroundImage: 'radial-gradient(var(--color-brand-primary) 1.5px, transparent 1.5px)', backgroundSize: '16px 16px' }}>
+          <div className="absolute left-0 top-0 w-24 h-full opacity-20"
+            style={{ backgroundImage: 'radial-gradient(var(--color-brand-primary) 1.5px, transparent 1.5px)', backgroundSize: '16px 16px' }}>
           </div>
         </div>
 
         <div className="px-8 md:px-16 py-12 md:py-16 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            
+
             {/* Left Column: Text Content */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -3171,7 +3561,7 @@ const HeroV3 = () => {
               <p className="mt-6 text-base text-gray-500 leading-relaxed max-w-lg">
                 Estamos realizando uma avaliação para entender melhor as condições de trabalho e melhorar o ambiente da empresa
               </p>
-              
+
               <ul className="mt-6 space-y-3">
                 {[
                   "Suas respostas são anônimas",
@@ -3211,7 +3601,7 @@ const HeroV3 = () => {
                   </h2>
                 </div>
 
-                <button 
+                <button
                   onClick={() => setIsModalOpen(true)}
                   className="w-full bg-brand-primary hover:opacity-90 text-white text-sm font-bold py-3.5 rounded-xl shadow-lg shadow-brand-primary/20 transition-all duration-300 hover:scale-[1.02] active:scale-95"
                 >
@@ -3228,14 +3618,14 @@ const HeroV3 = () => {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 px-4 overflow-y-auto">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-gray-900/30 backdrop-blur-[2px]"
               onClick={() => setIsModalOpen(false)}
             />
-            
+
             <motion.div
               initial={{ opacity: 0, y: -40, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -3245,7 +3635,7 @@ const HeroV3 = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between px-8 py-5 border-b border-gray-50">
                 <h3 className="text-xl font-bold text-[#003B71] text-left">Avaliação NR-1</h3>
-                <button 
+                <button
                   onClick={() => setIsModalOpen(false)}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
                 >
@@ -3259,30 +3649,28 @@ const HeroV3 = () => {
                   Para prosseguir você precisa aceitar nossos termos:
                 </p>
 
-                <div 
+                <div
                   className="flex items-center gap-3 mb-8 cursor-pointer group"
                   onClick={() => setTermsAccepted(!termsAccepted)}
                 >
-                  <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200 border ${
-                    termsAccepted ? 'border-brand-primary bg-brand-primary/5' : 'border-gray-300 group-hover:border-brand-primary'
-                  }`}>
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200 border ${termsAccepted ? 'border-brand-primary bg-brand-primary/5' : 'border-gray-300 group-hover:border-brand-primary'
+                    }`}>
                     {termsAccepted && <Check className="w-3.5 h-3.5 text-brand-primary" strokeWidth={3} />}
                   </div>
                   <span className="text-gray-700 text-sm font-medium">Li e aceito os termos de uso</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <button 
+                  <button
                     disabled={!termsAccepted}
-                    className={`flex-1 text-sm font-bold py-4 rounded-full transition-all duration-300 shadow-lg ${
-                      termsAccepted 
-                        ? 'bg-brand-primary text-white hover:opacity-95 shadow-brand-primary/20 hover:scale-[1.02] active:scale-95' 
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
+                    className={`flex-1 text-sm font-bold py-4 rounded-full transition-all duration-300 shadow-lg ${termsAccepted
+                      ? 'bg-brand-primary text-white hover:opacity-95 shadow-brand-primary/20 hover:scale-[1.02] active:scale-95'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      }`}
                   >
                     Confirmar
                   </button>
-                  <button 
+                  <button
                     onClick={() => setIsModalOpen(false)}
                     className="flex-1 bg-[#F0F0F0] text-gray-600 text-sm font-bold py-4 rounded-full hover:bg-gray-200 transition-all duration-300 active:scale-95"
                   >
@@ -3302,12 +3690,11 @@ const Tooltip = ({ content, children, direction = "bottom" }: { content: string,
   return (
     <div className="group/tooltip relative flex items-center justify-center">
       {children}
-      <div className={`absolute scale-95 group-hover/tooltip:scale-100 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 pointer-events-none z-[100] whitespace-nowrap bg-gray-900 text-white text-[11px] font-bold tracking-wide py-1.5 px-2.5 rounded shadow-lg ${
-        direction === "bottom" ? "top-full mt-2 left-1/2 -translate-x-1/2" :
+      <div className={`absolute scale-95 group-hover/tooltip:scale-100 opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 pointer-events-none z-[100] whitespace-nowrap bg-gray-900 text-white text-[11px] font-bold tracking-wide py-1.5 px-2.5 rounded shadow-lg ${direction === "bottom" ? "top-full mt-2 left-1/2 -translate-x-1/2" :
         direction === "top" ? "bottom-full mb-2 left-1/2 -translate-x-1/2" :
-        direction === "left" ? "right-full mr-2 top-1/2 -translate-y-1/2" :
-        "left-full ml-2 top-1/2 -translate-y-1/2"
-      }`}>
+          direction === "left" ? "right-full mr-2 top-1/2 -translate-y-1/2" :
+            "left-full ml-2 top-1/2 -translate-y-1/2"
+        }`}>
         {content}
       </div>
     </div>
@@ -3317,7 +3704,7 @@ const Tooltip = ({ content, children, direction = "bottom" }: { content: string,
 const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, variant = 'simples-1' }) => {
   const category = variant.split('-')[0]; // 'simples', 'completo', 'avancado'
   const subVariant = variant.split('-')[1]; // '1', '2', '3', '4', '5', '6', '7'
-  
+
   const isSimples = category === 'simples';
   const isCompleto = category === 'completo';
   const isAvancado = category === 'avancado';
@@ -3336,10 +3723,10 @@ const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, 
   if (isAvancado && subVariant === '7') {
     return (
       <div className="group/card flex-shrink-0 w-[280px] h-[340px] relative rounded-2xl border border-slate-200/60 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1"
-           style={{ boxShadow: 'var(--shadow-subtle)' }}
-           onClick={handleOpen}
-           onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
-           onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-subtle)')}>
+        style={{ boxShadow: 'var(--shadow-subtle)' }}
+        onClick={handleOpen}
+        onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
+        onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-subtle)')}>
         <div className="absolute inset-0 bg-[#08204D]">
           <img
             src={item.thumb}
@@ -3393,7 +3780,7 @@ const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, 
         {isSimples && (
           <div className="flex justify-between items-start mb-4 flex-shrink-0">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
-                 style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 100%)' }}>
+              style={{ background: 'linear-gradient(135deg, #08204D 0%, #0F2D6B 100%)' }}>
               <Code size={16} />
             </div>
             <span className="text-[10px] font-semibold text-[#08204D] bg-blue-50 border border-blue-100 px-2 py-1 rounded-full flex items-center gap-1">
@@ -3417,7 +3804,7 @@ const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, 
             <div className="flex flex-col gap-1.5 items-start">
 
               {/* Duration */}
-              {(((isSimples || isCompleto) && subVariant === '2') || (isAvancado && ['1','2','4','5','6'].includes(subVariant))) && (
+              {(((isSimples || isCompleto) && subVariant === '2') || (isAvancado && ['1', '2', '4', '5', '6'].includes(subVariant))) && (
                 <div className="flex items-center text-[11px] text-slate-500 gap-1 font-medium">
                   <Clock size={12} /> {item.duration}
                 </div>
@@ -3490,14 +3877,14 @@ const SocialSidebar = ({ onSeeAll }: { onSeeAll: () => void }) => {
     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-24">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-display font-bold text-brand-secondary">Social</h2>
-        <button 
+        <button
           onClick={onSeeAll}
           className="text-xs font-medium text-brand-primary hover:text-brand-secondary transition-colors border border-brand-primary/20 hover:bg-brand-primary/5 px-3 py-1.5 rounded-lg"
         >
           Exibir todos os posts
         </button>
       </div>
-      
+
       <div className="space-y-6">
         {[1, 2].map((i) => (
           <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
@@ -3513,13 +3900,13 @@ const SocialSidebar = ({ onSeeAll }: { onSeeAll: () => void }) => {
             <p className="text-xs text-gray-600 mb-4">
               Clique aqui e aproveite!
             </p>
-            
+
             <div className="flex items-center gap-2 mb-4 text-xs text-brand-primary font-medium">
               <div className="flex items-center gap-1">
                 <ThumbsUp className="h-3 w-3 fill-brand-primary" /> 6
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between pt-3 border-t border-gray-200">
               <button className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-brand-primary transition-colors">
                 <ThumbsUp className="h-4 w-4" /> Curtir
@@ -3625,7 +4012,7 @@ const Footer = () => {
               <span className="font-display font-bold text-xl tracking-wider">LECTOR</span>
             </div>
             <p className="mt-6 text-gray-400 text-sm leading-relaxed">
-              Transformando o aprendizado através da tecnologia e inovação. 
+              Transformando o aprendizado através da tecnologia e inovação.
               Sua plataforma completa de desenvolvimento profissional.
             </p>
             <div className="mt-8 flex gap-4">
@@ -3637,7 +4024,7 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          
+
           <div>
             <h4 className="font-display font-bold text-lg mb-6">Plataforma</h4>
             <ul className="space-y-4 text-sm text-gray-400">
@@ -3646,7 +4033,7 @@ const Footer = () => {
               <li><a href="#" className="hover:text-white transition-colors">Quem somos</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-display font-bold text-lg mb-6">Legal</h4>
             <ul className="space-y-4 text-sm text-gray-400">
@@ -3655,14 +4042,14 @@ const Footer = () => {
               <li><a href="#" className="hover:text-white transition-colors">Termos de uso</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-display font-bold text-lg mb-6">Newsletter</h4>
             <p className="text-sm text-gray-400 mb-4">Fique por dentro das novidades.</p>
             <div className="flex gap-2">
-              <input 
-                type="email" 
-                placeholder="Seu e-mail" 
+              <input
+                type="email"
+                placeholder="Seu e-mail"
                 className="bg-white/5 border-transparent focus:ring-1 focus:ring-white/20 rounded-lg px-4 py-2 text-sm w-full"
               />
               <button className="bg-brand-primary hover:bg-brand-primary/80 px-4 py-2 rounded-lg transition-colors">
@@ -3671,7 +4058,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="mt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-gray-500">
           <p>© Lector Tecnologia, 2006 - 2025. Todos os direitos reservados.</p>
           <div className="flex gap-8">
@@ -3704,11 +4091,11 @@ const DesignSystemView = () => {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-32">
       <div className="mb-12 border-b border-gray-200 pb-8">
         <h1 className="text-4xl font-display font-bold text-gray-900 mb-4 tracking-tight flex items-center gap-3">
-          <Palette className="text-brand-primary" size={36}/> Lector Design System
+          <Palette className="text-brand-primary" size={36} /> Lector Design System
         </h1>
         <p className="text-xl text-gray-500 max-w-3xl">A fonte da verdade viva da nossa arquitetura visual. Documentação interativa dos componentes, tipografia e engrenagens de UX.</p>
       </div>
-      
+
       <div className="space-y-24">
         {/* A. IDENTIDADE E FUNDAMENTOS */}
         <section>
@@ -3718,43 +4105,43 @@ const DesignSystemView = () => {
             </div>
             <h2 className="text-2xl font-bold text-gray-900">A. Identidade & Cores</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-               <div className="h-24 rounded-lg bg-brand-primary mb-3 shadow-inner"></div>
-               <p className="font-bold text-gray-900">Brand Primary</p>
-               <p className="text-xs text-gray-500 font-mono">var(--theme-primary)</p>
+              <div className="h-24 rounded-lg bg-brand-primary mb-3 shadow-inner"></div>
+              <p className="font-bold text-gray-900">Brand Primary</p>
+              <p className="text-xs text-gray-500 font-mono">var(--theme-primary)</p>
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-               <div className="h-24 rounded-lg bg-brand-secondary mb-3 shadow-inner"></div>
-               <p className="font-bold text-gray-900">Brand Secondary</p>
-               <p className="text-xs text-gray-500 font-mono">var(--theme-secondary)</p>
+              <div className="h-24 rounded-lg bg-brand-secondary mb-3 shadow-inner"></div>
+              <p className="font-bold text-gray-900">Brand Secondary</p>
+              <p className="text-xs text-gray-500 font-mono">var(--theme-secondary)</p>
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-               <div className="h-24 rounded-lg bg-brand-accent mb-3 shadow-inner"></div>
-               <p className="font-bold text-gray-900">Brand Accent</p>
-               <p className="text-xs text-gray-500 font-mono">var(--theme-accent)</p>
+              <div className="h-24 rounded-lg bg-brand-accent mb-3 shadow-inner"></div>
+              <p className="font-bold text-gray-900">Brand Accent</p>
+              <p className="text-xs text-gray-500 font-mono">var(--theme-accent)</p>
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-               <div className="h-24 rounded-lg bg-gray-50 mb-3 shadow-inner border border-gray-200"></div>
-               <p className="font-bold text-gray-900">Surface Gray</p>
-               <p className="text-xs text-gray-500 font-mono">bg-gray-50</p>
+              <div className="h-24 rounded-lg bg-gray-50 mb-3 shadow-inner border border-gray-200"></div>
+              <p className="font-bold text-gray-900">Surface Gray</p>
+              <p className="text-xs text-gray-500 font-mono">bg-gray-50</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-wrap">
-             <div className="border border-green-200 bg-green-50 rounded-xl p-5">
-               <h4 className="font-bold text-green-800 mb-1 flex items-center gap-2"><CheckCircle size={16}/> Sucesso & Conclusão</h4>
-               <p className="text-sm text-green-700">Usado para exibir itens completados, aprovação ou "Em andamento" saudável.</p>
-             </div>
-             <div className="border border-amber-200 bg-amber-50 rounded-xl p-5">
-               <h4 className="font-bold text-amber-800 mb-1 flex items-center gap-2"><AlertCircle size={16}/> Atenção & Pendências</h4>
-               <p className="text-sm text-amber-700">Usado para fluxos que aguardam interação, aprovações pendentes ou notificações ausentes.</p>
-             </div>
-             <div className="border border-red-200 bg-red-50 rounded-xl p-5">
-               <h4 className="font-bold text-red-800 mb-1 flex items-center gap-2"><AlertCircle size={16}/> Urgência & Prazos</h4>
-               <p className="text-sm text-red-700">Restrito exclusivamente ao "Hoje" no calendário e vencimentos muito curtos.</p>
-             </div>
+            <div className="border border-green-200 bg-green-50 rounded-xl p-5">
+              <h4 className="font-bold text-green-800 mb-1 flex items-center gap-2"><CheckCircle size={16} /> Sucesso & Conclusão</h4>
+              <p className="text-sm text-green-700">Usado para exibir itens completados, aprovação ou "Em andamento" saudável.</p>
+            </div>
+            <div className="border border-amber-200 bg-amber-50 rounded-xl p-5">
+              <h4 className="font-bold text-amber-800 mb-1 flex items-center gap-2"><AlertCircle size={16} /> Atenção & Pendências</h4>
+              <p className="text-sm text-amber-700">Usado para fluxos que aguardam interação, aprovações pendentes ou notificações ausentes.</p>
+            </div>
+            <div className="border border-red-200 bg-red-50 rounded-xl p-5">
+              <h4 className="font-bold text-red-800 mb-1 flex items-center gap-2"><AlertCircle size={16} /> Urgência & Prazos</h4>
+              <p className="text-sm text-red-700">Restrito exclusivamente ao "Hoje" no calendário e vencimentos muito curtos.</p>
+            </div>
           </div>
         </section>
 
@@ -3812,7 +4199,7 @@ const DesignSystemView = () => {
                     <div className="flex-1 bg-gray-100 rounded-r-full"></div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between border-t border-gray-100 pt-5">
                   <span className="text-sm text-gray-500 font-medium">Progresso Circular SVG</span>
                   <div className="relative w-12 h-12">
@@ -3836,7 +4223,7 @@ const DesignSystemView = () => {
             </div>
             <h2 className="text-2xl font-bold text-gray-900">C. Engenharia da Vitrine (Cards)</h2>
           </div>
-          
+
           <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 lg:p-10 mb-6">
             <p className="text-gray-600 mb-8 max-w-4xl">
               Nossa vitrine principal utiliza uma função modular unificada (<code className="text-brand-primary font-mono bg-white px-2 py-1 rounded border border-gray-200">ContentCard</code>). Ela intercepta a variante (ex: <code className="text-brand-primary font-mono">avancado-1</code>) e reconstrói o layout interno dinamicamente. O uso estrito de <code className="bg-gray-200 px-1 rounded font-mono">h-full</code> e <code className="bg-gray-200 px-1 rounded font-mono">items-stretch</code> garante alinhamento horizontal perfeito.
@@ -3844,23 +4231,23 @@ const DesignSystemView = () => {
 
             <div className="flex overflow-x-auto gap-6 pb-6 items-stretch w-full scrollbar-hide snap-x">
               <div className="flex flex-col gap-2 shrink-0 snap-center">
-                 <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12}/> Simples 3</span>
-                 <div className="pointer-events-none"><ContentCard item={mockItem} variant="simples-3" /></div>
+                <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12} /> Simples 3</span>
+                <div className="pointer-events-none"><ContentCard item={mockItem} variant="simples-3" /></div>
               </div>
 
               <div className="flex flex-col gap-2 shrink-0 snap-center">
-                 <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12}/> Completo 5</span>
-                 <div className="pointer-events-none"><ContentCard item={mockItem} variant="completo-5" /></div>
+                <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12} /> Completo 5</span>
+                <div className="pointer-events-none"><ContentCard item={mockItem} variant="completo-5" /></div>
               </div>
 
               <div className="flex flex-col gap-2 shrink-0 snap-center">
-                 <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12}/> Avançado 1</span>
-                 <div className="pointer-events-none"><ContentCard item={mockItem} variant="avancado-1" /></div>
+                <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12} /> Avançado 1</span>
+                <div className="pointer-events-none"><ContentCard item={mockItem} variant="avancado-1" /></div>
               </div>
 
               <div className="flex flex-col gap-2 shrink-0 snap-center">
-                 <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12}/> Pôster</span>
-                 <div className="pointer-events-none"><ContentCard item={mockItem} variant="avancado-7" /></div>
+                <span className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2"><Code size={12} /> Pôster</span>
+                <div className="pointer-events-none"><ContentCard item={mockItem} variant="avancado-7" /></div>
               </div>
             </div>
           </div>
@@ -3876,32 +4263,32 @@ const DesignSystemView = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <div className="bg-white border border-gray-200 p-6 rounded-xl hover:shadow-md transition">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex justify-center items-center mb-3">
-                    <Type size={24}/>
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-900">Truncamento & Hint Nativo</h3>
+            <div className="bg-white border border-gray-200 p-6 rounded-xl hover:shadow-md transition">
+              <div className="mb-4">
+                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex justify-center items-center mb-3">
+                  <Type size={24} />
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                  Evitamos modais intrusivos para leitura de texto longo. Se um título ou descrição estourar nossa trava de 2 ou 3 linhas (<code className="text-blue-500 font-mono">line-clamp-3</code>), injetamos automaticamente o conteúdo total na prop <code className="text-blue-500 font-mono">title=""</code>.
-                </p>
-                <div className="bg-gray-50 p-4 rounded border border-gray-100 text-xs text-gray-500 italic">
-                  Passe o mouse por 1 segundo nas descrições longas dos cards acima para ver o texto original transbordar no hint do navegador.
-                </div>
-             </div>
+                <h3 className="font-bold text-xl text-gray-900">Truncamento & Hint Nativo</h3>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                Evitamos modais intrusivos para leitura de texto longo. Se um título ou descrição estourar nossa trava de 2 ou 3 linhas (<code className="text-blue-500 font-mono">line-clamp-3</code>), injetamos automaticamente o conteúdo total na prop <code className="text-blue-500 font-mono">title=""</code>.
+              </p>
+              <div className="bg-gray-50 p-4 rounded border border-gray-100 text-xs text-gray-500 italic">
+                Passe o mouse por 1 segundo nas descrições longas dos cards acima para ver o texto original transbordar no hint do navegador.
+              </div>
+            </div>
 
-             <div className="bg-white border border-gray-200 p-6 rounded-xl hover:shadow-md transition">
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex justify-center items-center mb-3">
-                    <Layers size={24}/>
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-900">Overlays e Gradientes Seguros</h3>
+            <div className="bg-white border border-gray-200 p-6 rounded-xl hover:shadow-md transition">
+              <div className="mb-4">
+                <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex justify-center items-center mb-3">
+                  <Layers size={24} />
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                  Textos legíveis sobre banners (como no Card Pôster ou Hero) dependem da técnica do Gradiente Base. Injetamos sempre <code className="text-orange-500 font-mono">bg-gradient-to-t</code> escurecido (do gray-900 ao transparent) para resguardo em qualquer capa.
-                </p>
-             </div>
+                <h3 className="font-bold text-xl text-gray-900">Overlays e Gradientes Seguros</h3>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                Textos legíveis sobre banners (como no Card Pôster ou Hero) dependem da técnica do Gradiente Base. Injetamos sempre <code className="text-orange-500 font-mono">bg-gradient-to-t</code> escurecido (do gray-900 ao transparent) para resguardo em qualquer capa.
+              </p>
+            </div>
           </div>
         </section>
       </div>
@@ -3937,31 +4324,31 @@ const CardBuilderView = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 relative">
-      
+
       {/* Top Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-4 h-4 border-2 border-gray-200 rounded-sm bg-gray-50"></div>
           <span className="text-[#1E3A8A] font-bold text-sm tracking-wide">DESCRIÇÃO</span>
         </div>
-        <input 
-          type="text" 
+        <input
+          type="text"
           value={descriptionTitle}
           onChange={(e) => setDescriptionTitle(e.target.value)}
-          placeholder="Somente teste" 
+          placeholder="Somente teste"
           className="w-full bg-[#E5E5E5] text-gray-500 rounded-lg px-4 py-3 text-sm border-none focus:ring-2 focus:ring-[#1E3A8A]/20"
         />
       </div>
 
       <div className="flex flex-col md:flex-row gap-10">
-        
+
         {/* Left: Card Preview */}
         <div className="w-full md:w-[350px] shrink-0">
           <div className="border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm">
-            
+
             <AnimatePresence>
               {config.showImage && (
-                <motion.div 
+                <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 200, opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
@@ -3973,10 +4360,10 @@ const CardBuilderView = () => {
             </AnimatePresence>
 
             <div className="p-6 flex flex-col gap-4">
-              
+
               {!config.showImage && (
                 <div className="h-40 flex items-center justify-center pb-4">
-                   <Presentation className="w-32 h-32 text-gray-700 stroke-1" />
+                  <Presentation className="w-32 h-32 text-gray-700 stroke-1" />
                 </div>
               )}
 
@@ -4020,9 +4407,9 @@ const CardBuilderView = () => {
               <AnimatePresence>
                 {config.showValue && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-                     <div className="text-xl font-medium text-gray-800 text-left pt-2">
-                       R$20,00
-                     </div>
+                    <div className="text-xl font-medium text-gray-800 text-left pt-2">
+                      R$20,00
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -4068,7 +4455,7 @@ const CardBuilderView = () => {
           <div className="hidden md:block absolute left-0 top-0 w-px h-full bg-gray-200"></div>
 
           <h2 className="text-[#1E3A8A] font-bold text-sm tracking-wide mb-6">COMPONENTES DO CARD</h2>
-          
+
           <div className="flex flex-col gap-2">
             <CheckboxRow label="Apresentar imagem do card" checked={config.showImage} onChange={() => toggleConfig('showImage')} />
             <CheckboxRow label="Apresentar Descrição" checked={config.showDescription} onChange={() => toggleConfig('showDescription')} />
@@ -4089,9 +4476,9 @@ const CardBuilderView = () => {
             <ChevronDown className="w-4 h-4" />
           </button>
         </div>
-        <input 
-          type="text" 
-          placeholder="Escolha uma trilha" 
+        <input
+          type="text"
+          placeholder="Escolha uma trilha"
           className="flex-grow bg-transparent px-4 py-2 text-sm text-gray-500 outline-none placeholder:text-gray-400"
         />
       </div>
@@ -4100,15 +4487,15 @@ const CardBuilderView = () => {
   );
 };
 
-const ThemeSwitcher = ({    
-  showSocial, 
+const ThemeSwitcher = ({
+  showSocial,
   onToggleSocial,
   layoutVersion,
   onToggleLayout,
   activeTab,
   setActiveTab
-}: { 
-  showSocial: boolean, 
+}: {
+  showSocial: boolean,
   onToggleSocial: () => void,
   layoutVersion: number,
   onToggleLayout: (version: number) => void,
@@ -4125,7 +4512,7 @@ const ThemeSwitcher = ({
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="fixed bottom-6 left-6 bg-white p-3 rounded-full shadow-2xl border border-gray-100 flex items-center gap-3 z-50"
@@ -4134,23 +4521,21 @@ const ThemeSwitcher = ({
         <button
           key={theme.id}
           onClick={() => applyTheme(theme)}
-          className={`w-6 h-6 rounded-full transition-transform hover:scale-110 ${
-            activeTheme === theme.id ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''
-          }`}
+          className={`w-6 h-6 rounded-full transition-transform hover:scale-110 ${activeTheme === theme.id ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''
+            }`}
           style={{ backgroundColor: theme.primary }}
           aria-label={`Mudar para tema ${theme.id}`}
         />
       ))}
-      
+
       <div className="w-px h-5 bg-gray-200 mx-1" />
-      
+
       <button
         onClick={() => { onToggleLayout(1); setActiveTab('Conteúdo'); }}
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
-          layoutVersion === 1 && activeTab !== 'Design System'
-            ? 'border-brand-primary text-brand-primary bg-brand-primary/10' 
-            : 'border-gray-300 text-gray-400 hover:border-gray-400'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${layoutVersion === 1 && activeTab !== 'Design System'
+          ? 'border-brand-primary text-brand-primary bg-brand-primary/10'
+          : 'border-gray-300 text-gray-400 hover:border-gray-400'
+          }`}
         title="Layout Vitrine 1"
       >
         1
@@ -4158,11 +4543,10 @@ const ThemeSwitcher = ({
 
       <button
         onClick={() => { onToggleLayout(2); setActiveTab('Conteúdo'); }}
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
-          layoutVersion === 2 && activeTab !== 'Design System'
-            ? 'border-brand-primary text-brand-primary bg-brand-primary/10' 
-            : 'border-gray-300 text-gray-400 hover:border-gray-400'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${layoutVersion === 2 && activeTab !== 'Design System'
+          ? 'border-brand-primary text-brand-primary bg-brand-primary/10'
+          : 'border-gray-300 text-gray-400 hover:border-gray-400'
+          }`}
         title="Layout Vitrine 2"
       >
         2
@@ -4170,11 +4554,10 @@ const ThemeSwitcher = ({
 
       <button
         onClick={() => setActiveTab('Design System')}
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
-          activeTab === 'Design System'
-            ? 'border-brand-primary text-brand-primary bg-brand-primary/10' 
-            : 'border-gray-300 text-gray-400 hover:border-gray-400'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${activeTab === 'Design System'
+          ? 'border-brand-primary text-brand-primary bg-brand-primary/10'
+          : 'border-gray-300 text-gray-400 hover:border-gray-400'
+          }`}
         title="Tela 3: Design System Docs"
       >
         3
@@ -4182,11 +4565,10 @@ const ThemeSwitcher = ({
 
       <button
         onClick={() => setActiveTab('Construtor de Cards')}
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
-          activeTab === 'Construtor de Cards'
-            ? 'border-brand-primary text-brand-primary bg-brand-primary/10' 
-            : 'border-gray-300 text-gray-400 hover:border-gray-400'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${activeTab === 'Construtor de Cards'
+          ? 'border-brand-primary text-brand-primary bg-brand-primary/10'
+          : 'border-gray-300 text-gray-400 hover:border-gray-400'
+          }`}
         title="Tela 4: Construtor de Cards"
       >
         4
@@ -4194,18 +4576,17 @@ const ThemeSwitcher = ({
 
       <button
         onClick={() => { onToggleLayout(3); setActiveTab('Conteúdo'); }}
-        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${
-          layoutVersion === 3 && activeTab === 'Conteúdo'
-            ? 'border-brand-primary text-brand-primary bg-brand-primary/10' 
-            : 'border-gray-300 text-gray-400 hover:border-gray-400'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all ${layoutVersion === 3 && activeTab === 'Conteúdo'
+          ? 'border-brand-primary text-brand-primary bg-brand-primary/10'
+          : 'border-gray-300 text-gray-400 hover:border-gray-400'
+          }`}
         title="Layout Vitrine 3"
       >
         5
       </button>
 
       <div className="w-px h-5 bg-gray-200 mx-1" />
-      
+
       <button
         onClick={onToggleSocial}
         className="p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-500"
@@ -4217,10 +4598,99 @@ const ThemeSwitcher = ({
   );
 };
 
+// ============================================================
+// MINHAS COMPRAS VIEW
+// ============================================================
+
+const MOCK_COMPRAS = [
+  { id: '1', tipo: 'Treinamento', nome: 'Criando um Treinamento pago', cupom: '', preco: 5.00, data: '24/11/2023', metodo: '-', situacao: 'Aguardando confirmação do pagamento' },
+  { id: '2', tipo: 'Treinamento', nome: 'Liderança de Alta Performance', cupom: '', preco: 4.00, data: '25/11/2023', metodo: '-', situacao: 'Aguardando confirmação do pagamento' },
+  { id: '3', tipo: 'Treinamento', nome: 'Onboarding Corporativo', cupom: '', preco: 1.00, data: '22/01/2024', metodo: '-', situacao: 'Aguardando confirmação do pagamento' },
+  { id: '4', tipo: 'Trilha', nome: 'Trilha de Vendas B2B', cupom: '', preco: 5.00, data: '18/02/2024', metodo: '-', situacao: 'Aguardando pagamento' },
+  { id: '5', tipo: 'Trilha', nome: 'Formação em Marketing Digital', cupom: '50%', preco: 5.00, data: '18/02/2024', metodo: '-', situacao: 'Aguardando confirmação do pagamento' },
+  { id: '6', tipo: 'Trilha', nome: 'Gestão de Projetos Ágeis', cupom: '', preco: 5.00, data: '18/02/2024', metodo: '-', situacao: 'Aguardando pagamento' },
+];
+
+const MinhasComprasView = () => {
+  return (
+    <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Minhas Compras</h1>
+        <p className="text-sm text-gray-500 mt-1">Acompanhe o histórico e o status das suas compras na plataforma.</p>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-gray-50/80 border-b border-gray-100 text-gray-500 font-semibold text-[11px] uppercase tracking-wider">
+              <tr>
+                <th className="px-6 py-4">Tipo</th>
+                <th className="px-6 py-4">Nome</th>
+                <th className="px-6 py-4">Cupom</th>
+                <th className="px-6 py-4">Preço</th>
+                <th className="px-6 py-4">Data de Compra</th>
+                <th className="px-6 py-4 text-center">Método de Pagamento</th>
+                <th className="px-6 py-4">Situação</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {MOCK_COMPRAS.map((compra, index) => (
+                <motion.tr
+                  key={compra.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.2 }}
+                  className="hover:bg-gray-50/50 transition-colors group"
+                >
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${
+                      compra.tipo === 'Treinamento' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'
+                    }`}>
+                      {compra.tipo}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 font-semibold text-gray-900">{compra.nome}</td>
+                  <td className="px-6 py-4 text-gray-500 font-medium">
+                    {compra.cupom ? (
+                      <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold border border-gray-200">
+                        {compra.cupom}
+                      </span>
+                    ) : (
+                      '-'
+                    )}
+                  </td>
+                  <td className="px-6 py-4 font-bold text-gray-800">
+                    {compra.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  </td>
+                  <td className="px-6 py-4 text-gray-500 font-medium">{compra.data}</td>
+                  <td className="px-6 py-4 text-gray-500 font-medium text-center">{compra.metodo}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-bold ${
+                      compra.situacao.includes('confirmação') 
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200/50' 
+                        : 'bg-orange-50 text-orange-700 border border-orange-200/50'
+                    }`}>
+                      <div className={`w-1.5 h-1.5 rounded-full mr-2 ${
+                        compra.situacao.includes('confirmação') ? 'bg-amber-500' : 'bg-orange-500'
+                      }`} />
+                      {compra.situacao}
+                    </span>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('Conteúdo');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeVitrineId, setActiveVitrineId] = useState('v1');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleMenuToggle = useCallback(() => setIsSidebarOpen(v => !v), []);
   const handleSidebarClose = useCallback(() => setIsSidebarOpen(false), []);
@@ -4232,9 +4702,16 @@ export default function App() {
         onMenuToggle={handleMenuToggle}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
+        activeVitrineId={activeVitrineId}
+        setActiveVitrineId={handleVitrineChange}
+        isDropdownOpen={isDropdownOpen}
+        setIsDropdownOpen={setIsDropdownOpen}
       />
-      {/* Content offset: pt-16 for topbar */}
-      <div className="pt-16">
+      {/* Content offset: pt-16 for topbar + dynamic dropdown height */}
+      <motion.div
+        animate={{ paddingTop: isDropdownOpen ? '16rem' : '4rem' }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
+      >
         <main className="min-h-[calc(100vh-64px)]">
           <AnimatePresence mode="wait">
             {activeTab === 'Conteúdo' && (
@@ -4244,6 +4721,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
+                <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
                 <Hero activeVitrineId={activeVitrineId} />
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
@@ -4270,6 +4748,17 @@ export default function App() {
               </motion.div>
             )}
 
+            {activeTab === 'Minhas Compras' && (
+              <motion.div
+                key="minhas-compras"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <MinhasComprasView />
+              </motion.div>
+            )}
+
             {activeTab === 'Minha Área' && (
               <motion.div
                 key="minha-area"
@@ -4283,7 +4772,7 @@ export default function App() {
           </AnimatePresence>
         </main>
         <Footer />
-      </div>
+      </motion.div>
     </div>
   );
 }
