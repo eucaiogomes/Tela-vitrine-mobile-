@@ -1390,7 +1390,7 @@ const MyAreaTreinamentos = () => {
             <input 
               type="text" 
               placeholder="Pesquisar treinamentos por nome..." 
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#F58220]/20 focus:border-[#F58220] rounded-lg text-sm transition-all text-gray-700"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-lg text-sm transition-all text-gray-700"
             />
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           </div>
@@ -1421,7 +1421,7 @@ const MyAreaTreinamentos = () => {
                            setSelectedSituacao(opcao);
                            setIsSituacaoOpen(false);
                          }}
-                         className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-[#F58220]/10 text-[#F58220] font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
+                         className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
                        >
                          {opcao}
                        </button>
@@ -1433,7 +1433,7 @@ const MyAreaTreinamentos = () => {
 
              <button 
                onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
-               className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-[#F58220] border-[#F58220] text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
+               className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
              >
                 <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
                 <span>Filtros</span>
@@ -1461,7 +1461,7 @@ const MyAreaTreinamentos = () => {
                        <button
                          key={opcao}
                          onClick={() => setIsExportOpen(false)}
-                         className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#F58220] transition-colors font-medium"
+                         className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
                        >
                          {opcao}
                        </button>
@@ -1490,12 +1490,12 @@ const MyAreaTreinamentos = () => {
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filtrar por Inscrição</label>
                   <div className="flex items-center gap-2">
                     <div className="relative flex-1">
-                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-[#F58220] focus:ring-1 focus:ring-[#F58220]" />
+                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
                       <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     </div>
                     <span className="text-gray-400 text-sm">até</span>
                     <div className="relative flex-1">
-                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-[#F58220] focus:ring-1 focus:ring-[#F58220]" />
+                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
                       <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     </div>
                   </div>
@@ -1509,12 +1509,12 @@ const MyAreaTreinamentos = () => {
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filtrar por Término</label>
                   <div className="flex items-center gap-2">
                     <div className="relative flex-1">
-                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-[#F58220] focus:ring-1 focus:ring-[#F58220]" />
+                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
                       <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     </div>
                     <span className="text-gray-400 text-sm">até</span>
                     <div className="relative flex-1">
-                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-[#F58220] focus:ring-1 focus:ring-[#F58220]" />
+                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
                       <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     </div>
                   </div>
@@ -1568,7 +1568,7 @@ const MyAreaTreinamentos = () => {
                 <div className="flex items-center gap-2">
                   <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-[#F58220]'}`} 
+                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`} 
                       style={{ width: `${curso.progresso}%` }}
                     ></div>
                   </div>
@@ -1582,7 +1582,7 @@ const MyAreaTreinamentos = () => {
                 <div className="flex items-center gap-2">
                   <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-[#F58220]'}`} 
+                      className={`h-full rounded-full ${curso.situacao.includes('Concluído') ? 'bg-green-500' : 'bg-brand-primary'}`} 
                       style={{ width: `${curso.aproveitamento}%` }}
                     ></div>
                   </div>
@@ -1594,7 +1594,7 @@ const MyAreaTreinamentos = () => {
             {/* Ação Button Dinâmica */}
             <div className="flex-shrink-0 w-full sm:w-auto flex flex-col gap-2">
               {curso.situacao === 'Em andamento' && (
-                <button className="w-full sm:w-auto bg-[#F58220] hover:bg-[#E07010] text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <button className="w-full sm:w-auto bg-brand-primary hover:bg-[#E07010] text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
                   <Play size={16} fill="currentColor" /> Estudar
                 </button>
               )}
@@ -1657,7 +1657,7 @@ const MyAreaHabilidades = () => {
             onClick={() => setActiveRole(role)}
             className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${
               activeRole === role
-                ? 'bg-[#F58220] text-white shadow-sm'
+                ? 'bg-brand-primary text-white shadow-sm'
                 : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
           >
@@ -1684,12 +1684,12 @@ const MyAreaHabilidades = () => {
         <div className="flex-shrink-0 flex items-center gap-5 bg-gray-50 px-6 py-4 rounded-xl border border-gray-100 w-full md:w-auto justify-center">
            <div className="text-right">
              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Prontidão para o Cargo</p>
-             <span className="text-3xl font-display font-bold text-[#F58220]">33%</span>
+             <span className="text-3xl font-display font-bold text-brand-primary">33%</span>
            </div>
            <div className="relative w-16 h-16">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <path className="text-gray-200" strokeWidth="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path className="text-[#F58220]" strokeWidth="4" strokeDasharray="33, 100" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="text-brand-primary" strokeWidth="4" strokeDasharray="33, 100" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
               </svg>
            </div>
         </div>
@@ -1724,7 +1724,7 @@ const MyAreaHabilidades = () => {
                 <div className="flex items-center gap-3">
                   <span className="text-[11px] font-bold uppercase text-gray-400 w-20 tracking-wider">Progresso</span>
                   <div className="h-1.5 flex-grow bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-600 rounded-full" style={{ width: `${train.progress}%` }}></div>
+                    <div className="h-full bg-brand-primary rounded-full" style={{ width: `${train.progress}%` }}></div>
                   </div>
                   <span className="text-xs font-bold text-gray-700 w-8 text-right">{train.progress}%</span>
                 </div>
@@ -1763,150 +1763,406 @@ const MyAreaHabilidades = () => {
   );
 };
 
-const MyAreaTrilhas = () => (
-  <div className="space-y-6">
-    <div className="bg-white border flex flex-col text-left border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition">
-       <div className="p-5 border-b border-gray-100 flex items-start gap-4">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Compass size={24} />
-          </div>
-          <div className="flex-grow w-full">
-            <h3 className="text-lg font-bold text-gray-900">Liderança do Futuro</h3>
-            <div className="flex items-center gap-3 mt-2">
-              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden flex-grow">
-                <div className="h-full bg-indigo-600 rounded-full" style={{ width: '20%' }}></div>
+const MyAreaTrilhas = () => {
+  const trilhas = [
+    { id: 1, nome: 'Liderança do Futuro', progresso: 20, etapas: 8, proxPasso: 'Aula 4: Como dar feedbacks assertivos', cor: '#FF7A1A' },
+    { id: 2, nome: 'Comunicação Avançada', progresso: 55, etapas: 6, proxPasso: 'Módulo 4: Comunicação não-verbal', cor: '#2563EB' },
+    { id: 3, nome: 'Gestão de Dados para RH', progresso: 0, etapas: 5, proxPasso: 'Módulo 1: Introdução à análise de dados', cor: '#10B981' },
+  ];
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {trilhas.map(t => (
+        <div key={t.id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-all group">
+          <div className="p-5 border-b border-gray-100 flex items-start gap-4">
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.cor}15` }}>
+              <Compass size={22} style={{ color: t.cor }} />
+            </div>
+            <div className="flex-grow min-w-0">
+              <h3 className="font-bold text-gray-900 leading-tight mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>{t.nome}</h3>
+              <p className="text-xs text-gray-400">{t.etapas} etapas · {t.progresso === 0 ? 'Não iniciada' : `${t.progresso}% concluído`}</p>
+              <div className="flex items-center gap-2 mt-3">
+                <div className="flex-grow h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${t.progresso}%`, backgroundColor: t.cor }} />
+                </div>
+                <span className="text-xs font-bold text-gray-600 w-9 text-right">{t.progresso}%</span>
               </div>
-              <span className="text-xs font-bold text-gray-700 w-8">20%</span>
             </div>
           </div>
-       </div>
-       <div className="p-5 bg-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Próximo Passo</p>
-            <p className="font-bold text-gray-800">Aula 4: Como dar feedbacks assertivos</p>
+          <div className="p-4 bg-gray-50/60 flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Próximo passo</p>
+              <p className="text-sm font-semibold text-gray-700 truncate">{t.proxPasso}</p>
+            </div>
+            <button className="text-white px-4 py-2 rounded-xl text-sm font-bold transition-opacity hover:opacity-90 flex items-center gap-1.5 flex-shrink-0 shadow-sm" style={{ backgroundColor: t.cor }}>
+              <Play size={13} fill="currentColor" /> {t.progresso === 0 ? 'Iniciar' : 'Continuar'}
+            </button>
           </div>
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
-             <Play size={16} fill="currentColor" /> Continuar Trilha
-          </button>
-       </div>
+        </div>
+      ))}
     </div>
-  </div>
-);
+  );
+};
 
-const MyAreaCertificados = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col justify-between hover:border-gray-300 transition h-48">
-       <div className="flex items-start gap-4 mb-4">
-          <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center border border-amber-100">
-             <Award size={24} />
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-900 leading-tight">Comunicação Assertiva no Trabalho</h3>
-            <p className="text-xs text-gray-500 mt-1">Concluído em: 10/03/2026</p>
-          </div>
-       </div>
-       <button className="w-full mt-auto bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg py-2.5 font-medium transition flex justify-center items-center gap-2">
-          <Download size={18} /> Baixar PDF
-       </button>
-    </div>
-
-    <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col justify-between hover:border-gray-300 transition h-48">
-       <div className="flex items-start gap-4 mb-4">
-          <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center border border-amber-100">
-             <Award size={24} />
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-900 leading-tight">Gestão de Equipes Híbridas</h3>
-            <p className="text-xs text-gray-500 mt-1">Concluído em: 22/02/2026</p>
-          </div>
-       </div>
-       <button className="w-full mt-auto bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg py-2.5 font-medium transition flex justify-center items-center gap-2">
-          <Download size={18} /> Baixar PDF
-       </button>
-    </div>
-  </div>
-);
-
-const MyAreaCalendario = () => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6">
-    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-      Hoje <span className="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full">Urgente</span>
-    </h3>
-    <div className="space-y-4 mb-8">
-      <div className="flex gap-4 items-start relative pb-4">
-         <div className="absolute top-8 bottom-0 left-[11px] w-px bg-gray-200"></div>
-         <div className="w-6 h-6 rounded-full bg-red-100 border-2 border-red-500 z-10 flex-shrink-0"></div>
-         <div>
-            <span className="text-sm font-bold text-gray-900">14:00</span>
-            <p className="font-medium text-gray-800">Aula ao vivo: Liderança em Momentos Críticos</p>
-         </div>
-      </div>
-      <div className="flex gap-4 items-start relative pb-4">
-         <div className="w-6 h-6 rounded-full bg-red-100 border-2 border-red-500 z-10 flex-shrink-0"></div>
-         <div>
-            <span className="text-sm font-bold text-gray-900">16:30</span>
-            <p className="font-medium text-gray-800">Prazo final: Entrega do trabalho Módulo 2</p>
-         </div>
-      </div>
-    </div>
-    
-    <h3 className="text-lg font-bold text-gray-900 mb-6 border-t border-gray-100 pt-6">
-      Próximos Dias
-    </h3>
-    <div className="space-y-4">
-      <div className="flex gap-4 items-start relative pb-4">
-         <div className="w-6 h-6 rounded-full bg-gray-100 border-2 border-gray-300 z-10 flex-shrink-0"></div>
-         <div>
-            <span className="text-sm font-bold text-gray-600">Terça, 25/04</span>
-            <p className="text-gray-800">Nova trilha disponível: Comunicação Avançada</p>
-         </div>
-      </div>
-    </div>
-  </div>
-);
-
-const MyAreaView = () => {
-  const tabs = ['Meus Treinamentos', 'Minhas Trilhas', 'Minhas Habilidades', 'Meus Certificados', 'Meu Calendário', 'Minhas Compras'];
-  const [activeSubTab, setActiveSubTab] = useState('Meus Treinamentos');
-
+const MyAreaCertificados = () => {
+  const certs = [
+    { id: 1, nome: 'Comunicação Assertiva no Trabalho', data: '10/03/2026', carga: '8h' },
+    { id: 2, nome: 'Gestão de Equipes Híbridas', data: '22/02/2026', carga: '12h' },
+    { id: 3, nome: 'Liderança em Momentos Críticos', data: '05/01/2026', carga: '6h' },
+  ];
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-12">
-      {/* Welcome & Rescue Hero */}
-      <div className="mb-10">
-        <h2 className="text-3xl font-display font-bold text-gray-900 mb-6 tracking-tight">
-          Olá, Caio!
-        </h2>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-5 rounded-full bg-brand-primary" />
+          <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Certificados Emitidos</span>
+        </div>
+        <span className="text-xs text-gray-400">{certs.length} certificado{certs.length !== 1 ? 's' : ''}</span>
       </div>
-
-      {/* Tabs */}
-      <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200 mb-8 mt-2 pb-[1px]">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveSubTab(tab)}
-            className={`px-6 py-4 text-sm font-bold transition-all whitespace-nowrap border-b-[3px] ${
-              activeSubTab === tab 
-                ? 'border-[#F58220] text-[#F58220]' 
-                : 'border-transparent text-gray-500 hover:text-gray-800'
-            }`}
-          >
-            {tab}
-          </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {certs.map(c => (
+          <div key={c.id} className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-4 hover:shadow-md hover:border-brand-primary/30 transition-all group">
+            <div className="flex items-start gap-3">
+              <div className="w-11 h-11 bg-brand-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Award size={22} className="text-brand-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 leading-tight text-sm">{c.nome}</h3>
+                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                  <span className="text-[10px] text-gray-400 flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> {c.data}</span>
+                  <span className="text-[10px] text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {c.carga}</span>
+                </div>
+              </div>
+            </div>
+            <button className="w-full bg-gray-50 border border-gray-200 hover:bg-brand-primary hover:border-brand-primary hover:text-white text-gray-600 rounded-xl py-2 text-sm font-semibold transition-all flex justify-center items-center gap-2">
+              <Download size={15} /> Baixar PDF
+            </button>
+          </div>
         ))}
       </div>
+    </div>
+  );
+};
 
-      {/* Dynamic Content area */}
-      <div className="min-h-[400px]">
+const MyAreaCalendario = () => {
+  const today = new Date();
+  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [newTaskText, setNewTaskText] = useState('');
+  const [tasks, setTasks] = useState([
+    { id: 1, title: 'Completar Módulo 3 — Liderança', done: false, priority: 'high', date: today },
+    { id: 2, title: 'Assistir aula gravada de Feedback', done: false, priority: 'medium', date: today },
+    { id: 3, title: 'Preencher pesquisa GPTW', done: true, priority: 'low', date: today },
+    { id: 4, title: 'Enviar trabalho Módulo 2', done: false, priority: 'high', date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1) },
+    { id: 5, title: 'Agendar sessão de mentoria', done: false, priority: 'medium', date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3) },
+  ]);
+
+  const events = [
+    { id: 1, date: today, time: '14:00', title: 'Aula ao vivo: Liderança em Momentos Críticos', color: '#FF7A1A', type: 'aula' },
+    { id: 2, date: today, time: '16:30', title: 'Prazo: Entrega do trabalho Módulo 2', color: '#EF4444', type: 'prazo' },
+    { id: 3, date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3), time: '10:00', title: 'Webinar: IA no Trabalho', color: '#2563EB', type: 'webinar' },
+    { id: 4, date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8), time: '09:00', title: 'Treinamento Presencial: Excel Avançado', color: '#FF7A1A', type: 'treinamento' },
+    { id: 5, date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 13), time: '15:00', title: 'Avaliação: Comunicação Assertiva', color: '#EF4444', type: 'prazo' },
+    { id: 6, date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 18), time: '—', title: 'Nova trilha disponível: Gestão de Dados', color: '#10B981', type: 'trilha' },
+    { id: 7, date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 21), time: '11:00', title: 'Certificação: Comunicação Assertiva', color: '#F59E0B', type: 'cert' },
+  ];
+
+  const isSameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+  const yr = currentDate.getFullYear();
+  const mo = currentDate.getMonth();
+  const firstWeekday = new Date(yr, mo, 1).getDay();
+  const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < firstWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(yr, mo, d));
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const eventsForDay = (d: Date) => events.filter(e => isSameDay(e.date, d));
+  const selectedEvents = eventsForDay(selectedDay);
+  const pendingTasks = tasks.filter(t => !t.done).length;
+  const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+  const priorityBadge: Record<string, string> = {
+    high: 'bg-red-50 text-red-600 border-red-200',
+    medium: 'bg-orange-50 text-orange-600 border-orange-200',
+    low: 'bg-gray-50 text-gray-500 border-gray-200',
+  };
+  const eventTypeIcon: Record<string, string> = { aula: '🎓', prazo: '⚠️', webinar: '💻', treinamento: '📚', trilha: '🧭', cert: '🏆' };
+
+  const addTask = () => {
+    if (!newTaskText.trim()) return;
+    setTasks(prev => [...prev, { id: Date.now(), title: newTaskText.trim(), done: false, priority: 'medium', date: selectedDay }]);
+    setNewTaskText('');
+  };
+
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-6">
+
+      {/* ── CALENDÁRIO ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        {/* Header do mês */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h3 className="text-lg font-bold text-gray-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            {MONTHS[mo]} <span className="text-gray-400 font-medium">{yr}</span>
+          </h3>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1))}
+              className="px-3 py-1.5 text-xs font-bold text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-primary/5 transition"
+            >
+              Hoje
+            </button>
+            <button onClick={() => setCurrentDate(new Date(yr, mo - 1, 1))} className="p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-500">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button onClick={() => setCurrentDate(new Date(yr, mo + 1, 1))} className="p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-500">
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Nomes dos dias */}
+        <div className="grid grid-cols-7 border-b border-gray-100">
+          {DAYS.map(d => (
+            <div key={d} className="text-center text-[11px] font-bold text-gray-400 uppercase py-3 tracking-wider">{d}</div>
+          ))}
+        </div>
+
+        {/* Células dos dias */}
+        <div className="grid grid-cols-7 p-3 gap-1">
+          {cells.map((day, i) => {
+            if (!day) return <div key={i} />;
+            const isToday = isSameDay(day, today);
+            const isSel = isSameDay(day, selectedDay);
+            const dayEvents = eventsForDay(day);
+            return (
+              <button
+                key={i}
+                onClick={() => setSelectedDay(day)}
+                className={`flex flex-col items-center gap-0.5 p-1.5 rounded-xl transition-all min-h-[52px]
+                  ${isToday ? 'bg-brand-primary text-white shadow-sm' : isSel ? 'bg-brand-primary/10 text-brand-primary ring-1 ring-brand-primary/30' : 'hover:bg-gray-50 text-gray-700'}`}
+              >
+                <span className={`text-sm font-bold leading-none ${isToday ? 'text-white' : isSel ? 'text-brand-primary' : ''}`}>
+                  {day.getDate()}
+                </span>
+                {dayEvents.length > 0 && (
+                  <div className="flex gap-[3px] mt-1 flex-wrap justify-center">
+                    {dayEvents.slice(0, 3).map(ev => (
+                      <span key={ev.id} className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: isToday ? 'rgba(255,255,255,0.7)' : ev.color }} />
+                    ))}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Legenda */}
+        <div className="px-5 pb-4 flex flex-wrap gap-4">
+          {[['#FF7A1A','Aulas'],['#EF4444','Prazos'],['#2563EB','Webinars'],['#10B981','Trilhas'],['#F59E0B','Certificações']].map(([c, l]) => (
+            <div key={l} className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c as string }} />
+              <span className="text-[11px] text-gray-500 font-medium">{l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PAINEL LATERAL ── */}
+      <div className="flex flex-col gap-4">
+
+        {/* Eventos do dia selecionado */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                {isSameDay(selectedDay, today) ? 'Hoje' : DAYS[selectedDay.getDay()]}
+              </p>
+              <h4 className="text-lg font-bold text-gray-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {selectedDay.getDate()} de {MONTHS[selectedDay.getMonth()]}
+              </h4>
+            </div>
+            {isSameDay(selectedDay, today) && (
+              <span className="bg-brand-primary/10 text-brand-primary text-xs font-bold px-3 py-1 rounded-full">Hoje</span>
+            )}
+          </div>
+
+          {selectedEvents.length === 0 ? (
+            <div className="text-center py-6">
+              <Calendar className="w-8 h-8 mx-auto text-gray-200 mb-2" />
+              <p className="text-sm text-gray-400">Sem eventos neste dia</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {selectedEvents.map(ev => (
+                <div key={ev.id} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-lg leading-none mt-0.5">{eventTypeIcon[ev.type]}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-800 leading-tight">{ev.title}</p>
+                    {ev.time !== '—' && (
+                      <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {ev.time}
+                      </p>
+                    )}
+                  </div>
+                  <div className="w-1 h-full min-h-[32px] rounded-full flex-shrink-0" style={{ backgroundColor: ev.color }} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Tarefas */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex-1">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h4 className="font-bold text-gray-900" style={{ fontFamily: 'Outfit, sans-serif' }}>Tarefas</h4>
+              {pendingTasks > 0 && (
+                <span className="bg-brand-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{pendingTasks}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Nova tarefa */}
+          <div className="flex gap-2 mb-4">
+            <input
+              type="text"
+              placeholder="Nova tarefa..."
+              value={newTaskText}
+              onChange={e => setNewTaskText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && addTask()}
+              className="flex-1 text-sm bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition"
+            />
+            <button
+              onClick={addTask}
+              className="px-3 py-2 bg-brand-primary text-white rounded-lg text-sm font-bold hover:opacity-90 transition"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="space-y-1">
+            {tasks.map(task => (
+              <div key={task.id} className={`flex items-start gap-3 py-2.5 px-1 rounded-lg transition group ${task.done ? 'opacity-50' : 'hover:bg-gray-50'}`}>
+                <button
+                  onClick={() => setTasks(prev => prev.map(t => t.id === task.id ? { ...t, done: !t.done } : t))}
+                  className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition
+                    ${task.done ? 'bg-brand-primary border-brand-primary' : 'border-gray-300 hover:border-brand-primary'}`}
+                >
+                  {task.done && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm leading-tight ${task.done ? 'line-through text-gray-400' : 'text-gray-700 font-medium'}`}>
+                    {task.title}
+                  </p>
+                </div>
+                <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded border flex-shrink-0 mt-0.5 ${priorityBadge[task.priority]}`}>
+                  {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Média' : 'Baixa'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MyAreaView = () => {
+  const tabs = [
+    { label: 'Meus Treinamentos', icon: BookOpen },
+    { label: 'Minhas Trilhas', icon: Compass },
+    { label: 'Minhas Habilidades', icon: Brain },
+    { label: 'Meus Certificados', icon: Award },
+    { label: 'Meu Calendário', icon: Calendar },
+    { label: 'Minhas Compras', icon: ShoppingBag },
+  ];
+  const [activeSubTab, setActiveSubTab] = useState('Meus Treinamentos');
+
+  const stats = [
+    { label: 'Treinamentos', value: '5', sub: '1 concluído', icon: BookOpen },
+    { label: 'Trilhas', value: '3', sub: '1 em andamento', icon: Compass },
+    { label: 'Certificados', value: '3', sub: 'emitidos', icon: Award },
+    { label: 'Horas', value: '24h', sub: 'de aprendizado', icon: Clock },
+  ];
+
+  return (
+    <div className="bg-[#F7F9FC] min-h-[calc(100vh-64px)]">
+
+      {/* ── HEADER BANNER ── */}
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #041433 0%, #0a2254 100%)' }}>
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 15% 60%, #FF7A1A 0%, transparent 50%), radial-gradient(circle at 85% 20%, #2563EB 0%, transparent 45%)' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-8 relative">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+            <img
+              src="https://ui-avatars.com/api/?name=Caio+Gomes&background=FF7A1A&color=fff&size=80"
+              alt="Caio Gomes"
+              className="w-16 h-16 rounded-full border-2 border-white/20 shadow-lg flex-shrink-0"
+            />
+            <div className="flex-1">
+              <p className="text-white/50 text-sm font-medium">Bem-vindo de volta,</p>
+              <h1 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>Caio Gomes</h1>
+              <p className="text-white/50 text-sm mt-0.5">Engenharia de Software · Analista SR</p>
+            </div>
+          </div>
+
+          {/* Stats rápidos */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+            {stats.map(s => (
+              <div key={s.label} className="rounded-xl px-4 py-3 border border-white/10" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <s.icon className="w-3.5 h-3.5 text-brand-primary" />
+                  <span className="text-white/50 text-[11px] font-medium">{s.label}</span>
+                </div>
+                <p className="text-white font-bold text-xl leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>{s.value}</p>
+                <p className="text-white/40 text-[11px] mt-0.5">{s.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── SUB-TABS ── */}
+      <div className="bg-white border-b border-gray-200 sticky top-[64px] z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+          <div className="flex overflow-x-auto scrollbar-hide pb-[1px] gap-1">
+            {tabs.map(({ label, icon: Icon }) => (
+              <button
+                key={label}
+                onClick={() => setActiveSubTab(label)}
+                className={`flex items-center gap-2 px-5 py-4 text-sm font-bold transition-all whitespace-nowrap border-b-[3px] flex-shrink-0 ${
+                  activeSubTab === label
+                    ? 'border-brand-primary text-brand-primary'
+                    : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-200'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── CONTEÚDO ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-8 min-h-[400px]">
         {activeSubTab === 'Meus Treinamentos' && <MyAreaTreinamentos />}
         {activeSubTab === 'Minhas Trilhas' && <MyAreaTrilhas />}
         {activeSubTab === 'Minhas Habilidades' && <MyAreaHabilidades />}
         {activeSubTab === 'Meus Certificados' && <MyAreaCertificados />}
         {activeSubTab === 'Meu Calendário' && <MyAreaCalendario />}
         {activeSubTab === 'Minhas Compras' && (
-          <div className="text-center py-20 text-gray-500">
-            <ShoppingBag className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="font-medium text-gray-600">Nenhuma compra recente.</p>
-            <p className="text-sm mt-1">Quando você realizar uma compra ou upgrade, ela aparecerá aqui.</p>
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-20 h-20 bg-brand-primary/10 rounded-2xl flex items-center justify-center mb-5">
+              <ShoppingBag className="w-10 h-10 text-brand-primary/40" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>Nenhuma compra ainda</h3>
+            <p className="text-gray-500 text-sm max-w-xs">Quando você adquirir um treinamento ou upgrade de plano, ele aparecerá aqui.</p>
+            <button className="mt-6 bg-brand-primary text-white px-6 py-2.5 rounded-full font-semibold hover:opacity-90 transition text-sm shadow-sm">
+              Explorar Treinamentos
+            </button>
           </div>
         )}
       </div>
@@ -2207,7 +2463,7 @@ const HeroV2 = () => {
               className="w-full pl-12 pr-32 py-4 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-300 text-sm"
             />
             <Search className="absolute left-4 top-[18px] h-5 w-5 text-gray-400" />
-            <button className="absolute right-2 top-2 bottom-2 bg-[#F58220] hover:bg-[#E07010] text-white px-8 rounded-lg font-medium transition-colors">
+            <button className="absolute right-2 top-2 bottom-2 bg-brand-primary hover:bg-[#E07010] text-white px-8 rounded-lg font-medium transition-colors">
               Buscar
             </button>
           </div>
