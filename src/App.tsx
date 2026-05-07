@@ -1764,41 +1764,339 @@ const MyAreaHabilidades = () => {
 };
 
 const MyAreaTrilhas = () => {
-  const trilhas = [
-    { id: 1, nome: 'Liderança do Futuro', progresso: 20, etapas: 8, proxPasso: 'Aula 4: Como dar feedbacks assertivos', cor: '#FF7A1A' },
-    { id: 2, nome: 'Comunicação Avançada', progresso: 55, etapas: 6, proxPasso: 'Módulo 4: Comunicação não-verbal', cor: '#2563EB' },
-    { id: 3, nome: 'Gestão de Dados para RH', progresso: 0, etapas: 5, proxPasso: 'Módulo 1: Introdução à análise de dados', cor: '#10B981' },
+  const [isSituacaoOpen, setIsSituacaoOpen] = useState(false);
+  const situacaoOptions = ['Qualquer', 'Em andamento', 'Aguardando correção de avaliações', 'Evadido', 'Concluído - Aprovado', 'Concluído - Reprovado'];
+  const [selectedSituacao, setSelectedSituacao] = useState('Qualquer');
+
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const exportOptions = ['CSV', 'Excel', 'PDF'];
+
+  const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
+
+  const trilhasData = [
+    {
+      id: '1',
+      nome: 'Liderança do Futuro',
+      cargaHoraria: '20:00:00',
+      inscricao: '10/01/2026',
+      termino: '-',
+      expiracao: '-',
+      situacao: 'Em andamento',
+      progresso: 35,
+      aproveitamento: 35,
+      badgeColor: 'bg-blue-100 text-blue-700'
+    },
+    {
+      id: '2',
+      nome: 'Comunicação Avançada',
+      cargaHoraria: '16:00:00',
+      inscricao: '05/11/2025',
+      termino: '-',
+      expiracao: '-',
+      situacao: 'Aguardando correção de avaliações',
+      progresso: 100,
+      aproveitamento: 60,
+      badgeColor: 'bg-amber-100 text-amber-700'
+    },
+    {
+      id: '3',
+      nome: 'Gestão de Dados para RH',
+      cargaHoraria: '12:00:00',
+      inscricao: '20/09/2025',
+      termino: '-',
+      expiracao: '-',
+      situacao: 'Evadido',
+      progresso: 20,
+      aproveitamento: 0,
+      badgeColor: 'bg-gray-100 text-gray-700'
+    },
+    {
+      id: '4',
+      nome: 'Desenvolvimento Ágil de Equipes',
+      cargaHoraria: '24:00:00',
+      inscricao: '03/08/2025',
+      termino: '15/10/2025',
+      expiracao: '-',
+      situacao: 'Concluído - Aprovado',
+      progresso: 100,
+      aproveitamento: 92,
+      badgeColor: 'bg-green-100 text-green-700'
+    },
+    {
+      id: '5',
+      nome: 'Inovação e Criatividade Corporativa',
+      cargaHoraria: '10:00:00',
+      inscricao: '15/06/2025',
+      termino: '30/07/2025',
+      expiracao: '-',
+      situacao: 'Concluído - Reprovado',
+      progresso: 100,
+      aproveitamento: 45,
+      badgeColor: 'bg-red-100 text-red-700'
+    }
   ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      {trilhas.map(t => (
-        <div key={t.id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-all group">
-          <div className="p-5 border-b border-gray-100 flex items-start gap-4">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.cor}15` }}>
-              <Compass size={22} style={{ color: t.cor }} />
-            </div>
-            <div className="flex-grow min-w-0">
-              <h3 className="font-bold text-gray-900 leading-tight mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>{t.nome}</h3>
-              <p className="text-xs text-gray-400">{t.etapas} etapas · {t.progresso === 0 ? 'Não iniciada' : `${t.progresso}% concluído`}</p>
-              <div className="flex items-center gap-2 mt-3">
-                <div className="flex-grow h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${t.progresso}%`, backgroundColor: t.cor }} />
+    <div className="space-y-6">
+
+      {/* Search and Filters Bar */}
+      <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm mb-6 flex flex-col gap-4">
+
+        {/* Top Row: Search and Quick Actions */}
+        <div className="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
+          <div className="relative flex-grow w-full max-w-2xl">
+            <input
+              type="text"
+              placeholder="Pesquisar trilhas por nome..."
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-lg text-sm transition-all text-gray-700"
+            />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          </div>
+
+          <div className="flex gap-2 w-full xl:w-auto overflow-x-visible pb-2 xl:pb-0 scrollbar-hide shrink-0 relative">
+             <div className="relative">
+               <button
+                 onClick={() => setIsSituacaoOpen(!isSituacaoOpen)}
+                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-between gap-2 transition-colors whitespace-nowrap min-w-[140px]"
+               >
+                  <span>{selectedSituacao === 'Qualquer' ? 'Situação' : selectedSituacao}</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isSituacaoOpen ? 'rotate-180' : ''}`} />
+               </button>
+
+               <AnimatePresence>
+                 {isSituacaoOpen && (
+                   <motion.div
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     exit={{ opacity: 0, y: 10 }}
+                     transition={{ duration: 0.2 }}
+                     className="absolute z-20 top-full mt-2 left-0 w-full min-w-[240px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                   >
+                     {situacaoOptions.map((opcao) => (
+                       <button
+                         key={opcao}
+                         onClick={() => {
+                           setSelectedSituacao(opcao);
+                           setIsSituacaoOpen(false);
+                         }}
+                         className={`w-full text-left px-4 py-2 text-sm transition-colors ${selectedSituacao === opcao ? 'bg-brand-primary/10 text-brand-primary font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}
+                       >
+                         {opcao}
+                       </button>
+                     ))}
+                   </motion.div>
+                 )}
+               </AnimatePresence>
+             </div>
+
+             <button
+               onClick={() => setIsAdvancedFiltersOpen(!isAdvancedFiltersOpen)}
+               className={`px-5 py-2.5 border rounded-lg text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${isAdvancedFiltersOpen ? 'bg-brand-primary border-brand-primary text-white' : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700'}`}
+             >
+                <Filter className={`w-4 h-4 ${isAdvancedFiltersOpen ? 'text-white' : 'text-gray-400'}`} />
+                <span>Filtros</span>
+             </button>
+
+             <div className="relative">
+               <button
+                 onClick={() => setIsExportOpen(!isExportOpen)}
+                 className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2 transition-colors whitespace-nowrap min-w-[150px] justify-center"
+               >
+                  <Download className="w-4 h-4 text-gray-400" />
+                  <span>Exportar Dados</span>
+               </button>
+
+               <AnimatePresence>
+                 {isExportOpen && (
+                   <motion.div
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     exit={{ opacity: 0, y: 10 }}
+                     transition={{ duration: 0.2 }}
+                     className="absolute z-20 top-full mt-2 right-0 w-full min-w-[150px] bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 focus:outline-none overflow-hidden"
+                   >
+                     {exportOptions.map((opcao) => (
+                       <button
+                         key={opcao}
+                         onClick={() => setIsExportOpen(false)}
+                         className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary transition-colors font-medium"
+                       >
+                         {opcao}
+                       </button>
+                     ))}
+                   </motion.div>
+                 )}
+               </AnimatePresence>
+             </div>
+          </div>
+        </div>
+
+        {/* Bottom Row: Advanced Date Filters */}
+        <AnimatePresence>
+          {isAdvancedFiltersOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="flex flex-col lg:flex-row gap-4 pt-4 border-t border-gray-100">
+
+                {/* Data Inscricao Filter */}
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filtrar por Inscrição</label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                    <span className="text-gray-400 text-sm">até</span>
+                    <div className="relative flex-1">
+                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
                 </div>
-                <span className="text-xs font-bold text-gray-600 w-9 text-right">{t.progresso}%</span>
+
+                {/* Divisor */}
+                <div className="hidden lg:block w-px bg-gray-100 mx-2"></div>
+
+                {/* Data Conclusao Filter */}
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filtrar por Término</label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <input type="text" placeholder="Data inicial" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                    <span className="text-gray-400 text-sm">até</span>
+                    <div className="relative flex-1">
+                      <input type="text" placeholder="Data final" className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary" />
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {trilhasData.map((trilha) => (
+        <div key={trilha.id} className="bg-gray-50 rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col xl:flex-row gap-6 hover:shadow-md hover:border-gray-300 hover:bg-white transition-all relative overflow-hidden group">
+          {trilha.situacao === 'Concluído - Aprovado' && (
+            <div className="absolute top-0 left-0 w-1 h-full bg-green-500/80"></div>
+          )}
+          {trilha.situacao === 'Concluído - Reprovado' && (
+            <div className="absolute top-0 left-0 w-1 h-full bg-red-400/80"></div>
+          )}
+
+          {/* Esquerda: Informações da Trilha */}
+          <div className="flex-grow xl:w-1/2">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-7 h-7 bg-brand-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Compass className="w-4 h-4 text-brand-primary" />
+              </div>
+              <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${trilha.badgeColor}`}>
+                {trilha.situacao}
+              </span>
+            </div>
+
+            <h3 className="text-xl font-bold text-gray-900 leading-tight mb-4 pr-4">
+              {trilha.nome}
+            </h3>
+
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-gray-500">
+              {trilha.cargaHoraria !== '-' && (
+                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-gray-400"/> {trilha.cargaHoraria}</span>
+              )}
+              {trilha.inscricao !== '-' && (
+                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-gray-400"/> Inscrito em: {trilha.inscricao}</span>
+              )}
+              {trilha.termino !== '-' && (
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-green-600/60"/> Término: {trilha.termino}</span>
+              )}
             </div>
           </div>
-          <div className="p-4 bg-gray-50/60 flex items-center justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Próximo passo</p>
-              <p className="text-sm font-semibold text-gray-700 truncate">{t.proxPasso}</p>
+
+          {/* Direita: Progresso e Ações */}
+          <div className="flex flex-col sm:flex-row xl:w-1/2 items-start xl:items-center justify-between gap-6 pt-5 xl:pt-0 border-t xl:border-t-0 xl:border-l border-gray-100 xl:pl-8">
+
+            {/* Medidores */}
+            <div className="flex flex-col gap-3 w-full xl:w-48 shrink-0">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Progresso</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${trilha.situacao === 'Concluído - Aprovado' ? 'bg-green-500' : trilha.situacao === 'Concluído - Reprovado' ? 'bg-red-400' : 'bg-brand-primary'}`}
+                      style={{ width: `${trilha.progresso}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs font-bold text-gray-700 w-12 text-right">{trilha.progresso.toFixed(2)}%</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Aproveitamento</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${trilha.situacao === 'Concluído - Aprovado' ? 'bg-green-500' : trilha.situacao === 'Concluído - Reprovado' ? 'bg-red-400' : 'bg-brand-primary'}`}
+                      style={{ width: `${trilha.aproveitamento}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs font-bold text-gray-700 w-12 text-right">{trilha.aproveitamento.toFixed(2)}%</span>
+                </div>
+              </div>
             </div>
-            <button className="text-white px-4 py-2 rounded-xl text-sm font-bold transition-opacity hover:opacity-90 flex items-center gap-1.5 flex-shrink-0 shadow-sm" style={{ backgroundColor: t.cor }}>
-              <Play size={13} fill="currentColor" /> {t.progresso === 0 ? 'Iniciar' : 'Continuar'}
-            </button>
+
+            {/* Ação Button Dinâmica */}
+            <div className="flex-shrink-0 w-full sm:w-auto flex flex-col gap-2">
+              {trilha.situacao === 'Em andamento' && (
+                <button className="w-full sm:w-auto bg-brand-primary hover:bg-[#E07010] text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                  <Play size={16} fill="currentColor" /> Continuar Trilha
+                </button>
+              )}
+
+              {trilha.situacao === 'Aguardando correção de avaliações' && (
+                <button disabled className="w-full sm:w-auto bg-gray-100/50 text-gray-400 cursor-not-allowed px-6 py-2.5 rounded-lg font-medium flex items-center justify-center gap-2">
+                  <Clock size={16} /> Em Correção
+                </button>
+              )}
+
+              {(trilha.situacao === 'Concluído - Aprovado' || trilha.situacao === 'Concluído - Reprovado') && (
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <button className="w-full sm:w-auto bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <TrendingUp size={15} /> Desempenho
+                  </button>
+                  {trilha.situacao === 'Concluído - Aprovado' && (
+                    <button className="w-full sm:w-auto bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                      <Award size={15} /> Certificado
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       ))}
+
+      {/* Paginação */}
+      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <span className="text-xs text-gray-500">Mostrando de 1 até 5 de 12 registros</span>
+        <div className="flex gap-1">
+           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Anterior</button>
+           <button className="px-3 py-1 bg-brand-primary text-white rounded-md text-sm font-medium">1</button>
+           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+           <button className="px-3 py-1 border border-gray-200 rounded-md text-sm text-gray-500 hover:bg-gray-50">Próximo</button>
+        </div>
+      </div>
+
     </div>
   );
 };
