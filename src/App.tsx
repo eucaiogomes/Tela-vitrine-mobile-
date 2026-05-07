@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
 import { 
@@ -288,6 +288,8 @@ const Topbar = ({
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
@@ -300,6 +302,21 @@ const Topbar = ({
       setSuggestions([]);
     }
   }, [searchQuery]);
+
+  // Close user menu and suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSuggestions([]);
+        setSearchQuery('');
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-100 shadow-sm">
@@ -318,7 +335,7 @@ const Topbar = ({
         </div>
 
         {/* Search */}
-        <div className="relative flex-1 max-w-sm">
+        <div ref={searchRef} className="relative flex-1 max-w-sm">
           <input
             type="text"
             placeholder="Pesquisar..."
@@ -326,7 +343,7 @@ const Topbar = ({
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-gray-100 border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-full text-sm transition-all duration-300"
           />
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
           <AnimatePresence>
             {suggestions.length > 0 && (
               <motion.div
@@ -371,7 +388,7 @@ const Topbar = ({
             </button>
           </Tooltip>
           <div className="h-8 w-px bg-gray-200 mx-1" />
-          <div className="relative">
+          <div ref={userMenuRef} className="relative">
             <button
               onClick={() => setIsUserMenuOpen(v => !v)}
               className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
@@ -450,6 +467,18 @@ const Sidebar = ({
 }) => {
   const [activeVitrineId, setActiveVitrineId] = useState('v1');
   const [vitrineBusca, setVitrineBusca] = useState('');
+
+  // Close sidebar on desktop resize or Escape key
+  useEffect(() => {
+    const handleResize = () => { if (window.innerWidth >= 1024) onClose(); };
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   const vitrineFiltradas = vitrineBusca.trim().length > 0
     ? VITRINES.filter(v =>
@@ -3982,17 +4011,20 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('Conteúdo');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const handleMenuToggle = useCallback(() => setIsSidebarOpen(v => !v), []);
+  const handleSidebarClose = useCallback(() => setIsSidebarOpen(false), []);
+
   return (
     <div className="min-h-screen bg-white">
       <Topbar
-        onMenuToggle={() => setIsSidebarOpen(v => !v)}
+        onMenuToggle={handleMenuToggle}
         setActiveTab={setActiveTab}
       />
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        onClose={handleSidebarClose}
       />
       {/* Content offset: pt-16 for topbar, lg:pl-64 for sidebar */}
       <div className="pt-16 lg:pl-64">
