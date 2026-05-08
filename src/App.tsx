@@ -552,170 +552,40 @@ const VitrineBreadcrumb = ({ activeVitrineId }: { activeVitrineId: string }) => 
 };
 
 // ============================================================
-// CATEGORY DROPDOWN
+// VITRINE BAR
 // ============================================================
 
-const CategoryDropdown = ({
-  isOpen,
-  onClose,
+const VitrineBar = ({
   activeVitrineId,
   setActiveVitrineId,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
   activeVitrineId: string;
   setActiveVitrineId: (id: string) => void;
-}) => {
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [activeSub, setActiveSub] = useState<string | null>(null);
-
-  const getVitrinesForDisplay = () => {
-    if (activeCategory === 'all') return CATEGORY_DATA.all.vitrines;
-    const catData = CATEGORY_DATA[activeCategory as keyof typeof CATEGORY_DATA];
-    if (!activeSub) return catData.vitrines;
-    const sub = catData.subs.find(s => s.id === activeSub);
-    return sub?.vitriIds || [];
-  };
-
-  const selectVitrine = (vitrineId: string) => {
-    setActiveVitrineId(vitrineId);
-    onClose();
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('[data-category-dropdown]')) {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  const currentCatData = CATEGORY_DATA[activeCategory as keyof typeof CATEGORY_DATA];
-  const hasSubs = currentCatData?.subs?.length > 0;
-  const catEntries = Object.entries(CATEGORY_DATA);
-  const vitrinesForDisplay = getVitrinesForDisplay();
-  const vitrineObjects = vitrinesForDisplay.map(id => VITRINES.find(v => v.id === id)).filter(Boolean);
-
-  const renderCategories = () => (
-    <div>
-      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Categoria</p>
-      <div className="flex flex-wrap gap-2">
-        {catEntries.map(([key, data], i) => (
-          <motion.button
-            key={key}
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.03, duration: 0.16, ease: 'easeOut' }}
-            onClick={() => { setActiveCategory(key); setActiveSub(null); }}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
-              activeCategory === key
-                ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                : 'border-gray-200 bg-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-800 hover:border-gray-300'
-            }`}
-          >
-            {data.label}
-          </motion.button>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderSubcategories = () => {
-    if (!hasSubs) return null;
-    return (
-      <AnimatePresence>
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-          className="overflow-hidden"
-        >
-          <div className="h-px bg-gray-100 mb-4" />
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Subcategoria</p>
-          <div className="flex flex-wrap gap-2">
-            {currentCatData.subs.map((sub, i) => (
-              <motion.button
-                key={sub.id}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.04, duration: 0.16, ease: 'easeOut' }}
-                onClick={() => setActiveSub(activeSub === sub.id ? null : sub.id)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
-                  activeSub === sub.id
-                    ? 'border-brand-primary bg-brand-primary text-white'
-                    : 'border-gray-200 bg-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-800 hover:border-gray-300'
-                }`}
-              >
-                {sub.label}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  };
-
-  const renderVitrines = () => (
-    <div>
-      <div className="h-px bg-gray-100 mb-4" />
-      <div className="flex items-center justify-between mb-2.5">
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vitrines</p>
-        <span className="text-[10px] text-gray-400">{vitrineObjects.length} disponíveis</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {vitrineObjects.map((vitrine, i) => {
-          const isActive = vitrine!.id === activeVitrineId;
+}) => (
+  <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+    <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+      <div className="flex items-center gap-2 overflow-x-auto py-3 scrollbar-hide">
+        {VITRINES.map((vitrine) => {
+          const isActive = vitrine.id === activeVitrineId;
           return (
-            <motion.button
-              key={vitrine!.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.18, ease: 'easeOut' }}
-              onClick={() => selectVitrine(vitrine!.id)}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-xl border text-sm font-medium transition-all duration-150 whitespace-nowrap ${
+            <button
+              key={vitrine.id}
+              onClick={() => setActiveVitrineId(vitrine.id)}
+              className={`flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 whitespace-nowrap ${
                 isActive
-                  ? 'border-brand-primary border-2 bg-brand-primary/10 text-brand-primary'
-                  : 'border-gray-200 bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300'
+                  ? 'bg-brand-primary text-white border-brand-primary'
+                  : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 hover:bg-gray-50'
               }`}
             >
-              {vitrine!.nome}
-              {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0" />}
-            </motion.button>
+              {vitrine.nome}
+              {isActive && <Check className="w-3 h-3 flex-shrink-0" />}
+            </button>
           );
         })}
       </div>
     </div>
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-      data-category-dropdown
-      className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-gray-200"
-      style={{ boxShadow: '0 8px 32px 0 rgba(0,0,0,0.09)' }}
-    >
-      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-5">
-        <div className="flex flex-col gap-4">
-          {renderCategories()}
-          {renderSubcategories()}
-          {renderVitrines()}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+  </div>
+);
 
 
 // ============================================================
@@ -725,18 +595,10 @@ const Topbar = ({
   onMenuToggle,
   setActiveTab,
   activeTab,
-  activeVitrineId,
-  setActiveVitrineId,
-  isDropdownOpen,
-  setIsDropdownOpen,
 }: {
   onMenuToggle: () => void;
   setActiveTab: (tab: string) => void;
   activeTab: string;
-  activeVitrineId: string;
-  setActiveVitrineId: (id: string) => void;
-  isDropdownOpen: boolean;
-  setIsDropdownOpen: (v: boolean) => void;
 }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
@@ -834,14 +696,7 @@ const Topbar = ({
             {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
               <button
                 key={tab}
-                onClick={() => {
-                  setActiveTab(tab);
-                  if (tab === 'Conteúdo') {
-                    setIsDropdownOpen(!isDropdownOpen);
-                  } else {
-                    setIsDropdownOpen(false);
-                  }
-                }}
+                onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${activeTab === tab
                   ? 'bg-brand-primary/10 text-brand-primary'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
@@ -932,16 +787,6 @@ const Topbar = ({
         </div>
       </header>
 
-      <AnimatePresence>
-        {isDropdownOpen && (
-          <CategoryDropdown
-            isOpen={isDropdownOpen}
-            onClose={() => setIsDropdownOpen(false)}
-            activeVitrineId={activeVitrineId}
-            setActiveVitrineId={setActiveVitrineId}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 };
@@ -4647,8 +4492,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('Conteúdo');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeVitrineId, setActiveVitrineId] = useState('v1');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const handleMenuToggle = useCallback(() => setIsSidebarOpen(v => !v), []);
   const handleSidebarClose = useCallback(() => setIsSidebarOpen(false), []);
   const handleVitrineChange = useCallback((id: string) => setActiveVitrineId(id), []);
@@ -4659,16 +4502,8 @@ export default function App() {
         onMenuToggle={handleMenuToggle}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
-        activeVitrineId={activeVitrineId}
-        setActiveVitrineId={handleVitrineChange}
-        isDropdownOpen={isDropdownOpen}
-        setIsDropdownOpen={setIsDropdownOpen}
       />
-      {/* Content offset: pt-16 for topbar + dynamic dropdown height */}
-      <motion.div
-        animate={{ paddingTop: isDropdownOpen ? '16rem' : '4rem' }}
-        transition={{ duration: 0.18, ease: 'easeOut' }}
-      >
+      <div className="pt-16">
         <main className="min-h-[calc(100vh-64px)]">
           <AnimatePresence mode="wait">
             {activeTab === 'Conteúdo' && (
@@ -4678,6 +4513,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
+                <VitrineBar activeVitrineId={activeVitrineId} setActiveVitrineId={handleVitrineChange} />
                 <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
                 <Hero activeVitrineId={activeVitrineId} />
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
@@ -4729,7 +4565,7 @@ export default function App() {
           </AnimatePresence>
         </main>
         <Footer />
-      </motion.div>
+      </div>
     </div>
   );
 }
