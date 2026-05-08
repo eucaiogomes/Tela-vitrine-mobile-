@@ -574,7 +574,7 @@ const VitrineBar = ({
     scrollRef.current?.scrollBy({ left: dir === 'left' ? -180 : 180, behavior: 'smooth' });
 
   return (
-    <div className="bg-white border-b border-gray-100 sticky top-16 z-40">
+    <div className="bg-white border-b border-gray-100 sticky top-14 z-40">
       <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-3 flex items-center gap-2">
         <button onClick={() => scroll('left')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
           <ChevronLeft className="w-4 h-4" />
@@ -654,8 +654,8 @@ const Topbar = ({
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-100">
-        <div className="flex h-full items-center px-4 lg:px-6 gap-3">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white border-b border-gray-100">
+        <div className="flex h-full items-center px-4 lg:px-6 gap-4">
           {/* Hamburger - mobile only */}
           <button
             onClick={onMenuToggle}
@@ -666,19 +666,39 @@ const Topbar = ({
 
           {/* Logo */}
           <div className="flex-shrink-0 cursor-pointer" onClick={() => setActiveTab('Conteúdo')}>
-            <img src={logoLector} alt="Lector" className="h-8 w-auto" />
+            <img src={logoLector} alt="Lector" className="h-7 w-auto" />
           </div>
 
-          {/* Search */}
-          <div ref={searchRef} className="relative flex-1 max-w-md min-w-0">
+          {/* Navigation tabs — junto ao logo */}
+          <nav className="hidden md:flex items-stretch h-full ml-2 gap-0">
+            {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative px-4 h-full flex items-center text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'text-gray-900'
+                    : 'text-gray-500 hover:text-gray-800'
+                }`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-t-full" />
+                )}
+              </button>
+            ))}
+          </nav>
+
+          {/* Search — centro flexível */}
+          <div ref={searchRef} className="relative flex-1 max-w-sm min-w-0 mx-auto">
             <input
               type="text"
               placeholder="Pesquisar cursos, trilhas..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary/30 rounded-full text-sm transition-all duration-200 placeholder:text-gray-400"
+              className="w-full pl-9 pr-4 py-1.5 bg-gray-100/80 border border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary/30 rounded-full text-sm transition-all duration-200 placeholder:text-gray-400"
             />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-3 top-2 h-4 w-4 text-gray-400 pointer-events-none" />
             <AnimatePresence>
               {suggestions.length > 0 && (
                 <motion.div
@@ -709,42 +729,26 @@ const Topbar = ({
             </AnimatePresence>
           </div>
 
-          {/* Navigation tabs */}
-          <div className="hidden md:flex items-center gap-2 ml-4">
-            {['Conteúdo', 'Social', 'Minha Área'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${activeTab === tab
-                  ? 'bg-brand-primary/10 text-brand-primary'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                  }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
           {/* Right actions */}
-          <div className="flex items-center gap-1 ml-auto">
+          <div className="flex items-center gap-0.5 ml-auto">
             <Tooltip content="Notificações">
-              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+              <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors relative">
+                <Bell className="h-4.5 w-4.5" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
               </button>
             </Tooltip>
             <Tooltip content="Idioma">
-              <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
-                <Globe className="h-5 w-5" />
+              <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+                <Globe className="h-4.5 w-4.5" />
               </button>
             </Tooltip>
-            <div className="h-8 w-px bg-gray-200 mx-1" />
+            <div className="h-6 w-px bg-gray-200 mx-2" />
             <div ref={userMenuRef} className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(v => !v)}
-                className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-colors"
+                className="flex items-center gap-2 pl-1 pr-2 py-1 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
+                <div className="w-7 h-7 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
                   <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
@@ -4514,7 +4518,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
-      <div className="pt-16">
+      <div className="pt-14">
         <main className="min-h-[calc(100vh-64px)]">
           <AnimatePresence mode="wait">
             {activeTab === 'Conteúdo' && (
