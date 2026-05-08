@@ -3199,7 +3199,7 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
   return (
     <div
       className="relative overflow-hidden"
-      style={{ background: 'var(--gradient-hero)' }}
+      style={{ background: 'var(--gradient-hero)', maxHeight: '340px' }}
     >
       {/* Orbital decorative pattern */}
       <div className="absolute inset-0 orbit-pattern opacity-60 pointer-events-none" />
@@ -3217,7 +3217,7 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
@@ -3264,7 +3264,7 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
       </div>
 
       {/* Bottom fade transition into content section */}
-      <div className="h-8 bg-gradient-to-b from-transparent to-[#F7F9FC]" />
+      <div className="h-4 bg-gradient-to-b from-transparent to-[#F7F9FC]" />
     </div>
   );
 };
