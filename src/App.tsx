@@ -671,7 +671,7 @@ const CategoryDropdown = ({
         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vitrines</p>
         <span className="text-[10px] text-gray-400">{vitrineObjects.length} disponíveis</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+      <div className="flex flex-wrap gap-2">
         {vitrineObjects.map((vitrine, i) => {
           const isActive = vitrine!.id === activeVitrineId;
           return (
@@ -681,25 +681,14 @@ const CategoryDropdown = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04, duration: 0.18, ease: 'easeOut' }}
               onClick={() => selectVitrine(vitrine!.id)}
-              className={`flex items-center gap-3 px-3.5 py-3 rounded-xl border text-left transition-all duration-150 ${
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-xl border text-sm font-medium transition-all duration-150 whitespace-nowrap ${
                 isActive
-                  ? 'border-brand-primary bg-brand-primary/8 shadow-sm'
-                  : 'border-gray-150 bg-gray-50 hover:border-gray-200 hover:bg-white hover:shadow-sm'
+                  ? 'border-brand-primary border-2 bg-brand-primary/10 text-brand-primary'
+                  : 'border-gray-200 bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300'
               }`}
             >
-              <span
-                className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-xs font-black shadow-sm"
-                style={{ background: vitrine!.cor }}
-              >
-                {vitrine!.nome.charAt(0)}
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className={`text-xs font-semibold truncate ${isActive ? 'text-brand-primary' : 'text-gray-800'}`}>
-                  {vitrine!.nome}
-                </div>
-                <div className="text-[10px] text-gray-400 truncate mt-0.5">{vitrine!.descricao}</div>
-              </div>
-              {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0 text-brand-primary" />}
+              {vitrine!.nome}
+              {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0" />}
             </motion.button>
           );
         })}
