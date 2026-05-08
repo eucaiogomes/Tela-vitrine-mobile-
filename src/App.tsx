@@ -575,21 +575,21 @@ const VitrineBar = ({
 
   return (
     <div className="bg-white border-b border-gray-100 sticky top-16 z-40">
-      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-2 flex items-center gap-1">
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-3 flex items-center gap-2">
         <button onClick={() => scroll('left')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <div ref={scrollRef} className="flex items-center gap-2 overflow-x-hidden flex-1" style={{ scrollbarWidth: 'none' }}>
+        <div ref={scrollRef} className="flex items-center gap-3 overflow-x-hidden flex-1" style={{ scrollbarWidth: 'none' }}>
           {VITRINES.map((vitrine) => {
             const isActive = vitrine.id === activeVitrineId;
             return (
               <button
                 key={vitrine.id}
                 onClick={() => setActiveVitrineId(vitrine.id)}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-brand-primary text-white shadow-sm'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                    ? 'bg-gray-900 text-white'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
                 {vitrine.nome}
@@ -4531,9 +4531,8 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <VitrineBar activeVitrineId={activeVitrineId} setActiveVitrineId={handleVitrineChange} />
-                <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
                 <Hero activeVitrineId={activeVitrineId} />
+                <VitrineBar activeVitrineId={activeVitrineId} setActiveVitrineId={handleVitrineChange} />
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
                     <div className="flex-1 overflow-hidden">
