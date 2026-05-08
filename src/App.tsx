@@ -3225,32 +3225,32 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center"
           >
             <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium tracking-wide backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium tracking-wide backdrop-blur-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                 {slide.badge}
               </span>
 
-              <h1 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white leading-[1.05] tracking-tight">
+              <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-white leading-[1.05] tracking-tight">
                 {slide.title}
               </h1>
 
-              <p className="mt-5 text-base lg:text-lg text-white/70 leading-relaxed max-w-xl">
+              <p className="mt-2 text-sm lg:text-base text-white/70 leading-relaxed max-w-xl">
                 {slide.description}
               </p>
             </div>
 
             {/* Right: card */}
-            <div className="lg:col-span-5 max-w-sm w-full mx-auto lg:max-w-none">
+            <div className="lg:col-span-5 max-w-sm w-full mx-auto lg:max-w-none" style={{ maxHeight: '260px', overflow: 'hidden' }}>
               {slide.card}
             </div>
           </motion.div>
         </AnimatePresence>
 
         {/* Dots */}
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-3 flex justify-center gap-2">
           {slides.map((_, i) => (
             <button
               key={i}
