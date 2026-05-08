@@ -3225,10 +3225,9 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center"
+            className="flex flex-col justify-center max-w-3xl"
           >
-            <div className="lg:col-span-7">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium tracking-wide backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium tracking-wide backdrop-blur-sm w-fit">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                 {slide.badge}
               </span>
@@ -3237,15 +3236,9 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
                 {slide.title}
               </h1>
 
-              <p className="mt-2 text-sm lg:text-base text-white/70 leading-relaxed max-w-xl">
+              <p className="mt-2 text-sm lg:text-base text-white/70 leading-relaxed max-w-2xl">
                 {slide.description}
               </p>
-            </div>
-
-            {/* Right: card */}
-            <div className="lg:col-span-5 max-w-sm w-full mx-auto lg:max-w-none" style={{ maxHeight: '260px', overflow: 'hidden' }}>
-              {slide.card}
-            </div>
           </motion.div>
         </AnimatePresence>
 
