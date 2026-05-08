@@ -567,34 +567,94 @@ const VitrineBar = ({
   setActiveVitrineId: (id: string) => void;
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollState();
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => el.removeEventListener('scroll', updateScrollState);
+  }, [updateScrollState]);
+
   const scroll = (dir: 'left' | 'right') =>
-    scrollRef.current?.scrollBy({ left: dir === 'left' ? -180 : 180, behavior: 'smooth' });
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' });
 
   return (
     <div className="bg-white border-b border-gray-100 sticky top-14 z-40">
-      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-3 flex items-center gap-2">
-        <button onClick={() => scroll('left')} className="flex-shrink-0 text-gray-300 hover:text-gray-500 transition-colors p-1">
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-3 flex items-center">
+        {/* Chevron esquerdo */}
+        <button
+          onClick={() => scroll('left')}
+          className={`flex-shrink-0 p-1 mr-1 transition-all duration-200 ${
+            canScrollLeft
+              ? 'text-gray-400 hover:text-gray-700 opacity-100'
+              : 'opacity-0 pointer-events-none'
+          }`}
+        >
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <div ref={scrollRef} className="flex items-center gap-2 overflow-x-hidden flex-1" style={{ scrollbarWidth: 'none' }}>
-          {VITRINES.map((vitrine) => {
-            const isActive = vitrine.id === activeVitrineId;
-            return (
-              <button
-                key={vitrine.id}
-                onClick={() => setActiveVitrineId(vitrine.id)}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-150 whitespace-nowrap active:scale-95 ${
-                  isActive
-                    ? 'border-2 border-orange-500 text-orange-500 bg-orange-50'
-                    : 'border-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-                }`}
-              >
-                {vitrine.nome}
-              </button>
-            );
-          })}
+
+        {/* Container com fade nas bordas via mask-image */}
+        <div className="relative flex-1 min-w-0">
+          {/* Fade esquerda */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-10 z-10 pointer-events-none transition-opacity duration-200"
+            style={{
+              background: 'linear-gradient(to right, white 20%, transparent)',
+              opacity: canScrollLeft ? 1 : 0,
+            }}
+          />
+          {/* Fade direita */}
+          <div
+            className="absolute right-0 top-0 bottom-0 w-10 z-10 pointer-events-none transition-opacity duration-200"
+            style={{
+              background: 'linear-gradient(to left, white 20%, transparent)',
+              opacity: canScrollRight ? 1 : 0,
+            }}
+          />
+
+          <div
+            ref={scrollRef}
+            className="flex items-center gap-2 overflow-x-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {VITRINES.map((vitrine) => {
+              const isActive = vitrine.id === activeVitrineId;
+              return (
+                <button
+                  key={vitrine.id}
+                  onClick={() => setActiveVitrineId(vitrine.id)}
+                  className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-150 whitespace-nowrap active:scale-95 ${
+                    isActive
+                      ? 'border-2 border-orange-500 text-orange-500 bg-orange-50'
+                      : 'border-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                  }`}
+                >
+                  {vitrine.nome}
+                </button>
+              );
+            })}
+          </div>
         </div>
-        <button onClick={() => scroll('right')} className="flex-shrink-0 text-gray-300 hover:text-gray-500 transition-colors p-1">
+
+        {/* Chevron direito */}
+        <button
+          onClick={() => scroll('right')}
+          className={`flex-shrink-0 p-1 ml-1 transition-all duration-200 ${
+            canScrollRight
+              ? 'text-gray-400 hover:text-gray-700 opacity-100'
+              : 'opacity-0 pointer-events-none'
+          }`}
+        >
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
