@@ -3202,8 +3202,8 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
 
   return (
     <div
-      className="relative overflow-hidden"
-      style={{ background: 'var(--gradient-hero)', maxHeight: '340px' }}
+      className="relative overflow-hidden flex flex-col"
+      style={{ background: 'var(--gradient-hero)', height: '400px' }}
     >
       {/* Orbital decorative pattern */}
       <div className="absolute inset-0 orbit-pattern opacity-60 pointer-events-none" />
@@ -3221,7 +3221,7 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
+      <div className="relative flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center pb-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
@@ -3229,25 +3229,25 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col justify-center max-w-3xl"
+            className="flex flex-col max-w-3xl"
           >
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium tracking-wide backdrop-blur-sm w-fit">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                 {slide.badge}
               </span>
 
-              <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-white leading-[1.05] tracking-tight">
+              <h1 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-white leading-[1.05] tracking-tight">
                 {slide.title}
               </h1>
 
-              <p className="mt-2 text-sm lg:text-base text-white/70 leading-relaxed max-w-2xl">
+              <p className="mt-3 text-sm lg:text-base text-white/70 leading-relaxed max-w-2xl">
                 {slide.description}
               </p>
           </motion.div>
         </AnimatePresence>
 
         {/* Dots */}
-        <div className="mt-3 flex justify-center gap-2">
+        <div className="mt-6 flex justify-center gap-2">
           {slides.map((_, i) => (
             <button
               key={i}
@@ -3261,7 +3261,7 @@ const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: n
       </div>
 
       {/* Bottom fade transition into content section */}
-      <div className="h-4 bg-gradient-to-b from-transparent to-[#F7F9FC]" />
+      <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-b from-transparent to-[#F7F9FC]" />
     </div>
   );
 };
