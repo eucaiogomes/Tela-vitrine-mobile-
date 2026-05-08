@@ -533,27 +533,24 @@ const VitrineBreadcrumb = ({ activeVitrineId }: { activeVitrineId: string }) => 
   ];
 
   return (
-    <div className="bg-white border-b border-gray-100">
-      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
-        <div className="flex items-center gap-1.5 py-2">
-          {crumbs.map((crumb, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && (
-                <ChevronRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
-              )}
-              <span
-                className={`text-xs ${i === crumbs.length - 1
-                  ? 'font-semibold'
-                  : 'text-gray-400 font-medium'
-                  }`}
-                style={crumb.color ? { color: crumb.color } : undefined}
-              >
-                {crumb.label}
-              </span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+    <div className="flex items-center gap-1.5 mb-3">
+      {crumbs.map((crumb, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && (
+            <span className="text-gray-300 text-xs select-none">›</span>
+          )}
+          <span
+            className={`text-xs ${
+              i === crumbs.length - 1
+                ? 'font-semibold text-gray-700'
+                : 'text-gray-400 font-normal'
+            }`}
+            style={crumb.color && i === crumbs.length - 1 ? { color: crumb.color } : undefined}
+          >
+            {crumb.label}
+          </span>
+        </React.Fragment>
+      ))}
     </div>
   );
 };
@@ -4532,6 +4529,7 @@ export default function App() {
                 <VitrineBar activeVitrineId={activeVitrineId} setActiveVitrineId={handleVitrineChange} />
                 <div className="bg-[#F7F9FC] py-12 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+                    <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
                     <div className="flex-1 overflow-hidden">
                       {SECTIONS
                         .filter(s => (VITRINE_SECTIONS[activeVitrineId] ?? ['a1', 't1']).includes(s.id))
