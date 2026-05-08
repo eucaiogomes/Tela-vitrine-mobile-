@@ -562,8 +562,6 @@ const VitrineBreadcrumb = ({ activeVitrineId }: { activeVitrineId: string }) => 
 // VITRINE BAR
 // ============================================================
 
-const SCROLL_STEP = 320;
-
 const VitrineBar = ({
   activeVitrineId,
   setActiveVitrineId,
@@ -572,80 +570,36 @@ const VitrineBar = ({
   setActiveVitrineId: (id: string) => void;
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollState = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    updateScrollState();
-    el.addEventListener('scroll', updateScrollState, { passive: true });
-    const ro = new ResizeObserver(updateScrollState);
-    ro.observe(el);
-    return () => { el.removeEventListener('scroll', updateScrollState); ro.disconnect(); };
-  }, []);
-
-  const scroll = (dir: 'left' | 'right') => {
-    scrollRef.current?.scrollBy({ left: dir === 'left' ? -SCROLL_STEP : SCROLL_STEP, behavior: 'smooth' });
-  };
+  const scroll = (dir: 'left' | 'right') =>
+    scrollRef.current?.scrollBy({ left: dir === 'left' ? -180 : 180, behavior: 'smooth' });
 
   return (
-    <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto relative">
-
-        {/* Peek + chevron — esquerda */}
-        <div className={`absolute left-0 top-0 bottom-0 z-10 flex items-center transition-opacity duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className="w-20 h-full bg-gradient-to-r from-white/95 to-transparent" />
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-2 w-7 h-7 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 hover:border-gray-300 hover:shadow-md transition-all duration-150"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Scroll container */}
-        <div
-          ref={scrollRef}
-          className="flex items-center gap-2 overflow-x-auto py-3 scrollbar-hide px-4 sm:px-6 lg:px-10 xl:px-16"
-        >
+    <div className="bg-white border-b border-gray-100 sticky top-16 z-40">
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-2 flex items-center gap-1">
+        <button onClick={() => scroll('left')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <div ref={scrollRef} className="flex items-center gap-2 overflow-x-hidden flex-1" style={{ scrollbarWidth: 'none' }}>
           {VITRINES.map((vitrine) => {
             const isActive = vitrine.id === activeVitrineId;
             return (
               <button
                 key={vitrine.id}
                 onClick={() => setActiveVitrineId(vitrine.id)}
-                className={`flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 whitespace-nowrap ${
+                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-brand-primary text-white border-brand-primary'
-                    : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-800 hover:bg-gray-50'
+                    ? 'bg-brand-primary text-white shadow-sm'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
                 }`}
               >
                 {vitrine.nome}
-                {isActive && <Check className="w-3 h-3 flex-shrink-0" />}
               </button>
             );
           })}
         </div>
-
-        {/* Peek + chevron — direita */}
-        <div className={`absolute right-0 top-0 bottom-0 z-10 flex items-center justify-end transition-opacity duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className="w-20 h-full bg-gradient-to-l from-white/95 to-transparent" />
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-2 w-7 h-7 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 hover:border-gray-300 hover:shadow-md transition-all duration-150"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
+        <button onClick={() => scroll('right')} className="flex-shrink-0 text-gray-300 hover:text-gray-600 transition-colors p-1">
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
