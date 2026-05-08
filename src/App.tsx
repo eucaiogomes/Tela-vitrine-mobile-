@@ -577,11 +577,8 @@ const CategoryDropdown = ({
     return sub?.vitriIds || [];
   };
 
-  const vitrinesForDisplay = getVitrinesForDisplay();
-  const vitrineObjects = vitrinesForDisplay.map(id => VITRINES.find(v => v.id === id)).filter(Boolean);
-
-  const handleSelectVitrine = (vitrinaId: string) => {
-    setActiveVitrineId(vitrinaId);
+  const selectVitrine = (vitrineId: string) => {
+    setActiveVitrineId(vitrineId);
     onClose();
   };
 
@@ -603,157 +600,128 @@ const CategoryDropdown = ({
   const currentCatData = CATEGORY_DATA[activeCategory as keyof typeof CATEGORY_DATA];
   const hasSubs = currentCatData?.subs?.length > 0;
   const catEntries = Object.entries(CATEGORY_DATA);
+  const vitrinesForDisplay = getVitrinesForDisplay();
+  const vitrineObjects = vitrinesForDisplay.map(id => VITRINES.find(v => v.id === id)).filter(Boolean);
+
+  const renderCategories = () => (
+    <div>
+      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Categoria</p>
+      <div className="flex flex-wrap gap-2">
+        {catEntries.map(([key, data], i) => (
+          <motion.button
+            key={key}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.03, duration: 0.16, ease: 'easeOut' }}
+            onClick={() => { setActiveCategory(key); setActiveSub(null); }}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+              activeCategory === key
+                ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                : 'border-gray-200 bg-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-800 hover:border-gray-300'
+            }`}
+          >
+            {data.label}
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSubcategories = () => {
+    if (!hasSubs) return null;
+    return (
+      <AnimatePresence>
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          className="overflow-hidden"
+        >
+          <div className="h-px bg-gray-100 mb-4" />
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5">Subcategoria</p>
+          <div className="flex flex-wrap gap-2">
+            {currentCatData.subs.map((sub, i) => (
+              <motion.button
+                key={sub.id}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04, duration: 0.16, ease: 'easeOut' }}
+                onClick={() => setActiveSub(activeSub === sub.id ? null : sub.id)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+                  activeSub === sub.id
+                    ? 'border-brand-primary bg-brand-primary text-white'
+                    : 'border-gray-200 bg-transparent text-gray-500 hover:bg-gray-50 hover:text-gray-800 hover:border-gray-300'
+                }`}
+              >
+                {sub.label}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
+  const renderVitrines = () => (
+    <div>
+      <div className="h-px bg-gray-100 mb-4" />
+      <div className="flex items-center justify-between mb-2.5">
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vitrines</p>
+        <span className="text-[10px] text-gray-400">{vitrineObjects.length} disponíveis</span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+        {vitrineObjects.map((vitrine, i) => {
+          const isActive = vitrine!.id === activeVitrineId;
+          return (
+            <motion.button
+              key={vitrine!.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04, duration: 0.18, ease: 'easeOut' }}
+              onClick={() => selectVitrine(vitrine!.id)}
+              className={`flex items-center gap-3 px-3.5 py-3 rounded-xl border text-left transition-all duration-150 ${
+                isActive
+                  ? 'border-brand-primary bg-brand-primary/8 shadow-sm'
+                  : 'border-gray-150 bg-gray-50 hover:border-gray-200 hover:bg-white hover:shadow-sm'
+              }`}
+            >
+              <span
+                className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-xs font-black shadow-sm"
+                style={{ background: vitrine!.cor }}
+              >
+                {vitrine!.nome.charAt(0)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className={`text-xs font-semibold truncate ${isActive ? 'text-brand-primary' : 'text-gray-800'}`}>
+                  {vitrine!.nome}
+                </div>
+                <div className="text-[10px] text-gray-400 truncate mt-0.5">{vitrine!.descricao}</div>
+              </div>
+              {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0 text-brand-primary" />}
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <motion.div
-      initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
-      animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
-      exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
-      transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
       data-category-dropdown
       className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-gray-200"
       style={{ boxShadow: '0 8px 32px 0 rgba(0,0,0,0.09)' }}
     >
       <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-5">
-        <div className="flex gap-0 items-stretch">
-
-          {/* Col 1: Categorias */}
-          <div className="flex-shrink-0 w-48 pr-6">
-            <motion.p
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08, duration: 0.18 }}
-              className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2"
-            >
-              Categoria
-            </motion.p>
-            <div className="flex flex-col gap-0.5">
-              {catEntries.map(([key, data], i) => (
-                <motion.button
-                  key={key}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.06 + i * 0.045, duration: 0.2, ease: 'easeOut' }}
-                  onClick={() => { setActiveCategory(key); setActiveSub(null); }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${activeCategory === key
-                    ? 'bg-brand-primary/10 text-brand-primary'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
-                >
-                  <span>{data.label}</span>
-                  {activeCategory === key && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
-          {/* Divider 1 */}
-          <motion.div
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            transition={{ delay: 0.12, duration: 0.2, ease: 'easeOut' }}
-            className="w-px bg-gray-100 self-stretch origin-top flex-shrink-0"
-          />
-
-          {/* Col 2: Subcategorias (animated slide-in) */}
-          <AnimatePresence mode="wait">
-            {hasSubs && (
-              <motion.div
-                key={activeCategory}
-                initial={{ opacity: 0, width: 0, x: -12 }}
-                animate={{ opacity: 1, width: 160, x: 0 }}
-                exit={{ opacity: 0, width: 0, x: -12 }}
-                transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className="flex-shrink-0 overflow-hidden"
-              >
-                <div className="pl-6 pr-4 w-[160px]">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Subcategoria</p>
-                  <div className="flex flex-col gap-0.5">
-                    <motion.button
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.08, duration: 0.18 }}
-                      onClick={() => setActiveSub(null)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${activeSub === null
-                        ? 'bg-brand-primary/10 text-brand-primary'
-                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-                        }`}
-                    >
-                      Todas
-                    </motion.button>
-                    {currentCatData.subs.map((sub, i) => (
-                      <motion.button
-                        key={sub.id}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + i * 0.05, duration: 0.18 }}
-                        onClick={() => setActiveSub(sub.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-all ${activeSub === sub.id
-                          ? 'bg-brand-primary text-white'
-                          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-                          }`}
-                      >
-                        {sub.label}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Divider 2 */}
-          <motion.div
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            transition={{ delay: 0.14, duration: 0.2, ease: 'easeOut' }}
-            className="w-px bg-gray-100 self-stretch origin-top flex-shrink-0"
-          />
-
-          {/* Col 3: Vitrines */}
-          <div className="flex-1 min-w-0 pl-6">
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.18 }}
-              className="flex items-center justify-between mb-3"
-            >
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vitrines disponíveis</p>
-              <span className="text-xs text-gray-400">{vitrineObjects.length} Vitrines</span>
-            </motion.div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-              {vitrineObjects.map((vitrine, i) => {
-                const isActive = vitrine!.id === activeVitrineId;
-                return (
-                  <motion.button
-                    key={vitrine!.id}
-                    initial={{ opacity: 0, y: 10, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: 0.14 + i * 0.04, duration: 0.2, ease: 'easeOut' }}
-                    onClick={() => handleSelectVitrine(vitrine!.id)}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all border text-left ${isActive
-                      ? 'border-brand-primary/30 bg-brand-primary/8 text-brand-primary shadow-sm'
-                      : 'border-gray-100 bg-gray-50 text-gray-700 hover:border-gray-200 hover:bg-white hover:shadow-sm'
-                      }`}
-                  >
-                    <span
-                      className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white text-xs font-black shadow-sm"
-                      style={{ background: vitrine!.cor }}
-                    >
-                      {vitrine!.nome.charAt(0)}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-semibold truncate">{vitrine!.nome}</div>
-                      <div className="text-[10px] text-gray-400 truncate">{vitrine!.descricao}</div>
-                    </div>
-                    {isActive && <Check className="w-3.5 h-3.5 ml-auto flex-shrink-0 text-brand-primary" />}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-
+        <div className="flex flex-col gap-4">
+          {renderCategories()}
+          {renderSubcategories()}
+          {renderVitrines()}
         </div>
       </div>
     </motion.div>
