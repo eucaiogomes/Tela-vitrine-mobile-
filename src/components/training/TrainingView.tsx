@@ -18,7 +18,9 @@ import {
   Info,
   Menu,
   X,
-  LogOut
+  LogOut,
+  XCircle,
+  Award,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -87,6 +89,358 @@ const MiniCircularProgress = ({ percentage, label, color = "var(--brand-color)" 
   );
 };
 
+// ============================================================
+// AVALIAÇÃO
+// ============================================================
+
+const QUIZ_QUESTIONS = [
+  {
+    id: 1,
+    text: 'Qual é o principal objetivo de um processo de onboarding eficaz?',
+    options: [
+      'Reduzir o tempo de integração do novo colaborador',
+      'Apresentar a cultura e os valores da empresa ao novo colaborador',
+      'Treinar o colaborador apenas nas ferramentas técnicas necessárias',
+      'Garantir que o colaborador assine todos os documentos legais',
+      'Monitorar o desempenho do colaborador nas primeiras semanas',
+    ],
+    correct: 1,
+  },
+  {
+    id: 2,
+    text: 'Em qual situação é mais recomendado utilizar comunicação assíncrona?',
+    options: [
+      'Quando o assunto exige decisão imediata',
+      'Em reuniões de alinhamento urgente',
+      'Quando os participantes estão em fusos horários diferentes',
+      'Durante crises operacionais que precisam de resposta rápida',
+      'Em feedbacks que exigem esclarecimentos em tempo real',
+    ],
+    correct: 2,
+  },
+  {
+    id: 3,
+    text: 'O que caracteriza um líder situacional?',
+    options: [
+      'Aquele que aplica o mesmo estilo de liderança em todas as situações',
+      'Aquele que delega todas as decisões para a equipe',
+      'Aquele que adapta seu estilo conforme a maturidade e necessidade da equipe',
+      'Aquele que centraliza as decisões para garantir consistência',
+      'Aquele que prioriza resultados acima de qualquer outra consideração',
+    ],
+    correct: 2,
+  },
+  {
+    id: 4,
+    text: 'Qual é a melhor prática ao dar feedback construtivo a um colaborador?',
+    options: [
+      'Focar apenas nos pontos negativos para ser objetivo',
+      'Usar generalizações como "você sempre" ou "você nunca"',
+      'Dar feedback coletivo em reuniões de equipe',
+      'Ser específico, descrevendo comportamentos observáveis e seus impactos',
+      'Aguardar a avaliação anual de desempenho para consolidar os pontos',
+    ],
+    correct: 3,
+  },
+  {
+    id: 5,
+    text: 'O que é o método OKR (Objectives and Key Results)?',
+    options: [
+      'Um sistema de avaliação de desempenho individual anual',
+      'Uma metodologia de gestão de projetos baseada em sprints',
+      'Um framework que alinha objetivos qualitativos a resultados mensuráveis',
+      'Uma ferramenta de análise de processos internos',
+      'Um modelo de revisão de competências comportamentais',
+    ],
+    correct: 2,
+  },
+];
+
+const PASSING_SCORE = 70;
+
+type QuizPhase = 'intro' | 'quiz' | 'result';
+
+const AvaliacaoView = ({ lessonTitle }: { lessonTitle: string }) => {
+  const [phase, setPhase] = useState<QuizPhase>('intro');
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+
+  const total = QUIZ_QUESTIONS.length;
+  const answeredCount = Object.keys(answers).length;
+  const progress = Math.round((answeredCount / total) * 100);
+  const question = QUIZ_QUESTIONS[current];
+  const isLastQuestion = current === total - 1;
+
+  const handleAnswer = (i: number) => setSelectedOption(i);
+
+  const handleNext = () => {
+    if (selectedOption === null) return;
+    const updated = { ...answers, [question.id]: selectedOption };
+    setAnswers(updated);
+    if (isLastQuestion) {
+      setPhase('result');
+    } else {
+      const nextQ = current + 1;
+      setCurrent(nextQ);
+      setSelectedOption(updated[QUIZ_QUESTIONS[nextQ].id] ?? null);
+    }
+  };
+
+  const handlePrev = () => {
+    if (current === 0) return;
+    const prevQ = current - 1;
+    setCurrent(prevQ);
+    setSelectedOption(answers[QUIZ_QUESTIONS[prevQ].id] ?? null);
+  };
+
+  const handleJumpTo = (i: number) => {
+    setCurrent(i);
+    setSelectedOption(answers[QUIZ_QUESTIONS[i].id] ?? null);
+  };
+
+  const handleRetry = () => {
+    setPhase('intro');
+    setCurrent(0);
+    setAnswers({});
+    setSelectedOption(null);
+  };
+
+  const score = QUIZ_QUESTIONS.filter(q => answers[q.id] === q.correct).length;
+  const scorePercent = Math.round((score / total) * 100);
+  const passed = scorePercent >= PASSING_SCORE;
+
+  // Intro
+  if (phase === 'intro') {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white lg:rounded-xl">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-6">
+            <FileText size={32} className="text-brand" />
+          </div>
+          <h2 className="text-2xl font-bold text-[#003366] mb-2">{lessonTitle}</h2>
+          <p className="text-gray-500 text-sm mb-8">
+            Responda todas as questões para concluir a avaliação. Você precisa atingir{' '}
+            <strong>{PASSING_SCORE}%</strong> de aproveitamento para ser aprovado.
+          </p>
+
+          <div className="flex items-center justify-center gap-8 mb-10 p-5 bg-gray-50 rounded-2xl">
+            <div className="text-center">
+              <div className="text-3xl font-black text-[#003366]">{total}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mt-1">Questões</div>
+            </div>
+            <div className="w-px h-10 bg-gray-200" />
+            <div className="text-center">
+              <div className="text-3xl font-black text-[#003366]">{PASSING_SCORE}%</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mt-1">Mínimo</div>
+            </div>
+            <div className="w-px h-10 bg-gray-200" />
+            <div className="text-center">
+              <div className="text-3xl font-black text-[#003366]">~10</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mt-1">Minutos</div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setPhase('quiz')}
+            className="btn-primary w-full flex items-center justify-center gap-2 text-sm"
+          >
+            Iniciar Avaliação
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Result
+  if (phase === 'result') {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white lg:rounded-xl">
+        <div className="max-w-md w-full text-center">
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${passed ? 'bg-green-50' : 'bg-red-50'}`}>
+            {passed
+              ? <Award size={40} className="text-green-500" />
+              : <XCircle size={40} className="text-red-400" />
+            }
+          </div>
+
+          <h2 className={`text-3xl font-black mb-2 ${passed ? 'text-green-600' : 'text-red-500'}`}>
+            {passed ? 'Aprovado!' : 'Reprovado'}
+          </h2>
+          <p className="text-gray-400 text-sm mb-8">
+            {passed
+              ? 'Parabéns! Você concluiu a avaliação com sucesso.'
+              : `Você precisa de ${PASSING_SCORE}% para ser aprovado. Tente novamente.`
+            }
+          </p>
+
+          <div className="flex items-center justify-center gap-10 mb-10 p-6 bg-gray-50 rounded-2xl">
+            <div className="text-center">
+              <div className={`text-5xl font-black ${passed ? 'text-green-600' : 'text-red-500'}`}>
+                {scorePercent}%
+              </div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mt-1">Nota</div>
+            </div>
+            <div className="w-px h-12 bg-gray-200" />
+            <div className="text-center">
+              <div className="text-5xl font-black text-[#003366]">{score}/{total}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mt-1">Acertos</div>
+            </div>
+          </div>
+
+          {passed ? (
+            <div className="w-full py-3.5 px-6 rounded-xl bg-green-500 text-white font-semibold text-sm flex items-center justify-center gap-2">
+              <CheckCircle2 size={16} /> Avaliação Concluída
+            </div>
+          ) : (
+            <button
+              onClick={handleRetry}
+              className="btn-primary w-full flex items-center justify-center gap-2 text-sm"
+            >
+              Tentar Novamente
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Quiz
+  return (
+    <div className="flex-1 flex gap-6 bg-white lg:rounded-xl overflow-hidden p-6 lg:p-8">
+      {/* Question grid sidebar */}
+      <div className="hidden lg:flex flex-col gap-5 w-44 flex-none">
+        <div>
+          <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+            <span>Progresso</span>
+            <span>{progress}%</span>
+          </div>
+          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-full bg-brand rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-5 gap-1.5">
+          {QUIZ_QUESTIONS.map((q, i) => {
+            const isAnswered = answers[q.id] !== undefined;
+            const isCurrent = i === current;
+            return (
+              <button
+                key={q.id}
+                onClick={() => handleJumpTo(i)}
+                className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all cursor-pointer ${
+                  isCurrent
+                    ? 'bg-brand text-white shadow-md shadow-brand/30'
+                    : isAnswered
+                    ? 'bg-[#003366] text-white'
+                    : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                }`}
+              >
+                {i + 1}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="space-y-2 text-[9px] font-bold uppercase tracking-widest">
+          {[
+            { color: 'bg-brand', label: 'Atual' },
+            { color: 'bg-[#003366]', label: 'Respondida' },
+            { color: 'bg-gray-100', label: 'Não respondida' },
+          ].map(({ color, label }) => (
+            <div key={label} className="flex items-center gap-2 text-gray-400">
+              <div className={`w-3 h-3 rounded flex-none ${color}`} />
+              {label}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Question */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
+            Questão {current + 1} de {total}
+          </span>
+          <div className="lg:hidden flex items-center gap-2">
+            <div className="h-1 w-24 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-full bg-brand rounded-full transition-all" style={{ width: `${progress}%` }} />
+            </div>
+            <span className="text-[9px] font-bold text-gray-400">{progress}%</span>
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.22 }}
+            className="flex-1 flex flex-col"
+          >
+            <div className="text-7xl font-black text-gray-100 leading-none mb-3 select-none">
+              {String(current + 1).padStart(2, '0')}
+            </div>
+            <h3 className="text-base lg:text-lg font-bold text-[#003366] mb-6 leading-snug">
+              {question.text}
+            </h3>
+
+            <div className="space-y-2.5">
+              {question.options.map((option, i) => {
+                const isSelected = selectedOption === i;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleAnswer(i)}
+                    className={`w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-150 cursor-pointer flex items-center gap-3 ${
+                      isSelected
+                        ? 'border-brand bg-brand/5 text-[#003366]'
+                        : 'border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex-none flex items-center justify-center transition-all ${
+                      isSelected ? 'border-brand bg-brand' : 'border-gray-300'
+                    }`}>
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
+                    <span className="text-sm font-medium leading-snug">{option}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
+          <button
+            onClick={handlePrev}
+            disabled={current === 0}
+            className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-colors ${
+              current === 0 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-500 hover:text-[#003366] cursor-pointer'
+            }`}
+          >
+            <ChevronLeft size={16} /> Anterior
+          </button>
+
+          <button
+            onClick={handleNext}
+            disabled={selectedOption === null}
+            className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded-xl transition-all ${
+              selectedOption !== null
+                ? 'bg-brand text-white hover:bg-brand-dark cursor-pointer shadow-md shadow-brand/20'
+                : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+            }`}
+          >
+            {isLastQuestion ? 'Finalizar' : 'Próxima'} <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================
 export default function TrainingView({ courseId }: { courseId?: string }) {
   const navigate = useNavigate();
   const goHome = () => navigate({ to: '/' });
@@ -408,8 +762,13 @@ export default function TrainingView({ courseId }: { courseId?: string }) {
         <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative">
 
           <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col lg:p-6 pb-32">
+            {/* Avaliação — substitui o player quando o módulo é do tipo Avaliação */}
+            {activeLesson.type === 'Avaliação' ? (
+              <AvaliacaoView lessonTitle={activeLesson.title} />
+            ) : null}
+
             {/* Video Player Container */}
-            <div className="relative lg:mb-4 flex-1 flex items-center justify-center min-h-0 bg-black lg:bg-transparent">
+            <div className={`relative lg:mb-4 flex-1 flex items-center justify-center min-h-0 bg-black lg:bg-transparent ${activeLesson.type === 'Avaliação' ? 'hidden' : ''}`}>
               {/* Navigation Arrows - Outside the video container */}
               <AnimatePresence>
                 {!isSidebarOpen && (
@@ -484,8 +843,8 @@ export default function TrainingView({ courseId }: { courseId?: string }) {
               </div>
             </div>
 
-            {/* Lesson Info */}
-            <div className="flex-none p-4 lg:p-0">
+            {/* Lesson Info — oculto na avaliação */}
+            <div className={`flex-none p-4 lg:p-0 ${activeLesson.type === 'Avaliação' ? 'hidden' : ''}`}>
               {/* Title and Nav - Modernized Option A for Mobile */}
               <div className="mb-4">
                 <h1 className="text-xl lg:text-2xl font-bold text-[#003366] mb-0 lg:mb-4">{activeLesson.title}</h1>
