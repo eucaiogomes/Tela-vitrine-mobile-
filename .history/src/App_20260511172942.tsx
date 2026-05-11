@@ -742,7 +742,8 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
           
           {/* Coluna 1: Categorias Principais */}
           <div className="w-48 flex-shrink-0">
-            <ul className="space-y-0.5">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Categorias</p>
+            <ul className="space-y-1.5">
               {menuSections.map((section) => (
                 <li key={section.categoryKey}>
                   <button
@@ -756,74 +757,46 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                       }
                     }}
                     onClick={() => setActiveTab('Explorar')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
                       hoveredCategory === section.categoryKey
-                        ? 'bg-brand-primary/15 text-brand-primary shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-brand-primary/10 text-brand-primary'
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    <span>{section.label}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {section.label}
                   </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Coluna 2: Subcategorias e/ou Vitrines da Categoria */}
+          {/* Coluna 2: Subcategorias */}
           <AnimatePresence mode="wait">
-            {selectedCategory && (selectedCategory.subs.length > 0 || selectedCategory.vitrines.length > 0) && !hoveredSub && (
+            {selectedCategory && selectedCategory.subs.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.15 }}
-                className="w-56 flex-shrink-0"
+                className="w-48 flex-shrink-0"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
-                  {/* Subcategorias */}
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                  Áreas
+                </p>
+                <ul className="space-y-1.5">
                   {selectedCategory.subs.map((sub: any) => (
                     <li key={sub.id}>
                       <button
                         onMouseEnter={() => setHoveredSub(sub.id)}
                         onClick={() => setActiveTab('Explorar')}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm ${
                           hoveredSub === sub.id
-                            ? 'bg-brand-primary/15 text-brand-primary font-medium shadow-sm'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                            : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >
-                        <span>{sub.label}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </li>
-                  ))}
-
-                  {/* Vitrines diretas da categoria (sem label "Diretas") */}
-                  {selectedCategory.subs.length > 0 && selectedCategory.vitrines.length > 0 && (
-                    <>
-                      {selectedCategory.vitrines.map((vitrine: any) => (
-                        <li key={vitrine.id}>
-                          <button
-                            onClick={() => setActiveTab('Explorar')}
-                            className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
-                          >
-                            {vitrine.nome}
-                          </button>
-                        </li>
-                      ))}
-                    </>
-                  )}
-
-                  {/* Se não houver subcategorias, mostrar todas as vitrines */}
-                  {selectedCategory.subs.length === 0 && selectedCategory.vitrines.map((vitrine: any) => (
-                    <li key={vitrine.id}>
-                      <button
-                        onClick={() => setActiveTab('Explorar')}
-                        className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
-                      >
-                        {vitrine.nome}
+                        {sub.label}
                       </button>
                     </li>
                   ))}
@@ -840,15 +813,47 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.15 }}
-                className="flex-1 min-w-56"
+                className="flex-1"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                  Vitrines
+                </p>
+                <ul className="space-y-2 grid grid-cols-1">
                   {selectedSubVitrines.map((vitrine: any) => (
                     <li key={vitrine.id}>
                       <button
                         onClick={() => setActiveTab('Explorar')}
-                        className="text-sm text-gray-600 hover:text-brand-primary hover:bg-gray-100 px-4 py-2 rounded-lg transition-all duration-200 text-left w-full"
+                        className="text-sm text-gray-600 hover:text-brand-primary hover:font-medium transition-colors duration-200 text-left"
+                      >
+                        {vitrine.nome}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Coluna 3 (alternativa): Todas as vitrines da categoria se não houver subcategorias selecionadas */}
+          <AnimatePresence mode="wait">
+            {selectedCategory && selectedCategory.subs.length === 0 && !hoveredSub && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.15 }}
+                className="flex-1"
+              >
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                  Vitrines
+                </p>
+                <ul className="space-y-2 grid grid-cols-1">
+                  {selectedCategory.vitrines.slice(0, 8).map((vitrine: any) => (
+                    <li key={vitrine.id}>
+                      <button
+                        onClick={() => setActiveTab('Explorar')}
+                        className="text-sm text-gray-600 hover:text-brand-primary hover:font-medium transition-colors duration-200 text-left"
                       >
                         {vitrine.nome}
                       </button>

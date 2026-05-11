@@ -697,173 +697,6 @@ const VitrineBreadcrumb = ({ activeVitrineId }: { activeVitrineId: string }) => 
 // ============================================================
 // TOPBAR
 // ============================================================
-// ============================================================
-// MEGA MENU - EXPLORAR
-// ============================================================
-
-const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => {
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [hoveredSub, setHoveredSub] = useState<string | null>(null);
-
-  // Preparar os dados do menu a partir de CATEGORY_DATA
-  const menuSections = Object.entries(CATEGORY_DATA)
-    .filter(([key]) => key !== 'all') // Excluir "Todas as categorias"
-    .map(([key, data]: any) => {
-      const categoryVitrines = VITRINES.filter((v) => data.vitrines?.includes(v.id));
-      return {
-        categoryKey: key,
-        label: data.label,
-        subs: data.subs || [],
-        vitrines: categoryVitrines,
-      };
-    });
-
-  const selectedCategory = hoveredCategory 
-    ? menuSections.find(s => s.categoryKey === hoveredCategory)
-    : null;
-
-  const selectedSubVitrines = hoveredSub && selectedCategory
-    ? selectedCategory.vitrines.filter(v => {
-        const sub = selectedCategory.subs.find(s => s.id === hoveredSub);
-        return sub?.vitriIds?.includes(v.id);
-      })
-    : [];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -15 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.2 }}
-      className="fixed top-14 left-0 right-0 bg-white border-b border-gray-200 shadow-xl z-50"
-    >
-      <div className="max-w-full mx-auto px-6 py-8 w-full">
-        <div className="max-w-7xl mx-auto flex gap-16">
-          
-          {/* Coluna 1: Categorias Principais */}
-          <div className="w-48 flex-shrink-0">
-            <ul className="space-y-0.5">
-              {menuSections.map((section) => (
-                <li key={section.categoryKey}>
-                  <button
-                    onMouseEnter={() => {
-                      setHoveredCategory(section.categoryKey);
-                      setHoveredSub(null);
-                    }}
-                    onMouseLeave={() => {
-                      if (hoveredCategory === section.categoryKey) {
-                        setHoveredCategory(null);
-                      }
-                    }}
-                    onClick={() => setActiveTab('Explorar')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
-                      hoveredCategory === section.categoryKey
-                        ? 'bg-brand-primary/15 text-brand-primary shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <span>{section.label}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Coluna 2: Subcategorias e/ou Vitrines da Categoria */}
-          <AnimatePresence mode="wait">
-            {selectedCategory && (selectedCategory.subs.length > 0 || selectedCategory.vitrines.length > 0) && !hoveredSub && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.15 }}
-                className="w-56 flex-shrink-0"
-                onMouseLeave={() => setHoveredSub(null)}
-              >
-                <ul className="space-y-0.5">
-                  {/* Subcategorias */}
-                  {selectedCategory.subs.map((sub: any) => (
-                    <li key={sub.id}>
-                      <button
-                        onMouseEnter={() => setHoveredSub(sub.id)}
-                        onClick={() => setActiveTab('Explorar')}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm flex items-center justify-between ${
-                          hoveredSub === sub.id
-                            ? 'bg-brand-primary/15 text-brand-primary font-medium shadow-sm'
-                            : 'text-gray-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        <span>{sub.label}</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </li>
-                  ))}
-
-                  {/* Vitrines diretas da categoria (sem label "Diretas") */}
-                  {selectedCategory.subs.length > 0 && selectedCategory.vitrines.length > 0 && (
-                    <>
-                      {selectedCategory.vitrines.map((vitrine: any) => (
-                        <li key={vitrine.id}>
-                          <button
-                            onClick={() => setActiveTab('Explorar')}
-                            className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
-                          >
-                            {vitrine.nome}
-                          </button>
-                        </li>
-                      ))}
-                    </>
-                  )}
-
-                  {/* Se não houver subcategorias, mostrar todas as vitrines */}
-                  {selectedCategory.subs.length === 0 && selectedCategory.vitrines.map((vitrine: any) => (
-                    <li key={vitrine.id}>
-                      <button
-                        onClick={() => setActiveTab('Explorar')}
-                        className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
-                      >
-                        {vitrine.nome}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Coluna 3: Vitrines da Subcategoria */}
-          <AnimatePresence mode="wait">
-            {hoveredSub && selectedSubVitrines.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.15 }}
-                className="flex-1 min-w-56"
-                onMouseLeave={() => setHoveredSub(null)}
-              >
-                <ul className="space-y-0.5">
-                  {selectedSubVitrines.map((vitrine: any) => (
-                    <li key={vitrine.id}>
-                      <button
-                        onClick={() => setActiveTab('Explorar')}
-                        className="text-sm text-gray-600 hover:text-brand-primary hover:bg-gray-100 px-4 py-2 rounded-lg transition-all duration-200 text-left w-full"
-                      >
-                        {vitrine.nome}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
 const Topbar = ({
   onMenuToggle,
   setActiveTab,
@@ -877,8 +710,6 @@ const Topbar = ({
   const [isMinhaAreaOpen, setIsMinhaAreaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const megaMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -921,8 +752,8 @@ const Topbar = ({
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
-        <div className="h-14 flex items-center px-4 lg:px-6 gap-4">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-white border-b border-gray-100">
+        <div className="flex h-full items-center px-4 lg:px-6 gap-4">
           {/* Hamburger - mobile only */}
           <button
             onClick={onMenuToggle}
@@ -937,38 +768,22 @@ const Topbar = ({
           </div>
 
           {/* Navigation tabs — junto ao logo */}
-          <nav className="hidden md:flex items-stretch h-full ml-2 gap-0 relative">
+          <nav className="hidden md:flex items-stretch h-full ml-2 gap-0">
             {['Explorar', 'Social', 'Minha Área'].map((tab) => (
-              <div
+              <button
                 key={tab}
-                ref={tab === 'Explorar' ? megaMenuRef : null}
-                onMouseEnter={() => tab === 'Explorar' && setIsMegaMenuOpen(true)}
-                onMouseLeave={() => tab === 'Explorar' && setIsMegaMenuOpen(false)}
-                className="relative h-full"
+                onClick={() => setActiveTab(tab)}
+                className={`relative px-4 h-full flex items-center text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'text-gray-900'
+                    : 'text-gray-500 hover:text-gray-800'
+                }`}
               >
-                <button
-                  onClick={() => setActiveTab(tab)}
-                  className={`relative px-4 h-full flex items-center text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
-                    activeTab === tab
-                      ? 'text-gray-900'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  {tab}
-                  {activeTab === tab && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-t-full" />
-                  )}
-                </button>
-                
-                {/* Mega Menu para Explorar */}
-                {tab === 'Explorar' && (
-                  <AnimatePresence>
-                    {isMegaMenuOpen && (
-                      <MegaMenu setActiveTab={setActiveTab} />
-                    )}
-                  </AnimatePresence>
+                {tab}
+                {activeTab === tab && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-t-full" />
                 )}
-              </div>
+              </button>
             ))}
           </nav>
 

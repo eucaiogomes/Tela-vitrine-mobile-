@@ -742,7 +742,7 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
           
           {/* Coluna 1: Categorias Principais */}
           <div className="w-48 flex-shrink-0">
-            <ul className="space-y-0.5">
+            <ul className="space-y-1">
               {menuSections.map((section) => (
                 <li key={section.categoryKey}>
                   <button
@@ -756,14 +756,16 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                       }
                     }}
                     onClick={() => setActiveTab('Explorar')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
                       hoveredCategory === section.categoryKey
                         ? 'bg-brand-primary/15 text-brand-primary shadow-sm'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     <span>{section.label}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {hoveredCategory === section.categoryKey && (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
                   </button>
                 </li>
               ))}
@@ -781,21 +783,21 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 className="w-56 flex-shrink-0"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
+                <ul className="space-y-1">
                   {/* Subcategorias */}
                   {selectedCategory.subs.map((sub: any) => (
                     <li key={sub.id}>
                       <button
                         onMouseEnter={() => setHoveredSub(sub.id)}
                         onClick={() => setActiveTab('Explorar')}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-sm flex items-center justify-between ${
                           hoveredSub === sub.id
                             ? 'bg-brand-primary/15 text-brand-primary font-medium shadow-sm'
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >
                         <span>{sub.label}</span>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className={`w-4 h-4 transition-opacity duration-200 ${hoveredSub === sub.id ? 'opacity-100' : 'opacity-50'}`} />
                       </button>
                     </li>
                   ))}
@@ -807,7 +809,7 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                         <li key={vitrine.id}>
                           <button
                             onClick={() => setActiveTab('Explorar')}
-                            className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
+                            className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
                           >
                             {vitrine.nome}
                           </button>
@@ -821,7 +823,7 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                     <li key={vitrine.id}>
                       <button
                         onClick={() => setActiveTab('Explorar')}
-                        className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
+                        className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
                       >
                         {vitrine.nome}
                       </button>
@@ -843,12 +845,12 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 className="flex-1 min-w-56"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
+                <ul className="space-y-1">
                   {selectedSubVitrines.map((vitrine: any) => (
                     <li key={vitrine.id}>
                       <button
                         onClick={() => setActiveTab('Explorar')}
-                        className="text-sm text-gray-600 hover:text-brand-primary hover:bg-gray-100 px-4 py-2 rounded-lg transition-all duration-200 text-left w-full"
+                        className="text-sm text-gray-600 hover:text-brand-primary hover:bg-gray-100 px-4 py-3 rounded-lg transition-all duration-200 text-left w-full"
                       >
                         {vitrine.nome}
                       </button>

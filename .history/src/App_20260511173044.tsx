@@ -742,7 +742,7 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
           
           {/* Coluna 1: Categorias Principais */}
           <div className="w-48 flex-shrink-0">
-            <ul className="space-y-0.5">
+            <ul className="space-y-1.5">
               {menuSections.map((section) => (
                 <li key={section.categoryKey}>
                   <button
@@ -756,14 +756,13 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                       }
                     }}
                     onClick={() => setActiveTab('Explorar')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
                       hoveredCategory === section.categoryKey
-                        ? 'bg-brand-primary/15 text-brand-primary shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-brand-primary/10 text-brand-primary'
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    <span>{section.label}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {section.label}
                   </button>
                 </li>
               ))}
@@ -781,47 +780,47 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 className="w-56 flex-shrink-0"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
+                <ul className="space-y-1.5">
                   {/* Subcategorias */}
                   {selectedCategory.subs.map((sub: any) => (
                     <li key={sub.id}>
                       <button
                         onMouseEnter={() => setHoveredSub(sub.id)}
                         onClick={() => setActiveTab('Explorar')}
-                        className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm ${
                           hoveredSub === sub.id
-                            ? 'bg-brand-primary/15 text-brand-primary font-medium shadow-sm'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? 'bg-brand-primary/10 text-brand-primary font-medium'
+                            : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >
-                        <span>{sub.label}</span>
-                        <ChevronRight className="w-4 h-4" />
+                        {sub.label}
                       </button>
                     </li>
                   ))}
 
-                  {/* Vitrines diretas da categoria (sem label "Diretas") */}
+                  {/* Vitrines diretas da categoria (se houver) */}
                   {selectedCategory.subs.length > 0 && selectedCategory.vitrines.length > 0 && (
-                    <>
-                      {selectedCategory.vitrines.map((vitrine: any) => (
-                        <li key={vitrine.id}>
-                          <button
-                            onClick={() => setActiveTab('Explorar')}
-                            className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
-                          >
-                            {vitrine.nome}
-                          </button>
-                        </li>
-                      ))}
-                    </>
+                    <li className="border-t border-gray-200 pt-1.5 mt-1.5">
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">Diretas</div>
+                    </li>
                   )}
+                  {selectedCategory.subs.length > 0 && selectedCategory.vitrines.length > 0 && selectedCategory.vitrines.map((vitrine: any) => (
+                    <li key={vitrine.id}>
+                      <button
+                        onClick={() => setActiveTab('Explorar')}
+                        className="w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary"
+                      >
+                        {vitrine.nome}
+                      </button>
+                    </li>
+                  ))}
 
                   {/* Se não houver subcategorias, mostrar todas as vitrines */}
                   {selectedCategory.subs.length === 0 && selectedCategory.vitrines.map((vitrine: any) => (
                     <li key={vitrine.id}>
                       <button
                         onClick={() => setActiveTab('Explorar')}
-                        className="w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm text-gray-600 hover:bg-gray-100 hover:text-brand-primary"
+                        className="w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-sm text-gray-600 hover:bg-gray-50 hover:text-brand-primary"
                       >
                         {vitrine.nome}
                       </button>
@@ -843,12 +842,12 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 className="flex-1 min-w-56"
                 onMouseLeave={() => setHoveredSub(null)}
               >
-                <ul className="space-y-0.5">
+                <ul className="space-y-2">
                   {selectedSubVitrines.map((vitrine: any) => (
                     <li key={vitrine.id}>
                       <button
                         onClick={() => setActiveTab('Explorar')}
-                        className="text-sm text-gray-600 hover:text-brand-primary hover:bg-gray-100 px-4 py-2 rounded-lg transition-all duration-200 text-left w-full"
+                        className="text-sm text-gray-600 hover:text-brand-primary hover:font-medium transition-colors duration-200 text-left"
                       >
                         {vitrine.nome}
                       </button>
