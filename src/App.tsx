@@ -738,8 +738,14 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
       className="fixed top-14 left-0 right-0 bg-white border-b border-gray-200 shadow-xl z-50"
     >
       <div className="max-w-full mx-auto px-6 py-8 w-full">
-        <div className="max-w-7xl mx-auto flex gap-16">
-          
+        <div
+          className="max-w-7xl mx-auto flex gap-16"
+          onMouseLeave={() => {
+            setHoveredCategory(null);
+            setHoveredSub(null);
+          }}
+        >
+
           {/* Coluna 1: Categorias Principais */}
           <div className="w-48 flex-shrink-0">
             <ul className="space-y-0.5">
@@ -749,11 +755,6 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                     onMouseEnter={() => {
                       setHoveredCategory(section.categoryKey);
                       setHoveredSub(null);
-                    }}
-                    onMouseLeave={() => {
-                      if (hoveredCategory === section.categoryKey) {
-                        setHoveredCategory(null);
-                      }
                     }}
                     onClick={() => setActiveTab('Explorar')}
                     className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-between ${
@@ -772,14 +773,13 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
 
           {/* Coluna 2: Subcategorias e/ou Vitrines da Categoria */}
           <AnimatePresence mode="wait">
-            {selectedCategory && (selectedCategory.subs.length > 0 || selectedCategory.vitrines.length > 0) && !hoveredSub && (
+            {selectedCategory && (selectedCategory.subs.length > 0 || selectedCategory.vitrines.length > 0) && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.15 }}
                 className="w-56 flex-shrink-0"
-                onMouseLeave={() => setHoveredSub(null)}
               >
                 <ul className="space-y-0.5">
                   {/* Subcategorias */}
@@ -800,7 +800,7 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                     </li>
                   ))}
 
-                  {/* Vitrines diretas da categoria (sem label "Diretas") */}
+                  {/* Vitrines diretas da categoria */}
                   {selectedCategory.subs.length > 0 && selectedCategory.vitrines.length > 0 && (
                     <>
                       {selectedCategory.vitrines.map((vitrine: any) => (
@@ -841,7 +841,6 @@ const MegaMenu = ({ setActiveTab }: { setActiveTab: (tab: string) => void }) => 
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.15 }}
                 className="flex-1 min-w-56"
-                onMouseLeave={() => setHoveredSub(null)}
               >
                 <ul className="space-y-0.5">
                   {selectedSubVitrines.map((vitrine: any) => (
@@ -4034,13 +4033,10 @@ const ContentSection: React.FC<{ section: Section }> = ({ section }) => {
   };
 
   return (
-    <section className="py-10 border-b border-slate-200/70 last:border-0">
-      <div className="flex justify-between items-end mb-7">
+    <section className="pt-6 pb-10 border-b border-slate-200/70 last:border-0">
+      <div className="flex justify-between items-end mb-5">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-orange-500">
-            Vitrine Lector
-          </span>
-          <h2 className="mt-1.5 text-2xl md:text-[28px] font-display font-semibold text-[#041433] tracking-tight leading-tight">
+          <h2 className="text-2xl md:text-[28px] font-display font-semibold text-[#041433] tracking-tight leading-tight">
             {section.title}
           </h2>
           <div className="mt-3 h-[3px] w-14 rounded-full" style={{ background: 'var(--gradient-orange)' }} />
@@ -4812,7 +4808,6 @@ export default function App() {
                 exit={{ opacity: 0 }}
               >
                 <Hero activeVitrineId={activeVitrineId} />
-                <VitrineBar activeVitrineId={activeVitrineId} setActiveVitrineId={handleVitrineChange} />
                 <div className="bg-[#F7F9FC] py-4 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
                     <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
