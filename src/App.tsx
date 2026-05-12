@@ -98,6 +98,7 @@ interface ContentItem {
 interface Section {
   id: string;
   title: string;
+  description?: string;
   variant?: string;
   items: ContentItem[];
 }
@@ -147,7 +148,7 @@ const SECTIONS: Section[] = [
   { id: 'c5', title: 'Completo 5 (Preço)', variant: 'completo-5', items: generateItems(11, 'c5') },
 
   {
-    id: 'a1', title: 'Cursos em Alta', variant: 'avancado-1', items: [
+    id: 'a1', title: 'Cursos em Alta', description: 'Descubra os treinamentos mais acessados pela sua empresa neste mês. São conteúdos práticos, objetivos e desenvolvidos por especialistas — prontos para gerar impacto real no seu dia a dia profissional.', variant: 'avancado-1', items: [
       {
         id: 'a1-0', type: 'COURSE', thumb: course01, authors: 'Equipe Lector', progress: 70, grade: 50,
         title: 'Fundamentos de Inteligência Artificial para Negócios',
@@ -218,7 +219,7 @@ const SECTIONS: Section[] = [
   },
 
   {
-    id: 't1', title: 'Trilhas em Destaque', variant: 'avancado-1', items: [
+    id: 't1', title: 'Trilhas em Destaque', description: 'Explore percursos de aprendizado completos, pensados para desenvolver competências do zero ao avançado. Cada trilha reúne cursos complementares em uma sequência lógica, com progressão clara e foco em resultados práticos.', variant: 'avancado-1', items: [
       {
         id: 't1-0', type: 'TRAIL', thumb: trail01, authors: 'Equipe Lector', progress: 70, grade: 50,
         title: 'Trilha Gestão do Tempo e Prioridades',
@@ -359,7 +360,7 @@ const SECTIONS: Section[] = [
   },
 
   {
-    id: 'qt1', title: 'Trilhas QA em Destaque', variant: 'avancado-1', items: [
+    id: 'qt1', title: 'Trilhas QA em Destaque', description: 'Itinerários formativos estruturados pelo time de QA da Lector. Do onboarding à automação de testes, cada trilha cobre processos, ferramentas, documentação e boas práticas para garantir qualidade em cada entrega.', variant: 'avancado-1', items: [
       {
         id: 'qt1-0', type: 'TRAIL', thumb: trail01, authors: 'Time QA Lector', progress: 0, grade: 0,
         title: 'Trilha Onboarding QA Lector',
@@ -4034,22 +4035,27 @@ const ContentSection: React.FC<{ section: Section }> = ({ section }) => {
 
   return (
     <section className="pt-6 pb-10 border-b border-slate-200/70 last:border-0">
-      <div className="flex justify-between items-end mb-5">
-        <div>
+      <div className="mb-5">
+        <div className="flex justify-between items-center">
           <h2 className="text-2xl md:text-[28px] font-display font-semibold text-[#041433] tracking-tight leading-tight">
             {section.title}
           </h2>
-          <div className="mt-3 h-[3px] w-14 rounded-full" style={{ background: 'var(--gradient-orange)' }} />
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="text-sm font-semibold text-[#08204D] hover:text-orange-600 transition-colors flex items-center gap-1 group flex-shrink-0 ml-6"
+          >
+            {expanded ? 'Recolher' : 'Ver tudo'}
+            <ChevronRight
+              className={`h-4 w-4 transition-transform ${expanded ? 'rotate-90' : 'group-hover:translate-x-1'}`}
+            />
+          </button>
         </div>
-        <button
-          onClick={() => setExpanded((v) => !v)}
-          className="text-sm font-semibold text-[#08204D] hover:text-orange-600 transition-colors flex items-center gap-1 group"
-        >
-          {expanded ? 'Recolher' : 'Ver tudo'}
-          <ChevronRight
-            className={`h-4 w-4 transition-transform ${expanded ? 'rotate-90' : 'group-hover:translate-x-1'}`}
-          />
-        </button>
+        {section.description && (
+          <p className="mt-1.5 text-sm text-slate-500 leading-relaxed">
+            {section.description}
+          </p>
+        )}
+        <div className="mt-3 h-[3px] w-14 rounded-full" style={{ background: 'var(--gradient-orange)' }} />
       </div>
 
       {expanded ? (
