@@ -10,6 +10,7 @@ import './index.css';
 import App from './App';
 import TrainingPage from './pages/TrainingPage';
 import TrilhaPage from './pages/TrilhaPage';
+import ShowcasePage from './pages/ShowcasePage';
 
 const rootRoute = createRootRoute({
   head: () => ({
@@ -57,11 +58,18 @@ const trilhaDetailRoute = createRoute({
   component: TrilhaPage,
 });
 
+const showcaseRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'showcase',
+  component: ShowcasePage,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   trainingRoute,
   trilhaRoute,
   trilhaDetailRoute,
+  showcaseRoute,
 ]);
 
 export function getRouter() {

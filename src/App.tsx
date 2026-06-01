@@ -878,9 +878,12 @@ const Topbar = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ContentItem[]>([]);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchContainerRef = useRef<HTMLDivElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -904,26 +907,133 @@ const Topbar = ({
     }
   }, [searchQuery]);
 
-  // Close user menu and suggestions on outside click
+  // Auto-focus mobile search input when overlay opens
+  useEffect(() => {
+    if (isMobileSearchOpen) mobileSearchInputRef.current?.focus();
+  }, [isMobileSearchOpen]);
+
+  // Close menus/search on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setIsUserMenuOpen(false);
       }
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSuggestions([]);
-        setSearchQuery('');
+      if (isMobileSearchOpen) {
+        if (mobileSearchContainerRef.current && !mobileSearchContainerRef.current.contains(e.target as Node)) {
+          setSuggestions([]); setSearchQuery(''); setIsMobileSearchOpen(false);
+        }
+      } else {
+        if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+          setSuggestions([]); setSearchQuery('');
+        }
       }
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+  }, [isMobileSearchOpen]);
+
+  const UserDropdown = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+      className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
+    >
+      <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
+        <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
+        <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
+      </div>
+      <button onClick={() => setIsMinhaAreaOpen(v => !v)} className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors">
+        <div className="flex items-center gap-3"><LayoutDashboard className="h-4 w-4" /> Minha Area</div>
+        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {isMinhaAreaOpen && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-gray-50/30">
+            <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Play className="h-3.5 w-3.5" /> Meus Treinamentos</button>
+            <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Compass className="h-3.5 w-3.5" /> Minhas Trilhas</button>
+            <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Star className="h-3.5 w-3.5" /> Minhas Habilidades</button>
+            <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Award className="h-3.5 w-3.5" /> Meus Certificados</button>
+            <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Calendar className="h-3.5 w-3.5" /> Meu Calendário</button>
+            <button onClick={() => { setActiveTab('Minhas Compras'); setIsUserMenuOpen(false); }} className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Users className="h-4 w-4" /> Selecionar perfil</button>
+      <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Globe className="h-4 w-4" /> Alterar idioma</button>
+      <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Download className="h-4 w-4" /> Instalar</button>
+      <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><CheckCircle className="h-4 w-4" /> Validar termos de Aceite</button>
+      <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><BookOpen className="h-4 w-4" /> Ver glossário</button>
+      <div className="h-px bg-gray-100 my-2" />
+      <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium"><LogOut className="h-4 w-4" /> Sair</button>
+    </motion.div>
+  );
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
-        <div className="h-14 flex items-center px-4 lg:px-6 gap-4">
-          {/* Hamburger - mobile only */}
+        <div className="h-14 flex items-center px-4 lg:px-6 gap-2 relative">
+
+          {/* ── MOBILE: Search overlay ── */}
+          <AnimatePresence>
+            {isMobileSearchOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="lg:hidden absolute inset-0 bg-white z-10 flex items-center px-3 gap-2"
+              >
+                <button
+                  onClick={() => { setIsMobileSearchOpen(false); setSearchQuery(''); setSuggestions([]); }}
+                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg flex-shrink-0 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+                <div ref={mobileSearchContainerRef} className="relative flex-1">
+                  <input
+                    ref={mobileSearchInputRef}
+                    type="text"
+                    placeholder="Pesquisar treinamentos, trilhas..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-transparent focus:bg-white focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary/30 rounded-full text-sm transition-all placeholder:text-gray-400 outline-none"
+                  />
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <AnimatePresence>
+                    {suggestions.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
+                      >
+                        <div className="p-2">
+                          {suggestions.map(item => (
+                            <button
+                              key={item.id}
+                              onClick={() => { setSearchQuery(''); setSuggestions([]); setIsMobileSearchOpen(false); }}
+                              className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors group"
+                            >
+                              <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src={item.thumb} alt="" className="w-full h-full object-cover" />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-900 group-hover:text-brand-primary transition-colors line-clamp-1">{item.title}</div>
+                                <div className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{item.type === 'COURSE' ? 'Treinamento' : item.type}</div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Hamburger — mobile/tablet */}
           <button
             onClick={onMenuToggle}
             className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors lg:hidden flex-shrink-0"
@@ -931,13 +1041,24 @@ const Topbar = ({
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Logo */}
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => setActiveTab('Explorar')}>
+          {/* Logo mobile — absolutamente centralizado */}
+          <div
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 cursor-pointer flex-shrink-0"
+            onClick={() => setActiveTab('Explorar')}
+          >
             <img src={logoLector} alt="Lector" className="h-7 w-auto" />
           </div>
 
-          {/* Navigation tabs — junto ao logo */}
-          <nav className="hidden md:flex items-stretch h-full ml-2 gap-0 relative">
+          {/* Logo desktop — em fluxo normal */}
+          <div
+            className="hidden lg:flex flex-shrink-0 cursor-pointer"
+            onClick={() => setActiveTab('Explorar')}
+          >
+            <img src={logoLector} alt="Lector" className="h-7 w-auto" />
+          </div>
+
+          {/* Navigation tabs — desktop only */}
+          <nav className="hidden lg:flex items-stretch h-full ml-2 gap-0 relative">
             {['Explorar', 'Social', 'Minha Área'].map((tab) => (
               <div
                 key={tab}
@@ -948,32 +1069,22 @@ const Topbar = ({
               >
                 <button
                   onClick={() => setActiveTab(tab)}
-                  className={`relative px-4 h-full flex items-center text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
-                    activeTab === tab
-                      ? 'text-gray-900'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
+                  className={`relative px-4 h-full flex items-center text-sm font-medium transition-colors duration-150 whitespace-nowrap ${activeTab === tab ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800'}`}
                 >
                   {tab}
-                  {activeTab === tab && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-t-full" />
-                  )}
+                  {activeTab === tab && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-primary rounded-t-full" />}
                 </button>
-                
-                {/* Mega Menu para Explorar */}
                 {tab === 'Explorar' && (
                   <AnimatePresence>
-                    {isMegaMenuOpen && (
-                      <MegaMenu setActiveTab={setActiveTab} />
-                    )}
+                    {isMegaMenuOpen && <MegaMenu setActiveTab={setActiveTab} />}
                   </AnimatePresence>
                 )}
               </div>
             ))}
           </nav>
 
-          {/* Search — centro flexível */}
-          <div ref={searchRef} className="relative flex-1 max-w-sm min-w-0 mx-auto">
+          {/* Search bar — desktop only */}
+          <div ref={searchRef} className="relative flex-1 max-w-sm min-w-0 mx-auto hidden lg:block">
             <input
               type="text"
               placeholder="Pesquisar treinamentos, trilhas ou cursos..."
@@ -1014,84 +1125,48 @@ const Topbar = ({
 
           {/* Right actions */}
           <div className="flex items-center gap-0.5 ml-auto">
+            {/* Bell — desktop only */}
             <Tooltip content="Notificações">
-              <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors relative">
+              <button className="hidden lg:flex p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors relative">
                 <Bell className="h-4.5 w-4.5" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
               </button>
             </Tooltip>
+            {/* Globe — desktop only */}
             <Tooltip content="Idioma">
-              <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
+              <button className="hidden lg:flex p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
                 <Globe className="h-4.5 w-4.5" />
               </button>
             </Tooltip>
-            <div className="h-6 w-px bg-gray-200 mx-2" />
+            <div className="hidden lg:block h-6 w-px bg-gray-200 mx-2" />
+
+            {/* Search icon — mobile only */}
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="lg:hidden p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+
+            {/* User avatar */}
             <div ref={userMenuRef} className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(v => !v)}
-                className="flex items-center gap-2 pl-1 pr-2 py-1 hover:bg-gray-100 rounded-full transition-colors"
+                className="flex items-center gap-2 pl-1 pr-1 lg:pr-2 py-1 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <div className="w-7 h-7 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
+                <div className="w-8 h-8 lg:w-7 lg:h-7 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary overflow-hidden">
                   <img src="https://picsum.photos/seed/user/100/100" alt="Avatar" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-sm font-medium text-gray-700 hidden lg:block">Caio Gomes</span>
               </button>
               <AnimatePresence>
-                {isUserMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden"
-                  >
-                    <div className="px-4 py-3 border-b border-gray-100 mb-2 bg-gray-50/50">
-                      <div className="text-sm font-bold text-gray-900">Caio Gomes</div>
-                      <div className="text-xs text-gray-500 truncate">suporte2@lectortec.com.br</div>
-                    </div>
-                    <button
-                      onClick={() => setIsMinhaAreaOpen(v => !v)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center justify-between transition-colors"
-                    >
-                      <div className="flex items-center gap-3"><LayoutDashboard className="h-4 w-4" /> Minha Area</div>
-                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isMinhaAreaOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    <AnimatePresence>
-                      {isMinhaAreaOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden bg-gray-50/30"
-                        >
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Play className="h-3.5 w-3.5" /> Meus Treinamentos</button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Compass className="h-3.5 w-3.5" /> Minhas Trilhas</button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Star className="h-3.5 w-3.5" /> Minhas Habilidades</button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Award className="h-3.5 w-3.5" /> Meus Certificados</button>
-                          <button className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"><Calendar className="h-3.5 w-3.5" /> Meu Calendário</button>
-                          <button 
-                            onClick={() => { setActiveTab('Minhas Compras'); setIsUserMenuOpen(false); }}
-                            className="w-full text-left pl-11 pr-4 py-2.5 text-sm text-gray-600 hover:bg-brand-primary/10 hover:text-brand-primary flex items-center gap-3 transition-colors"
-                          >
-                            <ShoppingBag className="h-3.5 w-3.5" /> Minhas Compras
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Users className="h-4 w-4" /> Selecionar perfil</button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Globe className="h-4 w-4" /> Alterar idioma</button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><Download className="h-4 w-4" /> Instalar</button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><CheckCircle className="h-4 w-4" /> Validar termos de Aceite</button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-primary/5 hover:text-brand-primary flex items-center gap-3 transition-colors"><BookOpen className="h-4 w-4" /> Ver glossário</button>
-                    <div className="h-px bg-gray-100 my-2" />
-                    <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors font-medium"><LogOut className="h-4 w-4" /> Sair</button>
-                  </motion.div>
-                )}
+                {isUserMenuOpen && <UserDropdown />}
               </AnimatePresence>
             </div>
           </div>
+
         </div>
       </header>
-
     </>
   );
 };
@@ -1114,128 +1189,248 @@ const Sidebar = ({
   activeVitrineId: string;
   setActiveVitrineId: (id: string) => void;
 }) => {
+  // Drill-down state
+  const [drillCategory, setDrillCategory] = useState<string | null>(null);
+  const [drillSub, setDrillSub] = useState<string | null>(null);
+  const drillDirection = useRef<'in' | 'out'>('in');
   const [vitrineBusca, setVitrineBusca] = useState('');
 
-  // Close sidebar on desktop resize or Escape key
+  // Swipe-to-close
+  const swipeStartX = useRef(0);
+  const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => { swipeStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent<HTMLElement>) => {
+    if (swipeStartX.current - e.changedTouches[0].clientX > 60) onClose();
+  };
+
   useEffect(() => {
     const handleResize = () => { if (window.innerWidth >= 1024) onClose(); };
     const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('resize', handleResize);
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => { window.removeEventListener('resize', handleResize); document.removeEventListener('keydown', handleKeyDown); };
   }, [onClose]);
 
-  const vitrineFiltradas = vitrineBusca.trim().length > 0
-    ? VITRINES.filter(v =>
-      v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) ||
-      v.categoria.toLowerCase().includes(vitrineBusca.toLowerCase())
-    )
-    : VITRINES;
-  const categorias = [...new Set(vitrineFiltradas.map(v => v.categoria))];
+  const goInto = (category: string, sub?: string) => {
+    drillDirection.current = 'in';
+    setDrillCategory(category);
+    if (sub) setDrillSub(sub);
+  };
+  const goBack = () => {
+    drillDirection.current = 'out';
+    if (drillSub) { setDrillSub(null); }
+    else { setDrillCategory(null); }
+  };
 
   const NAV_ITEMS = [
     { id: 'Explorar', label: 'Explorar', icon: BookOpen },
     { id: 'Social', label: 'Social', icon: Users },
     { id: 'Minha Área', label: 'Minha Área', icon: LayoutDashboard },
   ];
-
   const handleNavClick = (id: string) => { setActiveTab(id); onClose(); };
+
+  const vitrineFiltradas = vitrineBusca.trim().length > 0
+    ? VITRINES.filter(v => v.nome.toLowerCase().includes(vitrineBusca.toLowerCase()) || v.categoria.toLowerCase().includes(vitrineBusca.toLowerCase()))
+    : [];
+
+  // Shared vitrine button
+  const VitrineBtn = ({ vitrine }: { vitrine: Vitrine }) => {
+    const isActive = vitrine.id === activeVitrineId;
+    return (
+      <button
+        onClick={() => { setActiveVitrineId(vitrine.id); onClose(); }}
+        className={`relative w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all mb-0.5 ${
+          isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+        }`}
+      >
+        {isActive && <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-brand-primary" />}
+        <span className="flex-1 text-left truncate">{vitrine.nome}</span>
+        {isActive && <Check className="w-3.5 h-3.5 flex-shrink-0 opacity-70" />}
+      </button>
+    );
+  };
+
+  // Determine current level key for AnimatePresence
+  const levelKey = drillSub ?? drillCategory ?? 'root';
+
+  // Data for current drill level
+  const activeCatData = drillCategory ? (CATEGORY_DATA[drillCategory] as any) : null;
+  const activeCatVitrines = drillCategory ? VITRINES.filter(v => activeCatData?.vitrines?.includes(v.id)) : [];
+  const activeSubData = drillSub ? activeCatData?.subs?.find((s: any) => s.id === drillSub) : null;
+  const activeSubVitrines = drillSub ? VITRINES.filter(v => activeSubData?.vitriIds?.includes(v.id)) : [];
+
+  const slideVariants = {
+    enter: (dir: 'in' | 'out') => ({ x: dir === 'in' ? 40 : -40, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: 'in' | 'out') => ({ x: dir === 'in' ? -40 : 40, opacity: 0 }),
+  };
 
   return (
     <>
-      {/* Single sidebar — CSS transform handles mobile open/close */}
-      <aside
-        className={`fixed left-0 top-0 lg:top-16 h-full lg:h-[calc(100vh-64px)] w-64 bg-white border-r border-gray-100 z-40 flex flex-col
-          transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
-      >
-        {/* Mobile header */}
-        <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100 flex-shrink-0 lg:hidden">
-          <img src={logoLector} alt="Lector" className="h-9 w-auto cursor-pointer" onClick={() => { setActiveTab('Explorar'); onClose(); }} />
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto py-4 px-3">
-          {/* Menu principal */}
-          {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => handleNavClick(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeTab === id
-                ? 'bg-brand-primary/8 text-brand-primary'
-                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
-                }`}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              {label}
-            </button>
-          ))}
-
-          <div className="h-px bg-gray-100 mx-1 my-3" />
-
-          {/* Vitrines */}
-          <p className="text-[11px] font-semibold text-gray-400 px-2 mb-2 tracking-wide">Vitrines</p>
-          <div className="relative mb-2">
-            <input
-              type="text"
-              placeholder="Buscar vitrine..."
-              value={vitrineBusca}
-              onChange={e => setVitrineBusca(e.target.value)}
-              className="w-full pl-7 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition"
-            />
-            <Search className="absolute left-2 top-[7px] w-3.5 h-3.5 text-gray-400" />
-          </div>
-
-          {categorias.length === 0 && (
-            <p className="text-xs text-gray-400 text-center py-3">Nenhuma encontrada</p>
-          )}
-          {categorias.map(cat => (
-            <div key={cat} className="mb-1">
-              <p className={`text-[10px] font-medium px-2 py-0.5 mb-0.5 ${CATEGORIA_COR[cat] ?? 'text-gray-400'}`}>{cat}</p>
-              {vitrineFiltradas.filter(v => v.categoria === cat).map(vitrine => {
-                const isActive = vitrine.id === activeVitrineId;
-                return (
-                  <button
-                    key={vitrine.id}
-                    onClick={() => { setActiveVitrineId(vitrine.id); onClose(); }}
-                    className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg transition-colors ${isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                      }`}
-                  >
-                    <span
-                      className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-white text-[10px] font-black"
-                      style={{ background: vitrine.cor }}
-                    >
-                      {vitrine.nome.charAt(0)}
-                    </span>
-                    <span className="flex-1 text-left text-xs font-semibold truncate">{vitrine.nome}</span>
-                    {isActive && <Check className="w-3 h-3 flex-shrink-0" />}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </aside>
-
-      {/* Backdrop - mobile only */}
+      {/* Backdrop */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key="sidebar-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[55] lg:hidden"
             onClick={onClose}
           />
         )}
       </AnimatePresence>
+
+      {/* Sidebar */}
+      <motion.aside
+        initial={false}
+        animate={{ x: isOpen ? 0 : '-100%' }}
+        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="fixed left-0 top-0 h-full w-72 bg-white border-r border-gray-100 z-[60] flex flex-col overflow-hidden"
+      >
+        {/* Header — dinâmico por nível */}
+        <div className="flex items-center justify-between px-4 h-14 border-b border-gray-100 flex-shrink-0">
+          <AnimatePresence mode="wait">
+            {drillCategory ? (
+              <motion.button
+                key="back-btn"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                transition={{ duration: 0.18 }}
+                onClick={goBack}
+                className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-brand-primary transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                {drillSub ? activeSubData?.label : activeCatData?.label}
+              </motion.button>
+            ) : (
+              <motion.img
+                key="logo"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                transition={{ duration: 0.18 }}
+                src={logoLector}
+                alt="Lector"
+                className="h-7 w-auto cursor-pointer"
+                onClick={() => { setActiveTab('Explorar'); onClose(); }}
+              />
+            )}
+          </AnimatePresence>
+
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Body com drill-down */}
+        <div className="flex-1 overflow-y-auto">
+          <AnimatePresence mode="wait" custom={drillDirection.current}>
+            <motion.div
+              key={levelKey}
+              custom={drillDirection.current}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              className="py-3 px-3"
+            >
+
+              {/* ── Nível raiz ── */}
+              {!drillCategory && (
+                <>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-3">Vitrines</p>
+
+                  {/* Search */}
+                  <div className="relative mb-3">
+                    <input type="text" placeholder="Buscar vitrine..." value={vitrineBusca}
+                      onChange={e => setVitrineBusca(e.target.value)}
+                      className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary/40 transition placeholder:text-gray-400"
+                    />
+                    <Search className="absolute left-2.5 top-[9px] w-3.5 h-3.5 text-gray-400" />
+                    {vitrineBusca && (
+                      <button onClick={() => setVitrineBusca('')} className="absolute right-2 top-[7px] p-0.5 text-gray-400 hover:text-gray-600 rounded">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Resultado de busca */}
+                  {vitrineBusca.trim().length > 0 ? (
+                    vitrineFiltradas.length === 0
+                      ? <p className="text-xs text-gray-400 text-center py-4">Nenhuma encontrada</p>
+                      : vitrineFiltradas.map(v => <React.Fragment key={v.id}><VitrineBtn vitrine={v} /></React.Fragment>)
+                  ) : (
+                    /* Lista de categorias */
+                    Object.entries(CATEGORY_DATA)
+                      .filter(([key]) => key !== 'all')
+                      .map(([key, data]: [string, any]) => {
+                        const catVitrines = VITRINES.filter(v => data.vitrines?.includes(v.id));
+                        const hasActive = catVitrines.some(v => v.id === activeVitrineId);
+                        return (
+                          <button key={key} onClick={() => goInto(key)}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all mb-0.5 ${
+                              hasActive ? 'text-brand-primary bg-brand-primary/5' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                            }`}
+                          >
+                            <span className="flex-1 text-left">{data.label}</span>
+                            <span className="text-[10px] text-gray-400 font-normal mr-1">{catVitrines.length}</span>
+                            <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                          </button>
+                        );
+                      })
+                  )}
+                </>
+              )}
+
+              {/* ── Nível categoria ── */}
+              {drillCategory && !drillSub && activeCatData && (() => {
+                const subs: any[] = activeCatData.subs ?? [];
+                const subbedIds = subs.flatMap((s: any) => s.vitriIds as string[]);
+                const ungrouped = activeCatVitrines.filter(v => !subbedIds.includes(v.id));
+                return (
+                  <>
+
+                    {/* Subcategorias */}
+                    {subs.map((sub: any) => {
+                      const subVitrines = activeCatVitrines.filter(v => sub.vitriIds.includes(v.id));
+                      const hasActive = subVitrines.some(v => v.id === activeVitrineId);
+                      return (
+                        <button key={sub.id} onClick={() => goInto(drillCategory, sub.id)}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all mb-0.5 ${
+                            hasActive ? 'text-brand-primary bg-brand-primary/5' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          <span className="flex-1 text-left">{sub.label}</span>
+                          <span className="text-[10px] text-gray-400 font-normal mr-1">{subVitrines.length}</span>
+                          <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        </button>
+                      );
+                    })}
+
+                    {/* Vitrines sem subcategoria */}
+                    {subs.length > 0 && ungrouped.length > 0 && <div className="h-px bg-gray-100 mx-1 my-2" />}
+                    {ungrouped.map(v => <React.Fragment key={v.id}><VitrineBtn vitrine={v} /></React.Fragment>)}
+                  </>
+                );
+              })()}
+
+              {/* ── Nível subcategoria ── */}
+              {drillSub && activeSubData && (
+                <>
+                  {activeSubVitrines.map(v => <React.Fragment key={v.id}><VitrineBtn vitrine={v} /></React.Fragment>)}
+                </>
+              )}
+
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </motion.aside>
     </>
   );
 };
@@ -3392,6 +3587,89 @@ const HERO_SLIDES_QA = [
   },
 ];
 
+// ── Search Banner ─────────────────────────────────────────────
+const SearchBanner = () => {
+  const [query, setQuery] = useState('');
+  const [focused, setFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <div className="bg-white border-b border-slate-200/70">
+      <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-8 sm:py-12">
+        <div className="w-full lg:w-3/4">
+
+          {/* Headline */}
+          <h2 className="font-display font-bold text-[#041433] leading-tight tracking-tight"
+            style={{ fontSize: 'clamp(24px, 4vw, 38px)' }}>
+            Encontre seu{' '}
+            <span className="relative inline-block">
+              conteúdo
+              <span className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full"
+                style={{ background: 'linear-gradient(90deg, #FF7A1A, #F2680D)' }} />
+            </span>
+          </h2>
+
+          {/* Subtitle */}
+          <p className="mt-4 text-slate-500 leading-relaxed text-sm sm:text-[15px] max-w-2xl">
+            Procure por conhecimento feito para te ajudar na sua área ou na sua carreira.
+            Você pode aprender escolhendo um{' '}
+            <span className="text-slate-700 font-medium">treinamento</span>,
+            uma <span className="text-slate-700 font-medium">trilha</span>,
+            documento, evento gravado ou vídeo.
+          </p>
+
+          {/* Search input + button */}
+          <div className="mt-8 sm:mt-10 flex items-center gap-4 w-full" style={{ maxWidth: '100%' }}>
+            <div
+              className="relative flex items-center flex-1 transition-all duration-200"
+              style={{
+                borderRadius: '14px',
+                background: focused ? '#fff' : '#F8F9FB',
+                border: `1.5px solid ${focused ? '#FF7A1A' : '#E2E8F0'}`,
+                boxShadow: focused ? '0 0 0 3px rgba(255,122,26,0.1)' : '0 1px 3px rgba(0,0,0,0.06)',
+              }}
+            >
+              <Search
+                className="absolute left-4 transition-colors duration-200"
+                style={{ width: 18, height: 18, color: focused ? '#FF7A1A' : '#94A3B8' }}
+              />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Buscar treinamentos, trilhas..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                className="w-full bg-transparent pl-11 pr-10 py-4 text-sm text-slate-800 placeholder:text-slate-400 outline-none font-medium"
+              />
+              {query && (
+                <button
+                  onClick={() => { setQuery(''); inputRef.current?.focus(); }}
+                  className="absolute right-3 p-1 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-100"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            <button
+              className="flex-shrink-0 flex items-center gap-2 px-6 py-4 rounded-[14px] text-sm font-bold text-white transition-all duration-200 hover:brightness-110 active:scale-95"
+              style={{
+                background: 'linear-gradient(135deg, #FF7A1A 0%, #F2680D 100%)',
+                boxShadow: '0 4px 14px rgba(255,122,26,0.35)',
+              }}
+            >
+              Buscar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Hero = ({ layoutVersion = 1, activeVitrineId = 'v1' }: { layoutVersion?: number; activeVitrineId?: string }) => {
   const [currentBanner, setCurrentBanner] = useState(0);
 
@@ -3801,7 +4079,7 @@ const Tooltip = ({ content, children, direction = "bottom" }: { content: string,
   );
 };
 
-const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, variant = 'simples-1' }) => {
+const ContentCard: React.FC<{ item: ContentItem, variant?: string, fullWidth?: boolean }> = ({ item, variant = 'simples-1', fullWidth = false }) => {
   const category = variant.split('-')[0]; // 'simples', 'completo', 'avancado'
   const subVariant = variant.split('-')[1]; // '1', '2', '3', '4', '5', '6', '7'
 
@@ -3822,7 +4100,7 @@ const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, 
   // --- Avançado 7 (Poster) Edge Case ---
   if (isAvancado && subVariant === '7') {
     return (
-      <div className="group/card flex-shrink-0 w-[280px] h-[340px] relative rounded-2xl border border-slate-200/60 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      <div className={`group/card ${fullWidth ? 'w-full min-h-[340px]' : 'flex-shrink-0 w-[280px] h-[340px]'} relative rounded-2xl border border-slate-200/60 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1`}
         style={{ boxShadow: 'var(--shadow-subtle)' }}
         onClick={handleOpen}
         onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
@@ -3853,7 +4131,7 @@ const ContentCard: React.FC<{ item: ContentItem, variant?: string }> = ({ item, 
 
   return (
     <div
-      className="group/card flex-shrink-0 w-[280px] h-full bg-white rounded-2xl border border-slate-200/60 overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      className={`group/card ${fullWidth ? 'w-full' : 'flex-shrink-0 w-[280px]'} h-full bg-white rounded-2xl border border-slate-200/60 overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-1`}
       style={{ boxShadow: 'var(--shadow-subtle)' }}
       onClick={handleOpen}
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
@@ -4022,14 +4300,74 @@ const SocialSidebar = ({ onSeeAll }: { onSeeAll: () => void }) => {
   );
 };
 
-const ContentSection: React.FC<{ section: Section }> = ({ section }) => {
-  const [expanded, setExpanded] = useState(false);
+// ── "Ver tudo" page ────────────────────────────────────────────
+const SectionAllView: React.FC<{ section: Section; onBack: () => void }> = ({ section, onBack }) => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 24 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 24 }}
+      transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+      className="min-h-screen bg-[#F7F9FC]"
+    >
+      {/* Header fixo */}
+      <div className="sticky top-14 z-30 bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 h-12 flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Voltar
+          </button>
+          <span className="text-gray-300">|</span>
+          <h1 className="text-sm font-semibold text-gray-900 truncate">{section.title}</h1>
+          <span className="ml-auto text-xs text-gray-400 flex-shrink-0">{section.items.length} itens</span>
+        </div>
+      </div>
+
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16 py-6">
+        {/* Título + descrição */}
+        <div className="mb-5">
+          <h2 className="text-xl sm:text-2xl md:text-[28px] font-display font-semibold text-[#041433] tracking-tight leading-tight">
+            {section.title}
+          </h2>
+          {section.description && (
+            <p className="mt-1.5 text-sm text-slate-500 leading-relaxed max-w-2xl">
+              {section.description}
+            </p>
+          )}
+          <div className="mt-3 h-[3px] w-14 rounded-full" style={{ background: 'var(--gradient-orange)' }} />
+        </div>
+
+        {/* Grid: 1 col mobile, 2 tablet, 3 desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
+          {section.items.map((item, i) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.03, duration: 0.25 }}
+              className="flex items-stretch"
+            >
+              <ContentCard item={item} variant={section.variant} fullWidth />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const ContentSection: React.FC<{ section: Section; onSeeAll: (section: Section) => void }> = ({ section, onSeeAll }) => {
   const scroll = (direction: 'left' | 'right') => {
     const container = document.getElementById(`scroll-${section.id}`);
     if (container) {
-      const scrollAmount = direction === 'left' ? -400 : 400;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      container.scrollBy({ left: direction === 'left' ? -400 : 400, behavior: 'smooth' });
     }
   };
 
@@ -4041,13 +4379,11 @@ const ContentSection: React.FC<{ section: Section }> = ({ section }) => {
             {section.title}
           </h2>
           <button
-            onClick={() => setExpanded((v) => !v)}
+            onClick={() => onSeeAll(section)}
             className="text-sm font-semibold text-[#08204D] hover:text-orange-600 transition-colors flex items-center gap-1 group flex-shrink-0 ml-6"
           >
-            {expanded ? 'Recolher' : 'Ver tudo'}
-            <ChevronRight
-              className={`h-4 w-4 transition-transform ${expanded ? 'rotate-90' : 'group-hover:translate-x-1'}`}
-            />
+            Ver tudo
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
         {section.description && (
@@ -4058,47 +4394,33 @@ const ContentSection: React.FC<{ section: Section }> = ({ section }) => {
         <div className="mt-3 h-[3px] w-14 rounded-full" style={{ background: 'var(--gradient-orange)' }} />
       </div>
 
-      {expanded ? (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch"
+      <div className="relative group">
+        <div
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-0 bottom-6 w-16 bg-gradient-to-r from-[#041433]/40 to-transparent z-10 flex items-center justify-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-l-2xl"
+        >
+          <ChevronLeft className="text-white ml-2" strokeWidth={3} size={28} />
+        </div>
+
+        <div
+          id={`scroll-${section.id}`}
+          className="flex gap-5 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory pr-[20vw] sm:pr-[10vw] items-stretch"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {section.items.map((item) => (
-            <div key={item.id} className="flex items-stretch">
+            <div key={item.id} className="snap-start shrink-0 flex items-stretch">
               <ContentCard item={item} variant={section.variant} />
             </div>
           ))}
-        </motion.div>
-      ) : (
-        <div className="relative group">
-          <div
-            onClick={() => scroll('left')}
-            className="absolute left-0 top-0 bottom-6 w-16 bg-gradient-to-r from-[#041433]/40 to-transparent z-10 flex items-center justify-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-l-2xl"
-          >
-            <ChevronLeft className="text-white ml-2" strokeWidth={3} size={28} />
-          </div>
-
-          <div
-            id={`scroll-${section.id}`}
-            className="flex gap-5 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory pr-[20vw] sm:pr-[10vw] items-stretch"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {section.items.map((item) => (
-              <div key={item.id} className="snap-start shrink-0 flex items-stretch">
-                <ContentCard item={item} variant={section.variant} />
-              </div>
-            ))}
-          </div>
-
-          <div
-            onClick={() => scroll('right')}
-            className="absolute right-0 top-0 bottom-6 w-16 bg-gradient-to-l from-[#041433]/40 to-transparent z-10 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-r-2xl"
-          >
-            <ChevronRight className="text-white mr-2" strokeWidth={3} size={28} />
-          </div>
         </div>
-      )}
+
+        <div
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-0 bottom-6 w-16 bg-gradient-to-l from-[#041433]/40 to-transparent z-10 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer rounded-r-2xl"
+        >
+          <ChevronRight className="text-white mr-2" strokeWidth={3} size={28} />
+        </div>
+      </div>
     </section>
   );
 };
@@ -4617,7 +4939,7 @@ const ThemeSwitcher = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed bottom-6 left-6 bg-white p-3 rounded-full shadow-2xl border border-gray-100 flex items-center gap-3 z-50"
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto bg-white p-2.5 sm:p-3 rounded-full shadow-2xl border border-gray-100 flex items-center gap-2 sm:gap-3 z-50 max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide"
     >
       {THEMES.map((theme) => (
         <button
@@ -4792,9 +5114,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('Explorar');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeVitrineId, setActiveVitrineId] = useState('v1');
+  const [sectionView, setSectionView] = useState<Section | null>(null);
   const handleMenuToggle = useCallback(() => setIsSidebarOpen(v => !v), []);
   const handleSidebarClose = useCallback(() => setIsSidebarOpen(false), []);
-  const handleVitrineChange = useCallback((id: string) => setActiveVitrineId(id), []);
+  const handleVitrineChange = useCallback((id: string) => { setActiveVitrineId(id); setSectionView(null); }, []);
+  const handleSeeAll = useCallback((section: Section) => { setSectionView(section); window.scrollTo({ top: 0, behavior: 'smooth' }); }, []);
+  const handleBackFromSection = useCallback(() => setSectionView(null), []);
+
+  useEffect(() => { setSectionView(null); }, [activeTab]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -4803,10 +5130,26 @@ export default function App() {
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isOpen={isSidebarOpen}
+        onClose={handleSidebarClose}
+        activeVitrineId={activeVitrineId}
+        setActiveVitrineId={handleVitrineChange}
+      />
       <div className="pt-14">
         <main className="min-h-[calc(100vh-64px)]">
           <AnimatePresence mode="wait">
-            {activeTab === 'Explorar' && (
+            {activeTab === 'Explorar' && sectionView && (
+              <SectionAllView
+                key="section-all"
+                section={sectionView}
+                onBack={handleBackFromSection}
+              />
+            )}
+
+            {activeTab === 'Explorar' && !sectionView && (
               <motion.div
                 key="conteudo"
                 initial={{ opacity: 0 }}
@@ -4814,6 +5157,7 @@ export default function App() {
                 exit={{ opacity: 0 }}
               >
                 <Hero activeVitrineId={activeVitrineId} />
+                <SearchBanner />
                 <div className="bg-[#F7F9FC] py-4 border-t border-slate-200/70">
                   <div className="max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
                     <VitrineBreadcrumb activeVitrineId={activeVitrineId} />
@@ -4821,7 +5165,7 @@ export default function App() {
                       {SECTIONS
                         .filter(s => (VITRINE_SECTIONS[activeVitrineId] ?? ['a1', 't1']).includes(s.id))
                         .map(section => (
-                          <ContentSection key={section.id} section={section} />
+                          <ContentSection key={section.id} section={section} onSeeAll={handleSeeAll} />
                         ))}
                     </div>
                   </div>
