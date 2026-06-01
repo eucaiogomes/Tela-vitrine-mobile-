@@ -11,6 +11,7 @@ import App from './App';
 import TrainingPage from './pages/TrainingPage';
 import TrilhaPage from './pages/TrilhaPage';
 import ShowcasePage from './pages/ShowcasePage';
+import TrilhaFinalizar2Page from './pages/TrilhaFinalizar2Page';
 
 const rootRoute = createRootRoute({
   head: () => ({
@@ -52,6 +53,12 @@ const trilhaRoute = createRoute({
   component: TrilhaPage,
 });
 
+const trilhaFinalizar2Route = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'trilha/finalizar2',
+  component: TrilhaFinalizar2Page,
+});
+
 const trilhaDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'trilha/$id',
@@ -68,6 +75,7 @@ const routeTree = rootRoute.addChildren([
   homeRoute,
   trainingRoute,
   trilhaRoute,
+  trilhaFinalizar2Route,
   trilhaDetailRoute,
   showcaseRoute,
 ]);

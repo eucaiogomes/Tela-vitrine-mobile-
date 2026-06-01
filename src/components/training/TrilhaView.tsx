@@ -3,52 +3,54 @@ import { getTrailById } from '../../data/catalog';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from '@tanstack/react-router';
 import { PerformanceDashboard } from './PerformanceDashboard';
-import { MaterialExplorer } from './MaterialExplorer';
-import { TutorList } from './TutorList';
-import { 
-  Menu, X, ChevronLeft, ChevronRight, Play, FileText, Video, 
-  HelpCircle, MonitorPlay, MessageSquare, ChevronDown, Check,
-  Target, Layers, BookOpen, Star, ArrowLeft, CheckCircle2, Circle,
-  Info, BarChart3, Paperclip, User, Users
+import {
+  X, ChevronDown, ChevronRight, ArrowLeft, CheckCircle2, Circle,
+  Menu, BarChart3, FileText, ClipboardList,
+  Award, Check, Download,
+  SlidersHorizontal, Copy, FileSpreadsheet, File, Printer
 } from 'lucide-react';
-import { SidebarContentIndicator, ContentTypeLabel } from './SidebarContentIndicator';
+import { SidebarContentIndicator } from './SidebarContentIndicator';
+import { generateCertificate } from './generateCertificate';
 
-// --- Types for our nested structure ---
-type ContentType = ContentTypeLabel;
+const STUDENT_NAME = 'Caio Gomes';
+const CERT_ID = 'LEC-2026-' + Math.random().toString(36).slice(2, 8).toUpperCase();
 
+// Converte texto em CAIXA ALTA para caixa normal, preservando siglas (IA, QA) e conectores
+const CONNECTORS = ['de', 'da', 'do', 'das', 'dos', 'e', 'em', 'para', 'com', 'no', 'na', 'a', 'o'];
+const prettyCase = (s: string) =>
+  s.toLowerCase().split(' ').filter(Boolean).map((w, i) => {
+    if (i > 0 && CONNECTORS.includes(w)) return w;
+    if (w.length <= 2) return w.toUpperCase();
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+
+// ── Types ──────────────────────────────────────────────────────
 interface ContentItem {
   id: string;
-  type: ContentType;
+  type: string;
   title: string;
   completed: boolean;
 }
-
-type EtapaItem = ContentItem;
 
 interface Etapa {
   id: string;
   number: number;
   title: string;
-  progress: number; // 0-100
-  items: EtapaItem[];
+  progress: number;
+  items: ContentItem[];
 }
 
+// ── Mock data ──────────────────────────────────────────────────
 const mockTrilha: Etapa[] = [
   {
-    id: 'e1',
-    number: 1,
-    title: 'INTRODUÇÃO',
-    progress: 100,
+    id: 'e1', number: 1, title: 'INTRODUÇÃO', progress: 100,
     items: [
       { id: 'c1', type: 'Vídeos', title: 'Vídeo de Boas-vindas', completed: true },
       { id: 'c2', type: 'Documentos', title: 'Guia do Aluno', completed: true },
     ]
   },
   {
-    id: 'e2',
-    number: 2,
-    title: 'APROVAÇÃO DE TICKETS',
-    progress: 85,
+    id: 'e2', number: 2, title: 'APROVAÇÃO DE TICKETS', progress: 85,
     items: [
       { id: 'c3', type: 'Scorm', title: 'Módulo Interativo', completed: true },
       { id: 't1', type: 'Treinamento', title: 'Treinamento de Fluxos', completed: false },
@@ -56,20 +58,14 @@ const mockTrilha: Etapa[] = [
     ]
   },
   {
-    id: 'e3',
-    number: 3,
-    title: 'BASE DE CONHECIMENTO',
-    progress: 90,
+    id: 'e3', number: 3, title: 'BASE DE CONHECIMENTO', progress: 90,
     items: [
       { id: 'c5', type: 'Vídeos', title: 'Como pesquisar artigos', completed: true },
       { id: 'c6', type: 'Tópico', title: 'Fórum de Discussão', completed: true },
     ]
   },
   {
-    id: 'e4',
-    number: 4,
-    title: 'CONTRATO DE HORAS',
-    progress: 21,
+    id: 'e4', number: 4, title: 'CONTRATO DE HORAS', progress: 21,
     items: [
       { id: 'c7', type: 'Documentos', title: 'Leitura Obrigatória', completed: false },
       { id: 'c8', type: 'Vídeos', title: 'Aula Prática', completed: false },
@@ -77,665 +73,694 @@ const mockTrilha: Etapa[] = [
   }
 ];
 
-const MiniCircularProgress = ({ percentage, label, color = "var(--brand-color)" }: { percentage: number, label: string, color?: string }) => {
-  const size = 18;
-  const strokeWidth = 2.5;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  
-  return (
-    <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-brand/70">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="transform -rotate-90">
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-            fill="transparent"
-            className="text-brand/10"
-          />
-          <motion.circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke={color}
-            strokeWidth={strokeWidth}
-            fill="transparent"
-            strokeDasharray={circumference}
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: circumference - (percentage / 100) * circumference }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[7.5px] font-black uppercase">{label}</span>
-        </div>
-      </div>
-      <span className="tabular-nums">{percentage}%</span>
+// ── Progress bar component ─────────────────────────────────────
+const ProgressBar = ({ label, value }: { label: string; value: number }) => (
+  <div>
+    <div className="flex justify-between text-[10px] font-bold mb-1.5 text-white/70">
+      <span>{label}</span>
+      <span className="text-white tracking-wider">{value.toFixed(2).replace('.00', '')}%</span>
     </div>
-  );
-};
+    <div className="h-1.5 bg-black/10 rounded-full overflow-hidden border border-white/10">
+      <motion.div
+        className="h-full bg-gradient-to-r from-white/90 via-white to-white/90 rounded-full"
+        initial={{ width: 0 }}
+        animate={{ width: `${value}%` }}
+        transition={{ duration: 1, ease: 'easeOut' }}
+      />
+    </div>
+  </div>
+);
 
-export const TrilhaView: React.FC<{ trailId?: string, completedTrainings?: string[], onNavigateToTraining?: () => void }> = ({ trailId, completedTrainings = [], onNavigateToTraining }) => {
+// ── Main component ─────────────────────────────────────────────
+export const TrilhaView: React.FC<{ trailId?: string; finishVariant?: 'sidebar' | 'sideTab' }> = ({ trailId, finishVariant = 'sidebar' }) => {
   const navigate = useNavigate();
   const goHome = () => navigate({ to: '/' });
 
   const trailData = useMemo(() => getTrailById(trailId ?? ''), [trailId]);
-  const trailTitle = trailData?.title ?? 'Trilha de Formação';
-  const trilha = trailData?.etapas ?? mockTrilha;
+  const trailTitle = trailData?.title ?? 'Trilha Completa Automação';
+  const initialTrilha: Etapa[] = trailData?.etapas ?? mockTrilha;
 
+  const [trilha, setTrilha] = useState<Etapa[]>(initialTrilha);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState('descricao');
-  const [isMobileFocusMode, setIsMobileFocusMode] = useState(false);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'descricao' | 'desempenho' | 'relatorios'>('descricao');
+  const [expandedEtapas, setExpandedEtapas] = useState<Record<string, boolean>>({ e1: true });
+  const [concluded, setConcluded] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
-  const [expandedEtapas, setExpandedEtapas] = useState<Record<string, boolean>>({
-    'e1': false,
-    'e2': true,
+  // Toggle item completed e recalcula progresso da etapa
+  const toggleItem = (etapaId: string, itemId: string) => {
+    setTrilha(prev => prev.map(etapa => {
+      if (etapa.id !== etapaId) return etapa;
+      const updatedItems = etapa.items.map(item =>
+        item.id === itemId ? { ...item, completed: !item.completed } : item
+      );
+      const etapaProgress = updatedItems.length > 0
+        ? (updatedItems.filter(i => i.completed).length / updatedItems.length) * 100
+        : 0;
+      return { ...etapa, items: updatedItems, progress: etapaProgress };
+    }));
+  };
+
+  // Compute overall progress & aproveitamento
+  const allItems = trilha.flatMap(e => e.items);
+  const completedCount = allItems.filter(i => i.completed).length;
+  const progresso = allItems.length > 0 ? (completedCount / allItems.length) * 100 : 0;
+  const aproveitamento = trilha.length > 0
+    ? trilha.reduce((acc, e) => acc + e.progress, 0) / trilha.length
+    : 0;
+
+  const canConclude = progresso >= 100 && aproveitamento >= 100;
+
+  const today = new Date().toLocaleDateString('pt-BR');
+  const handleDownloadCertificate = () => {
+    generateCertificate({ studentName: STUDENT_NAME, trailTitle, date: today, hours: '02:00', certId: CERT_ID });
+    setConcluded(true);
+  };
+
+  const toggleEtapa = (id: string) =>
+    setExpandedEtapas(prev => ({ ...prev, [id]: !prev[id] }));
+
+  // Lista de etapas (reutilizada no sidebar desktop e inline no mobile)
+  const renderEtapas = () => trilha.map(etapa => {
+    const isOpen = !!expandedEtapas[etapa.id];
+    const etapaCompleted = etapa.items.every(i => i.completed);
+    return (
+      <div key={etapa.id} className="border-b border-gray-100 last:border-0">
+        <button
+          onClick={() => toggleEtapa(etapa.id)}
+          className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50/60 hover:bg-gray-100/70 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className={`w-6 h-6 rounded border flex items-center justify-center text-[10px] font-black flex-shrink-0 ${
+              etapaCompleted ? 'bg-brand border-brand text-white' : 'bg-white border-gray-200 text-gray-500'
+            }`}>
+              {etapaCompleted ? <CheckCircle2 size={13} /> : etapa.number}
+            </div>
+            <span className="text-[12px] font-bold text-[#003366] text-left leading-snug">
+              {prettyCase(etapa.title)}
+            </span>
+          </div>
+          <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronDown size={13} className="text-gray-400" />
+          </motion.div>
+        </button>
+
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+              className="overflow-hidden bg-white"
+            >
+              {etapa.items.map(item => (
+                <div key={item.id} className="flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+                  <button
+                    onClick={() => toggleItem(etapa.id, item.id)}
+                    className={`flex-shrink-0 transition-colors hover:scale-110 active:scale-95 ${item.completed ? 'text-green-500' : 'text-gray-300 hover:text-gray-400'}`}
+                    title={item.completed ? 'Marcar como pendente' : 'Marcar como concluído'}
+                  >
+                    {item.completed ? <CheckCircle2 size={15} /> : <Circle size={15} />}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-[11px] font-semibold truncate ${item.completed ? 'text-gray-500 line-through' : 'text-[#003366]'}`}>
+                      {item.title}
+                    </p>
+                    <div className="mt-0.5">
+                      <SidebarContentIndicator type={item.type as any} />
+                    </div>
+                  </div>
+                  <span className={`text-[10px] font-bold flex-shrink-0 px-2 py-1 rounded-full ${
+                    item.completed ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'
+                  }`}>
+                    {item.completed ? 'Concluído' : 'Pendente'}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
   });
 
-  const firstContentId = trilha[0]?.items?.[0]?.id ?? 'c1';
-  const [activeContentId, setActiveContentId] = useState(firstContentId);
+  // Conteúdos reutilizados em tabs (desktop) e seções inline (mobile)
+  const renderDescricao = () => (
+    <p className="text-sm text-gray-500 leading-relaxed font-normal max-w-3xl">
+      Nesta trilha você desenvolverá as competências fundamentais para o domínio completo dos fluxos de automação corporativa.
+      Cada etapa foi estruturada para construir o conhecimento de forma progressiva, do básico ao avançado.
+    </p>
+  );
 
-  const toggleEtapa = (id: string) => {
-    setExpandedEtapas(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+  const renderDesempenho = () => (
+    <PerformanceDashboard
+      type="trilha"
+      status="andamento"
+      data={trilha.map(e => ({ name: prettyCase(e.title), value: e.progress }))}
+    />
+  );
 
-  const getActiveContent = () => {
-    for (const etapa of trilha) {
-      for (const item of etapa.items) {
-        if (item.id === activeContentId) return item;
-      }
-    }
-    return { title: 'Conteúdo', completed: false };
-  };
-
-  const activeLesson = getActiveContent();
-
-  const tabs = [
-    { id: 'descricao', label: 'Descrição', icon: <Info size={14} /> },
-    { id: 'desempenho', label: 'Desempenho', icon: <BarChart3 size={14} /> },
-    { id: 'resumo', label: 'Resumo', icon: <BookOpen size={14} /> },
-    { id: 'material', label: 'Material Complementar', icon: <Paperclip size={14} /> },
-    { id: 'tutores', label: 'Tutores', icon: <Users size={14} /> },
-    { id: 'autor', label: 'Autor', icon: <User size={14} /> },
-  ];
-
-  const renderContentItem = (lesson: ContentItem, isNested: boolean) => {
-    const isActive = activeContentId === lesson.id;
-    // Also consider it completed if its ID is in completedTrainings
-    const isCompleted = lesson.completed || completedTrainings.includes(lesson.id);
-    
-    const handleContentClick = () => {
-      setActiveContentId(lesson.id);
-      if (lesson.type === 'Treinamento' && onNavigateToTraining) {
-        onNavigateToTraining();
-      }
-    };
-
-    return (
-      <div
-        key={lesson.id}
-        onClick={handleContentClick}
-        className={`w-full text-left p-4 border-b border-gray-100/50 transition-all relative group cursor-pointer ${
-          isActive ? 'bg-brand/5' : isCompleted ? 'bg-green-50/50' : 'hover:bg-gray-100/50'
-        } ${isNested ? 'pl-8 bg-gray-50/50 shadow-inner' : ''}`}
-      >
-        {isActive && (
-          <motion.div 
-            layoutId="activeLessonIndicatorTrilha"
-            className="absolute left-0 top-0 bottom-0 w-1 bg-brand" 
-          />
-        )}
-        
-        <div className="flex items-start gap-3">
-          <button 
-            className={`mt-1 flex-none transition-all hover:scale-110 active:scale-90 cursor-pointer ${
-              isCompleted ? 'text-green-500' : isActive ? 'text-brand' : 'text-gray-400'
-            }`}
-            title="Status do conteúdo"
-          >
-            {isCompleted ? <CheckCircle2 size={16} /> : <Circle size={16} />}
-          </button>
-          
-          <div className="flex-1 min-w-0 relative h-full flex flex-col justify-between">
-            <div className="flex justify-between items-start gap-2 mb-1">
-              <h3 className={`text-[11.5px] font-bold leading-tight break-words line-clamp-2 ${
-                isActive ? 'text-brand' : 'text-[#003366]'
-              }`}>
-                {lesson.title}
-              </h3>
-              <ChevronDown 
-                size={14} 
-                strokeWidth={3}
-                className={`flex-none mt-0.5 transition-transform duration-300 ${isActive ? 'rotate-180 text-brand' : 'text-gray-500'}`} 
+  const renderRelatorios = () => (
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+      <h3 className="text-base font-bold text-[#003366] mb-4">Relatório de Progresso</h3>
+      <div className="space-y-3">
+        {trilha.map(etapa => (
+          <div key={etapa.id} className="flex items-center gap-4">
+            <span className="text-[12px] font-semibold text-gray-600 w-32 sm:w-40 truncate flex-shrink-0">
+              {prettyCase(etapa.title)}
+            </span>
+            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-brand rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${etapa.progress}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
               />
             </div>
-
-            <div className="flex items-end justify-between gap-2 mt-1">
-              <div className="flex items-center gap-1 opacity-60">
-                <SidebarContentIndicator type={lesson.type} />
-              </div>
-              
-              <span className={`text-[8.5px] font-black uppercase tracking-tight ${
-                isCompleted ? 'text-green-600' : 
-                isActive ? 'text-brand' : 
-                'text-gray-400'
-              }`}>
-                {isCompleted ? 'Concluído' : isActive ? 'Em andamento' : 'Não visualizado'}
-              </span>
-            </div>
-            
-            <AnimatePresence>
-              {isActive && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex gap-4">
-                    <MiniCircularProgress percentage={isCompleted ? 100 : 0} label="P" />
-                    <MiniCircularProgress percentage={isCompleted ? 100 : 0} label="A" />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <span className="text-[11px] font-bold text-brand w-10 text-right flex-shrink-0">
+              {etapa.progress}%
+            </span>
           </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Relatórios em tabela (versão desktop)
+  const renderRelatoriosTable = () => {
+    const rows = trilha.flatMap(etapa =>
+      etapa.items.map(item => ({
+        id: item.id,
+        label: item.title,
+        aproveitamento: item.completed ? '100,00%' : '0,00%',
+        carga: item.type === 'Treinamento' ? '01:30:00' : '-',
+        data: item.completed ? today : '-',
+        done: item.completed,
+      }))
+    );
+    const toolbar = [SlidersHorizontal, Copy, FileSpreadsheet, FileText, File, Printer];
+
+    return (
+      <div>
+        {/* Toolbar de ações */}
+        <div className="flex items-center gap-2.5 mb-6">
+          {toolbar.map((Icon, i) => (
+            <button
+              key={i}
+              className="w-10 h-10 rounded-full bg-brand text-white flex items-center justify-center shadow-sm hover:brightness-110 hover:-translate-y-0.5 transition-all"
+            >
+              <Icon size={16} />
+            </button>
+          ))}
+        </div>
+
+        {/* Tabela */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-gray-200 text-[12px] font-bold text-gray-500">
+                <th className="py-3 pr-4">
+                  <span className="inline-flex items-center gap-1">Conteúdo <ChevronDown size={12} className="text-brand" /></span>
+                </th>
+                <th className="py-3 px-4 font-bold">Aproveitamento</th>
+                <th className="py-3 px-4 font-bold">Carga horária</th>
+                <th className="py-3 px-4 font-bold">Data de conclusão</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => (
+                <tr key={row.id} className="border-b border-gray-100 hover:bg-gray-50/60 transition-colors group">
+                  <td className="py-4 pr-4">
+                    <button className="text-[13px] text-blue-600 font-medium hover:underline text-left">{row.label}</button>
+                  </td>
+                  <td className="py-4 px-4">
+                    <span className={`text-[13px] font-bold ${row.done ? 'text-[#003366]' : 'text-gray-400'}`}>{row.aproveitamento}</span>
+                  </td>
+                  <td className="py-4 px-4 text-[13px] text-gray-500 font-medium">{row.carga}</td>
+                  <td className="py-4 px-4 text-[13px] text-gray-500 font-medium">{row.data}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     );
   };
 
+  // Etapas em cards (versão mobile — maior, mais espaçada)
+  const renderEtapasMobile = () => (
+    <div className="space-y-3">
+      {trilha.map(etapa => {
+        const isOpen = !!expandedEtapas[etapa.id];
+        const etapaCompleted = etapa.items.every(i => i.completed);
+        const doneCount = etapa.items.filter(i => i.completed).length;
+        return (
+          <div key={etapa.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <button onClick={() => toggleEtapa(etapa.id)} className="w-full flex items-center gap-3.5 px-4 py-4 text-left">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0 transition-colors ${
+                etapaCompleted ? 'bg-brand text-white' : 'bg-brand/10 text-brand'
+              }`}>
+                {etapaCompleted ? <CheckCircle2 size={20} /> : etapa.number}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-[#003366] leading-snug">{prettyCase(etapa.title)}</p>
+                <p className="text-[11px] text-gray-400 font-semibold mt-1">{doneCount}/{etapa.items.length} concluídos</p>
+              </div>
+              <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} className="flex-shrink-0">
+                <ChevronDown size={18} className="text-gray-400" />
+              </motion.div>
+            </button>
+
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-3 pb-3 space-y-2">
+                    {etapa.items.map(item => (
+                      <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50/80">
+                        <button
+                          onClick={() => toggleItem(etapa.id, item.id)}
+                          className={`flex-shrink-0 transition-all hover:scale-110 active:scale-90 ${item.completed ? 'text-green-500' : 'text-gray-300'}`}
+                        >
+                          {item.completed ? <CheckCircle2 size={22} /> : <Circle size={22} />}
+                        </button>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-[13px] font-semibold leading-snug ${item.completed ? 'text-gray-400 line-through' : 'text-[#003366]'}`}>
+                            {item.title}
+                          </p>
+                          <div className="mt-1">
+                            <SidebarContentIndicator type={item.type as any} />
+                          </div>
+                        </div>
+                        <span className={`text-[10px] font-bold flex-shrink-0 px-2.5 py-1.5 rounded-full ${
+                          item.completed ? 'bg-green-50 text-green-600' : 'bg-gray-200/70 text-gray-400'
+                        }`}>
+                          {item.completed ? 'Feito' : 'Pendente'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const tabs = [
+    { id: 'descricao' as const, label: 'Descrição', icon: <FileText size={13} /> },
+    { id: 'desempenho' as const, label: 'Desempenho', icon: <BarChart3 size={13} /> },
+    { id: 'relatorios' as const, label: 'Relatórios', icon: <ClipboardList size={13} /> },
+  ];
+
+  // ── Sidebar content (shared desktop + mobile) ──────────────
+  const SidebarContent = () => (
+    <>
+      {/* Orange header */}
+      <div className="bg-brand text-white p-5 border-b border-white/10 flex-shrink-0">
+        <div className="flex items-start gap-3 mb-4">
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all flex-shrink-0 mt-0.5"
+          >
+            <X size={15} />
+          </button>
+          <h2 className="text-[13px] font-bold tracking-tight leading-snug">{trailTitle}</h2>
+        </div>
+
+        <div className="space-y-3">
+          <ProgressBar label="Progresso" value={progresso} />
+          <ProgressBar label="Aproveitamento" value={aproveitamento} />
+        </div>
+
+        {/* CTA Finalizar — só quando 100%/100% e ainda não concluída */}
+        <AnimatePresence>
+          {finishVariant === 'sidebar' && canConclude && !concluded && (
+            <motion.button
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              onClick={() => setShowCelebration(true)}
+              className="group relative mt-4 w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-white/12 backdrop-blur-md border border-white/25 text-white font-bold text-[13px] tracking-tight overflow-hidden transition-all hover:bg-white/20 hover:border-white/40"
+              style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 16px rgba(0,0,0,0.12)' }}
+            >
+              {/* shimmer */}
+              <motion.span
+                className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.8 }}
+              />
+              <span className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-white/20">
+                <Award size={13} />
+              </span>
+              <span className="relative">Finalizar trilha</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        {/* Selo concluída — discreto, navy/âmbar */}
+        <AnimatePresence>
+          {concluded && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 w-full flex items-center gap-2.5 py-2.5 px-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/25"
+            >
+              <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center flex-shrink-0">
+                <Check size={13} className="text-brand" strokeWidth={3} />
+              </div>
+              <div className="leading-tight">
+                <p className="text-[12px] font-bold text-white">Trilha concluída</p>
+                <button onClick={() => setShowCelebration(true)} className="text-[9px] font-bold text-white/80 hover:text-white hover:underline">Ver certificado</button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Etapas list */}
+      <div className="flex-1 overflow-y-auto">
+        {renderEtapas()}
+      </div>
+    </>
+  );
+
   return (
-    <div className="flex h-[100dvh] bg-ice overflow-hidden font-sans relative">
-      
-      {/* Sidebar - Matches TrainingView Setup */}
+    <div className="flex h-[100dvh] bg-[#F7F9FC] overflow-hidden font-sans">
+
+      {/* ── Desktop Sidebar ───────────────────────────────────── */}
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
-          <motion.div 
+          <motion.div
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 300, opacity: 1 }}
+            animate={{ width: 280, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="hidden lg:flex flex-none flex-col border-r border-gray-100 bg-gray-50/30 overflow-hidden z-20"
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="hidden lg:flex flex-col flex-none border-r border-gray-100 bg-white overflow-hidden z-10"
           >
-            {/* Sidebar Header */}
-            <div className="p-5 bg-brand text-white relative border-b border-white/10">
-              <div className="flex items-center gap-3 mb-4">
-                <button 
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all cursor-pointer text-white"
-                >
-                  <X size={18} />
-                </button>
-                <h2 className="text-[11.5px] font-bold uppercase tracking-tight leading-tight">{trailTitle}</h2>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-[9.5px] font-bold uppercase mb-1.5 text-white/70">
-                    <span>Progresso</span>
-                    <span className="text-white tracking-wider">21.43%</span>
-                  </div>
-                  <div className="h-1.5 bg-black/10 rounded-full overflow-hidden relative border border-white/10 shadow-[inset_0_1px_1px_rgba(0,0,0,0.1)]">
-                    <div 
-                      className="h-full bg-gradient-to-r from-white/90 via-white to-white/90 rounded-full transition-all duration-1000" 
-                      style={{ width: '21.43%' }}
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between text-[9.5px] font-bold uppercase mb-1.5 text-white/70">
-                    <span>Aproveitamento</span>
-                    <span className="text-white tracking-wider">100%</span>
-                  </div>
-                  <div className="h-1.5 bg-black/10 rounded-full overflow-hidden relative border border-white/10 shadow-[inset_0_1px_1px_rgba(0,0,0,0.1)]">
-                    <div 
-                      className="h-full bg-gradient-to-r from-white/90 via-white to-white/90 rounded-full transition-all duration-1000" 
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Scrollable Etapas List */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              {trilha.map((etapa) => (
-                <div key={etapa.id} className="border-b border-gray-200/50 last:border-b-0 bg-white">
-                  {/* Etapa Header (Level 1) */}
-                  <button 
-                    onClick={() => toggleEtapa(etapa.id)}
-                    className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-gray-100/80 transition-colors cursor-pointer border-b border-gray-100/50"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center text-[10px] font-black text-gray-500 bg-white shadow-sm flex-shrink-0">
-                        {etapa.number}
-                      </div>
-                      <span className="text-[10.5px] font-black text-[#003366] uppercase tracking-widest text-left leading-tight">
-                        {etapa.title}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-brand">{etapa.progress}%</span>
-                      <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${expandedEtapas[etapa.id] ? 'rotate-180' : ''}`} />
-                    </div>
-                  </button>
-
-                  {/* Etapa Content (Items inside Etapa) */}
-                  <AnimatePresence initial={false}>
-                    {expandedEtapas[etapa.id] && (
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: 'auto' }}
-                        exit={{ height: 0 }}
-                        className="overflow-hidden bg-white"
-                      >
-                        {etapa.items.map((item) => renderContentItem(item, false))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-            </div>
+            <SidebarContent />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content matching TrainingView */}
-      <div className="flex-1 flex flex-col relative bg-ice overflow-hidden w-full lg:w-auto">
-        
-        {/* Mobile Fixed Top Header Area */}
-        <div className="flex-none flex flex-col w-full lg:hidden bg-white shadow-sm z-20 relative">
-          <AnimatePresence>
-            {!isMobileFocusMode && (
-              <motion.div 
-                key="mobile-red-header"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="bg-brand text-white flex flex-col overflow-hidden"
-              >
-                <div className="flex items-center justify-between px-5 pt-12 pb-4 relative">
-                  <button 
-                    onClick={() => goHome()}
-                    className="relative z-10 w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors backdrop-blur-sm"
-                  >
-                    <ArrowLeft size={18} />
-                  </button>
-                  <h2 className="absolute inset-x-0 bottom-6 text-[11px] font-black uppercase tracking-widest text-center px-16 truncate">
-                    Trilha: Formação Avançada
-                  </h2>
-                  <button 
-                    onClick={() => setIsMobileFocusMode(true)}
-                    className="relative z-10 w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white cursor-pointer hover:bg-white/20 transition-colors backdrop-blur-sm"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-                
-                <div className="px-6 pb-6 space-y-4">
-                  <div>
-                    <div className="flex justify-between text-[9px] font-bold uppercase mb-1 text-white/80">
-                      <span>Progresso</span>
-                      <span className="text-white">21.43%</span>
-                    </div>
-                    <div className="h-1 bg-white/20 rounded-full overflow-hidden relative">
-                      <div className="h-full bg-white rounded-full" style={{ width: '21.43%' }} />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="flex justify-between text-[9px] font-bold uppercase mb-1 text-white/80">
-                      <span>Aproveitamento</span>
-                      <span className="text-white">100%</span>
-                    </div>
-                    <div className="h-1 bg-white/20 rounded-full overflow-hidden relative">
-                      <div className="h-full bg-white rounded-full" style={{ width: '100%' }} />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+      {/* ── Main area ─────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col overflow-y-auto lg:overflow-hidden">
 
-          {/* Fixed Sticky Breadcrumbs Bar (Moves depending on Mode) */}
-          <div className={`flex flex-col border-b border-gray-100 bg-white transition-all duration-300 ${isMobileFocusMode ? 'pt-12 pb-4 px-5 shadow-sm' : 'py-3 px-5'}`}>
-            <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#7E92A2] flex items-center overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap">
-              <span>Início</span>
-              <span className="text-gray-200 mx-1.5">/</span>
-              <span>Sala de Aula</span>
-              <span className="text-gray-200 mx-1.5">/</span>
-              <span className="text-brand truncate max-w-[200px]">{activeLesson.title}</span>
-            </div>
-
+        {/* Mobile orange header */}
+        <div className="lg:hidden bg-brand text-white flex-shrink-0">
+          <div className="flex items-start gap-3 px-4 pt-12 pb-4">
+            <button onClick={goHome} className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <ArrowLeft size={16} />
+            </button>
+            <h2 className="text-[14px] font-bold tracking-tight leading-snug flex-1">{trailTitle}</h2>
+          </div>
+          <div className="px-4 pb-9 space-y-3">
+            <ProgressBar label="Progresso" value={progresso} />
+            <ProgressBar label="Aproveitamento" value={aproveitamento} />
             <AnimatePresence>
-              {isMobileFocusMode && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  className="flex items-center gap-3 overflow-hidden"
+              {finishVariant === 'sidebar' && canConclude && !concluded && (
+                <motion.button
+                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  onClick={() => setShowCelebration(true)}
+                  className="group relative w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-white/12 backdrop-blur-md border border-white/25 text-white font-bold text-[13px] tracking-tight overflow-hidden transition-all active:bg-white/20"
+                  style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 16px rgba(0,0,0,0.12)' }}
                 >
-                  <button 
-                    onClick={() => setIsMobileFocusMode(false)}
-                    className="w-[42px] h-[42px] bg-white border border-gray-200 rounded-[14px] flex items-center justify-center text-[#7E92A2] shadow-sm cursor-pointer hover:bg-gray-50 transition-colors flex-shrink-0"
-                  >
-                    <Menu size={20} className="stroke-[2.5px]" />
-                  </button>
-                  <button 
-                    onClick={() => goHome()}
-                    className="w-[42px] h-[42px] bg-brand text-white rounded-[14px] shadow-[0_4px_12px_rgba(204,0,0,0.3)] flex items-center justify-center cursor-pointer hover:bg-brand-dark transition-colors flex-shrink-0"
-                  >
-                    <ArrowLeft size={20} className="stroke-[2.5px]" />
-                  </button>
+                  <motion.span
+                    className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.8 }}
+                  />
+                  <span className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-white/20">
+                    <Award size={13} />
+                  </span>
+                  <span className="relative">Finalizar trilha</span>
+                </motion.button>
+              )}
+              {concluded && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="w-full flex items-center gap-2.5 py-2.5 px-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/25"
+                >
+                  <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center flex-shrink-0">
+                    <Check size={13} className="text-brand" strokeWidth={3} />
+                  </div>
+                  <div className="leading-tight">
+                    <p className="text-[12px] font-bold text-white">Trilha concluída</p>
+                    <button onClick={() => setShowCelebration(true)} className="text-[9px] font-bold text-white/80 hover:text-white hover:underline">Ver certificado</button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Top Navigation Desktop */}
-        <div className="hidden lg:flex px-8 py-4 items-center justify-between border-b border-gray-50">
-          <div className="flex items-center gap-4">
-            {!isSidebarOpen && (
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setIsSidebarOpen(true)}
-                  className="w-10 h-10 rounded-xl bg-white border border-gray-100 text-gray-400 flex items-center justify-center hover:bg-gray-50 transition-all shadow-sm cursor-pointer"
-                >
-                  <Menu size={20} />
-                </button>
-                <button onClick={goHome} className="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 cursor-pointer">
-                  <ArrowLeft size={20} />
-                </button>
-              </div>
-            )}
-            
-            {isSidebarOpen && (
-              <button onClick={goHome} className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 cursor-pointer">
-                <ArrowLeft size={16} />
+        {/* Desktop topbar */}
+        <div className="hidden lg:flex flex-shrink-0 items-center gap-4 px-6 py-3 bg-white border-b border-gray-100">
+          {!isSidebarOpen && (
+            <button onClick={() => setIsSidebarOpen(true)} className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 text-gray-400 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <Menu size={18} />
+            </button>
+          )}
+          <button onClick={goHome} className="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center hover:opacity-90 transition-opacity">
+            <ArrowLeft size={16} />
+          </button>
+          <nav className="text-[12px] flex items-center gap-1.5 text-gray-400 font-semibold">
+            <span className="hover:text-gray-600 cursor-pointer">Vitrine</span>
+            <span className="text-gray-200">›</span>
+            <span className="hover:text-gray-600 cursor-pointer">Minha Área</span>
+            <span className="text-gray-200">›</span>
+            <span className="hover:text-gray-600 cursor-pointer">Minhas Trilhas</span>
+            <span className="text-gray-200">›</span>
+            <span className="text-brand">{trailTitle}</span>
+          </nav>
+        </div>
+
+        {/* Tabs */}
+        <div className="hidden lg:block flex-shrink-0 bg-white border-b border-gray-100 px-4 lg:px-8">
+          <div className="flex items-center gap-1">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative flex items-center gap-2 px-4 py-3.5 text-[12px] font-bold transition-colors whitespace-nowrap ${
+                  activeTab === tab.id ? 'text-brand' : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="trilha-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
               </button>
-            )}
-            
-            <nav className="text-[10.5px] flex items-center gap-2 text-gray-400 uppercase tracking-widest font-bold">
-              <span className="hover:text-gray-600 cursor-pointer transition-colors">Início</span>
-              <span className="text-gray-200">/</span>
-              <span className="hover:text-gray-600 cursor-pointer transition-colors">Sala de Aula</span>
-              <span className="text-gray-200">/</span>
-              <span className="text-brand">{activeLesson.title}</span>
-            </nav>
+            ))}
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative bg-ice">
-          <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col lg:p-6 pb-32">
-            
-            {/* Video Player Container */}
-            <div className="relative lg:mb-4 lg:flex-1 flex items-center justify-center min-h-0 bg-black lg:bg-transparent">
-              {/* Navigation Arrows - Desktop */}
-              <div className="hidden lg:block">
-                <AnimatePresence>
-                  {!isSidebarOpen && (
-                    <>
-                      <motion.div 
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        className="absolute left-[-60px] top-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
-                      >
-                        <button className="w-10 h-10 rounded-xl flex items-center justify-center shadow-xl transition-all active:scale-95 bg-brand text-white shadow-brand/20 hover:scale-110 cursor-pointer">
-                          <ChevronLeft size={24} />
-                        </button>
-                        <span className="text-[8.5px] font-bold text-gray-400 uppercase tracking-tighter">Anterior</span>
-                      </motion.div>
-                      
-                      <motion.div 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="absolute right-[-60px] top-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
-                      >
-                        <button className="w-10 h-10 rounded-xl flex items-center justify-center shadow-xl transition-all active:scale-95 bg-brand text-white shadow-brand/20 hover:scale-110 cursor-pointer">
-                          <ChevronRight size={24} />
-                        </button>
-                        <span className="text-[8.5px] font-bold text-gray-400 uppercase tracking-tighter">Próximo</span>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-              </div>
+        {/* Tab content */}
+        <div className="hidden lg:block lg:flex-1 lg:overflow-y-auto p-4 lg:p-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="w-full"
+            >
 
-              {/* Video Placeholder */}
-              <div className="w-full max-h-full aspect-video bg-black rounded-none lg:rounded-xl overflow-hidden shadow-none lg:shadow-2xl relative flex items-center justify-center mx-auto">
-                <img 
-                  src="https://picsum.photos/seed/training-trilha/1920/1080" 
-                  alt="Video Thumbnail" 
-                  className="w-full h-full object-cover opacity-60"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <button className="w-16 h-16 rounded-full bg-brand/90 text-white flex items-center justify-center hover:scale-110 transition-all shadow-2xl shadow-brand/40 cursor-pointer">
-                    <Play size={28} fill="currentColor" />
-                  </button>
-                </div>
-                
-                {/* Video Controls Mockup */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-4">
-                  <div className="text-white text-[9.5px] font-mono">0:00 / 45:00</div>
-                  <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                    <div className="h-full bg-brand w-[30%]" />
-                  </div>
-                  <div className="flex items-center gap-3 text-white/80">
-                    <div className="w-1 h-3 bg-white/40 rounded-full" />
-                    <div className="w-1 h-4 bg-white/40 rounded-full" />
-                    <div className="w-1 h-2 bg-white/40 rounded-full" />
-                  </div>
-                </div>
-              </div>
+              {activeTab === 'descricao' && renderDescricao()}
+              {activeTab === 'desempenho' && renderDesempenho()}
+              {activeTab === 'relatorios' && renderRelatoriosTable()}
+
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* ── Mobile: landing page (sheet sobre o hero) ── */}
+        <div className="lg:hidden relative z-10 -mt-4 rounded-t-[28px] bg-[#F7F9FC] px-5 pt-6 pb-12 space-y-9 shadow-[0_-8px_24px_rgba(4,20,51,0.06)]">
+
+          {/* Conteúdo da trilha */}
+          <section>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-1.5 h-5 rounded-full bg-brand" />
+              <h3 className="text-[15px] font-bold text-[#041433] tracking-tight">Conteúdo da trilha</h3>
             </div>
+            {renderEtapasMobile()}
+          </section>
 
-            {/* Lesson Info */}
-            <div className="flex-none p-4 lg:p-0">
-              <div className="mb-4">
-                <h1 className="text-xl lg:text-2xl font-bold text-[#003366] mb-0 lg:mb-4">TRILHA: {activeLesson?.title || 'Vídeo da Aula'}</h1>
-                
-                {/* Mobile Next/Prev Navigation - Integrated style */}
-                <div className="flex items-center justify-between mt-3 lg:hidden border-b border-gray-100 pb-4 w-full">
-                  <button 
-                    disabled={true}
-                    className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-widest text-gray-300"
-                  >
-                    <ChevronLeft size={14} /> Anterior
-                  </button>
-                  <button 
-                    className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-widest text-brand active:text-[#003366]"
-                  >
-                    Próximo <ChevronRight size={14} />
-                  </button>
-                </div>
-              </div>
-              
-              {/* Tabs */}
-              <div className="flex items-center border-b border-gray-100 mb-6 overflow-x-auto no-scrollbar w-full">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`relative flex items-center gap-2 px-4 py-3 text-[10px] font-bold uppercase tracking-[0.1em] transition-colors whitespace-nowrap cursor-pointer ${
-                      activeTab === tab.id 
-                        ? 'text-brand' 
-                        : 'text-gray-400 hover:text-gray-600'
-                    }`}
-                  >
-                    {tab.icon}
-                    {tab.label}
-                    {activeTab === tab.id && (
-                      <motion.div
-                        layoutId="activeTabIndicatorTrilha"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand"
-                        initial={false}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Tab Content */}
-              <div className="min-h-[400px] overflow-y-auto custom-scrollbar">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {activeTab === 'descricao' && (
-                      <div className="prose prose-sm max-w-none text-gray-600 italic text-xs">
-                        <p>Nesta etapa importante da Trilha, você aprenderá o conceito aprofundado por trás de cada fluxo de aprovação da nossa matriz.</p>
-                      </div>
-                    )}
-                    {activeTab === 'desempenho' && (
-                      <PerformanceDashboard 
-                        type="trilha" 
-                        status="andamento"
-                        data={[
-                          { name: 'Módulo 1', value: 100 },
-                          { name: 'Módulo 2', value: 85 },
-                          { name: 'Módulo 3', value: 90 },
-                          { name: 'Módulo 4', value: 21, isAlt: true },
-                          { name: 'Módulo 5', value: 0 },
-                        ]}
-                      />
-                    )}
-                    {activeTab === 'resumo' && (
-                      <div className="prose prose-sm max-w-none text-gray-600 italic text-xs">
-                        <p>Os 3 pilares da trilha: Liderança, Empatia e Gerenciamento Ágil.</p>
-                      </div>
-                    )}
-                    {activeTab === 'material' && (
-                      <MaterialExplorer />
-                    )}
-                    {activeTab === 'tutores' && (
-                      <TutorList />
-                    )}
-                    {activeTab === 'autor' && (
-                      <div className="prose prose-sm max-w-none text-gray-600 italic text-xs">
-                        <p>Instrutora Sênior: Mariana Lemos — Especialista em Gestão de Pessoas.</p>
-                      </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+          {/* Descrição */}
+          <section>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-1.5 h-5 rounded-full bg-brand" />
+              <h3 className="text-[15px] font-bold text-[#041433] tracking-tight">Descrição</h3>
             </div>
-          </div>
+            <p className="text-[15px] text-gray-600 leading-relaxed">
+              Nesta trilha você desenvolverá as competências fundamentais para o domínio completo dos fluxos de automação corporativa.
+              Cada etapa foi estruturada para construir o conhecimento de forma progressiva, do básico ao avançado.
+            </p>
+          </section>
+
+          {/* Desempenho */}
+          <section>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-1.5 h-5 rounded-full bg-brand" />
+              <h3 className="text-[15px] font-bold text-[#041433] tracking-tight">Desempenho</h3>
+            </div>
+            {renderDesempenho()}
+          </section>
+
+          {/* Relatórios */}
+          <section>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-1.5 h-5 rounded-full bg-brand" />
+              <h3 className="text-[15px] font-bold text-[#041433] tracking-tight">Relatórios</h3>
+            </div>
+            {renderRelatorios()}
+          </section>
+
         </div>
       </div>
 
-      {/* Mobile Floating Action Button (F.A.B) */}
+      {/* ── Botão lateral direito (variante sideTab) ─────────── */}
       <AnimatePresence>
-        {!isMobileFocusMode && !isMobileSidebarOpen && (
-          <motion.button 
-            initial={{ opacity: 0, y: 20, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            onClick={() => setIsMobileSidebarOpen(true)}
-            className="lg:hidden fixed bottom-6 right-6 z-40 bg-brand text-white pl-4 pr-5 py-3 rounded-full shadow-[0_8px_32px_rgba(204,0,0,0.4)] flex items-center gap-2 font-bold text-[11px] uppercase tracking-widest active:scale-95 transition-all cursor-pointer hover:bg-brand-dark"
+        {finishVariant === 'sideTab' && canConclude && !concluded && (
+          <motion.button
+            initial={{ x: 160, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 160, opacity: 0 }}
+            transition={{ type: 'spring', damping: 22, stiffness: 240 }}
+            onClick={() => setShowCelebration(true)}
+            className="fixed right-0 top-1/2 -translate-y-1/2 z-[60] group flex items-center gap-3 pl-4 pr-5 py-4 rounded-l-2xl text-white overflow-hidden hover:pr-7 transition-all"
+            style={{ background: 'linear-gradient(135deg, #FF7A1A 0%, #F2680D 100%)', boxShadow: '0 12px 36px rgba(255,122,26,0.5)' }}
           >
-            <Menu size={18} />
-            <span>Conteúdo</span>
+            {/* halo pulsante */}
+            <motion.span
+              className="absolute -left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/30 pointer-events-none"
+              animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <span className="relative flex items-center justify-center w-10 h-10 rounded-full bg-white/20 flex-shrink-0">
+              <Award size={20} />
+            </span>
+            <span className="relative text-left leading-tight hidden sm:block">
+              <span className="block text-[10px] font-semibold text-white/75">Parabéns!</span>
+              <span className="block text-[14px] font-bold">Finalizar Trilha</span>
+            </span>
+            <ChevronRight size={18} className="relative opacity-80 group-hover:translate-x-1 transition-transform hidden sm:block" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Mobile Bottom Sheet Modal (Drawer) */}
+      {/* ── Modal de celebração ──────────────────────────────── */}
       <AnimatePresence>
-        {isMobileSidebarOpen && (
-          <motion.div className="fixed inset-0 z-50 flex flex-col lg:hidden">
+        {showCelebration && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
             {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileSidebarOpen(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setShowCelebration(false)}
+              className="absolute inset-0 bg-[#041433]/70 backdrop-blur-md"
             />
-            
-            {/* Drawer */}
-            <motion.div 
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="mt-auto h-[85vh] bg-white rounded-t-3xl flex flex-col overflow-hidden relative shadow-2xl pt-2"
+
+            {/* Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl overflow-hidden shadow-2xl"
             >
-              {/* Handle */}
-              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto my-3" />
-              
               {/* Header */}
-              <div className="flex-none px-6 py-2 border-b border-gray-100 flex items-center justify-between bg-white relative z-10">
-                <div className="flex-1"></div>
-                <h3 className="text-xs font-black text-[#003366] uppercase tracking-widest text-center flex-[2]">
-                  Módulos da Trilha
-                </h3>
-                <div className="flex-1 flex justify-end">
-                  <button 
-                    onClick={() => setIsMobileSidebarOpen(false)}
-                    className="text-[9px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer hover:text-brand transition-colors"
-                  >
-                    Fechar
-                  </button>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <Award size={18} className="text-brand" />
+                  <h3 className="text-base font-bold text-[#041433]">Seu certificado</h3>
                 </div>
+                <button onClick={() => setShowCelebration(false)} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors">
+                  <X size={16} />
+                </button>
               </div>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar pb-8">
-                {trilha.map((etapa) => (
-                  <div key={etapa.id} className="border-b border-gray-200/50 last:border-b-0 bg-white">
-                    <button 
-                      onClick={() => toggleEtapa(etapa.id)}
-                      className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-gray-100/80 transition-colors cursor-pointer border-b border-gray-100/50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center text-[10px] font-black text-gray-500 bg-white shadow-sm flex-shrink-0">
-                          {etapa.number}
-                        </div>
-                        <span className="text-[10.5px] font-black text-[#003366] uppercase tracking-widest text-left leading-tight">
-                          {etapa.title}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-brand">{etapa.progress}%</span>
-                        <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${expandedEtapas[etapa.id] ? 'rotate-180' : ''}`} />
-                      </div>
-                    </button>
+              {/* Preview do certificado */}
+              <div className="p-5 bg-gray-50">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                  className="relative bg-white rounded-xl overflow-hidden shadow-lg"
+                  style={{ aspectRatio: '297 / 210' }}
+                >
+                  {/* Faixa lateral */}
+                  <div className="absolute left-0 top-0 bottom-0 w-2.5" style={{ background: '#041433' }} />
+                  <div className="absolute left-2.5 top-0 bottom-0 w-1" style={{ background: '#FF7A1A' }} />
 
-                    <AnimatePresence initial={false}>
-                      {expandedEtapas[etapa.id] && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: 'auto' }}
-                          exit={{ height: 0 }}
-                          className="overflow-hidden bg-white"
-                        >
-                          {etapa.items.map((item) => renderContentItem(item, false))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                  {/* Moldura */}
+                  <div className="absolute inset-3 border border-[#041433]/80 rounded-sm" />
+                  <div className="absolute inset-[14px] border border-brand/40 rounded-sm" />
+
+                  {/* Selo */}
+                  <div className="absolute top-5 right-6 w-12 h-12 rounded-full bg-brand flex flex-col items-center justify-center text-white shadow-md">
+                    <span className="text-[10px] font-black leading-none">100%</span>
+                    <span className="text-[5px] font-bold tracking-wider mt-0.5">CONCLUÍDO</span>
                   </div>
-                ))}
+
+                  {/* Conteúdo */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
+                    <p className="text-[11px] font-black text-[#041433] tracking-[0.2em]">LECTOR</p>
+                    <p className="text-[5.5px] font-bold text-brand tracking-[0.15em] mt-0.5">PLATAFORMA DE APRENDIZADO CORPORATIVO</p>
+
+                    <h2 className="text-lg font-black text-[#041433] tracking-[0.15em] mt-3" style={{ fontFamily: 'Outfit, sans-serif' }}>CERTIFICADO</h2>
+                    <p className="text-[7px] font-bold text-gray-400 tracking-[0.25em]">DE CONCLUSÃO</p>
+                    <div className="w-10 h-0.5 bg-brand rounded-full my-2" />
+
+                    <p className="text-[7px] text-gray-400">Certificamos que</p>
+                    <p className="text-base font-black text-[#041433] mt-1 leading-none">{STUDENT_NAME}</p>
+                    <p className="text-[7px] text-gray-400 mt-2 max-w-[80%] leading-relaxed">concluiu com aproveitamento a trilha</p>
+                    <p className="text-[10px] font-black text-brand uppercase mt-1 leading-tight max-w-[85%]">{trailTitle}</p>
+
+                    <div className="flex gap-10 mt-4">
+                      <div className="text-center">
+                        <div className="w-16 border-t border-[#041433]/40 pt-1">
+                          <p className="text-[6px] font-black text-[#041433]">{today}</p>
+                          <p className="text-[4.5px] text-gray-400 tracking-wider">DATA</p>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-16 border-t border-[#041433]/40 pt-1">
+                          <p className="text-[6px] font-black text-[#041433]">Equipe Lector</p>
+                          <p className="text-[4.5px] text-gray-400 tracking-wider">COORDENAÇÃO</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Ações */}
+              <div className="p-5 pt-2 space-y-2.5">
+                <button
+                  onClick={handleDownloadCertificate}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-[14px] transition-all hover:brightness-110 active:scale-[0.98]"
+                  style={{ background: 'linear-gradient(135deg, #FF7A1A 0%, #F2680D 100%)', boxShadow: '0 8px 24px rgba(255,122,26,0.4)' }}
+                >
+                  <Download size={16} />
+                  Baixar certificado (PDF)
+                </button>
+                <button
+                  onClick={() => setShowCelebration(false)}
+                  className="w-full py-2.5 rounded-xl text-gray-400 hover:text-gray-600 font-semibold text-[13px] hover:bg-gray-50 transition-colors"
+                >
+                  Fechar
+                </button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
